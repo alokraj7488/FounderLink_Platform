@@ -1,0 +1,18 @@
+node_modules/
+dist/
+dist-ssr/
+/coverage
+
+# Logs
+*-debug.log*
+*-error.log*
+
+# Security
+.env
+.env*.local
+
+# OS/IDE
+.DS_Store
+.vscode/
+.idea/
+.eslintcache

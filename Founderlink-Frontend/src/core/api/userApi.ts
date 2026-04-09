@@ -1,0 +1,30 @@
+import { AxiosResponse } from 'axios';
+import api from './axiosConfig';
+import { UserProfile, ProfileFormData, AuthUser } from '../../types';
+
+export const getMyProfile = (userId: number): Promise<AxiosResponse<UserProfile>> =>
+  api.get(`/users/${userId}`);
+
+export const updateProfile = (userId: number, data: ProfileFormData): Promise<AxiosResponse<UserProfile>> =>
+  api.put(`/users/${userId}`, data);
+
+export const getUserById = (id: number): Promise<AxiosResponse<UserProfile>> =>
+  api.get(`/users/${id}`);
+
+export const searchUsersBySkill = (skill: string): Promise<AxiosResponse<UserProfile[]>> =>
+  api.get(`/users/search?skill=${encodeURIComponent(skill)}`);
+
+export const getCoFounderIds = (): Promise<AxiosResponse<AuthUser[]>> =>
+  api.get('/auth/users/by-role?role=ROLE_COFOUNDER');
+
+export const getUsersByRole = (role: string): Promise<AxiosResponse<AuthUser[]>> =>
+  api.get(`/auth/users/by-role?role=${role}`);
+
+export const getAuthUserById = (id: number): Promise<AxiosResponse<AuthUser>> =>
+  api.get(`/auth/users/${id}`);
+
+export const getProfilesBatch = (userIds: number[], skill?: string): Promise<AxiosResponse<UserProfile[]>> => {
+  const params = new URLSearchParams({ userIds: userIds.join(',') });
+  if (skill) params.append('skill', skill);
+  return api.get(`/users/profiles/batch?${params}`);
+};

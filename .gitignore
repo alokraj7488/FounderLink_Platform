@@ -1,0 +1,59 @@
+# ── Build Artifacts ──────────────────────────────────────
+target/
+build/
+*.jar
+*.war
+*.class
+
+# ── Maven ────────────────────────────────────────────────
+.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+# ── Node / Frontend ──────────────────────────────────────
+node_modules/
+dist/
+dist-ssr/
+*.local
+
+# ── IDE ──────────────────────────────────────────────────
+.idea/
+.vscode/
+*.iws
+*.iml
+*.ipr
+.classpath
+.project
+.settings/
+.factorypath
+.apt_generated
+.springBeans
+.sts4-cache
+
+# ── OS ───────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+
+# ── Environment & Secrets ────────────────────────────────
+.env
+.env.local
+.env.*.local
+
+# ── STS / NetBeans ───────────────────────────────────────
+/nbproject/private/
+/nbbuild/
+/nbdist/
+/.nb-gradle/
+
+# ── Logs ─────────────────────────────────────────────────
+*.log
+*-debug.log*
+*-error.log*
+
+# ── Docker ───────────────────────────────────────────────
+.dockerignore
+
+# ── Misc ─────────────────────────────────────────────────
+HELP.md
+.eslintcache
+coverage/
