@@ -10,11 +10,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.beans.factory.annotation.Value;
 
-import com.capgemini.startup.config.RabbitMQConfig;
-import com.capgemini.startup.dto.StartupCreatedEvent;
+import com.capgemini.startup.event.StartupCreatedEvent;
+import com.capgemini.startup.event.StartupDeletedEvent;
+import com.capgemini.startup.event.StartupRejectedEvent;
 import com.capgemini.startup.mapper.StartupMapper;
-import com.capgemini.startup.dto.StartupRejectedEvent;
 import com.capgemini.startup.dto.StartupRequest;
 import com.capgemini.startup.dto.StartupResponse;
 import com.capgemini.startup.entity.Startup;
@@ -29,25 +30,38 @@ import com.capgemini.startup.specification.StartupSpecification;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
 @Slf4j
-public class StartupServiceImpl implements StartupService {
+public class StartupServiceImpl implements StartupCommandService, StartupQueryService {
 
     private final StartupRepository startupRepository;
     private final StartupFollowerRepository startupFollowerRepository;
     private final RabbitTemplate rabbitTemplate;
     private final StartupMapper startupMapper;
+    private final String rabbitmqExchange;
+    private final String startupCreatedRoutingKey;
+    private final String startupRejectedRoutingKey;
+    private final String startupDeletedRoutingKey;
 
     public StartupServiceImpl(StartupRepository startupRepository,
                               StartupFollowerRepository startupFollowerRepository,
                               RabbitTemplate rabbitTemplate,
-                              StartupMapper startupMapper) {
+                              StartupMapper startupMapper,
+                              @Value("${rabbitmq.exchange}") String rabbitmqExchange,
+                              @Value("${rabbitmq.routing-key.startup-created}") String startupCreatedRoutingKey,
+                              @Value("${rabbitmq.routing-key.startup-rejected}") String startupRejectedRoutingKey,
+                              @Value("${rabbitmq.routing-key.startup-deleted}") String startupDeletedRoutingKey) {
         this.startupRepository = startupRepository;
         this.startupFollowerRepository = startupFollowerRepository;
         this.rabbitTemplate = rabbitTemplate;
         this.startupMapper = startupMapper;
+        this.rabbitmqExchange = rabbitmqExchange;
+        this.startupCreatedRoutingKey = startupCreatedRoutingKey;
+        this.startupRejectedRoutingKey = startupRejectedRoutingKey;
+        this.startupDeletedRoutingKey = startupDeletedRoutingKey;
     }
 
     @Override
@@ -73,15 +87,15 @@ public class StartupServiceImpl implements StartupService {
 
         StartupCreatedEvent event = StartupCreatedEvent.builder()
                 .startupId(saved.getId())
-                .founderId(saved.getFounderId())
                 .startupName(saved.getName())
+                .founderId(saved.getFounderId())
                 .industry(saved.getIndustry())
                 .fundingGoal(saved.getFundingGoal())
                 .build();
 
         rabbitTemplate.convertAndSend(
-                RabbitMQConfig.EXCHANGE_NAME,
-                RabbitMQConfig.STARTUP_CREATED_ROUTING_KEY,
+                rabbitmqExchange,
+                startupCreatedRoutingKey,
                 event
         );
 
@@ -136,8 +150,24 @@ public class StartupServiceImpl implements StartupService {
             throw new UnauthorizedAccessException("Only the founder or an admin can delete this startup");
         }
 
+        // Purging followers and notifying other services that this startup is gone
+        startupFollowerRepository.deleteByStartupId(id);
+
+        // Hardening: Publish deletion event for other services
+        StartupDeletedEvent event = StartupDeletedEvent.builder()
+                .startupId(startup.getId())
+                .startupName(startup.getName())
+                .founderId(startup.getFounderId())
+                .build();
+
+        rabbitTemplate.convertAndSend(
+                rabbitmqExchange,
+                startupDeletedRoutingKey,
+                event
+        );
+
         startupRepository.delete(startup);
-        log.info("Startup deleted: id={}", id);
+        log.info("Startup deleted and event published: id={}", id);
     }
 
     @Override
@@ -157,7 +187,7 @@ public class StartupServiceImpl implements StartupService {
     public Page<StartupResponse> searchStartups(String industry, StartupStage stage,
                                                 BigDecimal minFunding, BigDecimal maxFunding,
                                                 String location, Pageable pageable) {
-        Specification<Startup> spec = Specification.where(StartupSpecification.isApproved());
+        Specification<Startup> spec = StartupSpecification.isApproved();
 
         if (industry != null && !industry.isBlank()) spec = spec.and(StartupSpecification.hasIndustry(industry));
         if (stage != null)                           spec = spec.and(StartupSpecification.hasStage(stage));
@@ -214,12 +244,12 @@ public class StartupServiceImpl implements StartupService {
 
         StartupRejectedEvent event = StartupRejectedEvent.builder()
                 .startupId(rejected.getId())
-                .founderId(rejected.getFounderId())
                 .startupName(rejected.getName())
+                .founderId(rejected.getFounderId())
                 .build();
         rabbitTemplate.convertAndSend(
-                RabbitMQConfig.EXCHANGE_NAME,
-                RabbitMQConfig.STARTUP_REJECTED_ROUTING_KEY,
+                rabbitmqExchange,
+                startupRejectedRoutingKey,
                 event
         );
 
@@ -233,7 +263,7 @@ public class StartupServiceImpl implements StartupService {
     public List<StartupResponse> getStartupsByFounderId(Long founderId) {
         return startupRepository.findByFounderId(founderId).stream()
                 .map(startupMapper::toResponse)
-                .collect(java.util.stream.Collectors.toList());
+                .collect(Collectors.toList());
     }
 
 }
