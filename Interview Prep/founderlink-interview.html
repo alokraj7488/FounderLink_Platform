@@ -1,0 +1,2948 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>FounderLink — Complete Interview Preparation Guide</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500;600&display=swap');
+
+  :root {
+    --bg: #0a0e1a;
+    --surface: #111827;
+    --surface2: #1a2236;
+    --border: #1e2d45;
+    --accent: #3b82f6;
+    --accent2: #06b6d4;
+    --accent3: #8b5cf6;
+    --green: #10b981;
+    --yellow: #f59e0b;
+    --red: #ef4444;
+    --orange: #f97316;
+    --text: #e2e8f0;
+    --text-muted: #64748b;
+    --text-dim: #94a3b8;
+    --code-bg: #0d1117;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    background: linear-gradient(135deg, #0a0e1a 0%, #0f172a 40%, #1e1b4b 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 60px 40px 50px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content:'';
+    position:absolute; top:-50px; right:-80px;
+    width:500px; height:500px;
+    background: radial-gradient(circle, rgba(59,130,246,0.12) 0%, transparent 70%);
+    pointer-events:none;
+  }
+  .hero-badge {
+    display:inline-block;
+    background: rgba(59,130,246,0.15);
+    border: 1px solid rgba(59,130,246,0.4);
+    color: var(--accent);
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    padding:4px 14px;
+    border-radius:20px;
+    letter-spacing:1.5px;
+    text-transform:uppercase;
+    margin-bottom:16px;
+  }
+  .hero h1 {
+    font-family:'Syne',sans-serif;
+    font-size:clamp(28px,4vw,52px);
+    font-weight:800;
+    line-height:1.15;
+    background: linear-gradient(135deg, #e2e8f0 0%, #93c5fd 50%, #a78bfa 100%);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    background-clip:text;
+    margin-bottom:12px;
+  }
+  .hero p {
+    color: var(--text-dim);
+    font-size:16px;
+    max-width:720px;
+    margin-bottom:30px;
+  }
+  .hero-tags {
+    display:flex; flex-wrap:wrap; gap:8px;
+  }
+  .hero-tag {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    padding:4px 10px;
+    border-radius:4px;
+  }
+
+  /* ── NAV TOC ── */
+  .toc-bar {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding:14px 40px;
+    position:sticky; top:0; z-index:100;
+    overflow-x:auto;
+    white-space:nowrap;
+  }
+  .toc-bar a {
+    color: var(--text-muted);
+    text-decoration:none;
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    margin-right:20px;
+    letter-spacing:0.5px;
+    transition: color 0.2s;
+  }
+  .toc-bar a:hover { color: var(--accent); }
+
+  /* ── LAYOUT ── */
+  .container { max-width:1200px; margin:0 auto; padding:40px; }
+
+  /* ── SECTION HEADERS ── */
+  .section {
+    margin-bottom:60px;
+    scroll-margin-top:60px;
+  }
+  .section-header {
+    display:flex; align-items:center; gap:14px;
+    margin-bottom:28px;
+    padding-bottom:16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-num {
+    background: linear-gradient(135deg, var(--accent), var(--accent3));
+    color:#fff;
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px;
+    font-weight:600;
+    padding:4px 10px;
+    border-radius:6px;
+    min-width:36px;
+    text-align:center;
+  }
+  .section-header h2 {
+    font-family:'Syne',sans-serif;
+    font-size:clamp(20px,2.5vw,28px);
+    font-weight:700;
+    color: var(--text);
+  }
+  .section-header .badge {
+    margin-left:auto;
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px;
+    background: rgba(16,185,129,0.15);
+    border: 1px solid rgba(16,185,129,0.3);
+    color: var(--green);
+    padding:3px 10px;
+    border-radius:20px;
+  }
+
+  h3 {
+    font-family:'Syne',sans-serif;
+    font-size:18px;
+    font-weight:700;
+    color: var(--accent2);
+    margin: 28px 0 12px;
+    display:flex; align-items:center; gap:8px;
+  }
+  h3::before { content:'▸'; color:var(--accent3); font-size:12px; }
+  h4 {
+    font-family:'Inter',sans-serif;
+    font-weight:600;
+    color: var(--yellow);
+    font-size:14px;
+    margin:18px 0 8px;
+    text-transform:uppercase;
+    letter-spacing:0.8px;
+  }
+
+  /* ── CARDS ── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius:10px;
+    padding:24px;
+    margin-bottom:20px;
+    transition: border-color 0.2s;
+  }
+  .card:hover { border-color: rgba(59,130,246,0.3); }
+  .card-header {
+    display:flex; align-items:center; gap:10px;
+    margin-bottom:14px;
+  }
+  .card-icon {
+    width:36px; height:36px;
+    background: linear-gradient(135deg, var(--accent), var(--accent3));
+    border-radius:8px;
+    display:flex; align-items:center; justify-content:center;
+    font-size:16px;
+    flex-shrink:0;
+  }
+  .card-title {
+    font-family:'Syne',sans-serif;
+    font-weight:700;
+    font-size:16px;
+    color: var(--text);
+  }
+  .card-subtitle { color: var(--text-muted); font-size:12px; }
+
+  .service-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius:8px;
+    padding:20px 24px;
+    margin-bottom:16px;
+  }
+  .service-card.green { border-left-color: var(--green); }
+  .service-card.purple { border-left-color: var(--accent3); }
+  .service-card.yellow { border-left-color: var(--yellow); }
+  .service-card.orange { border-left-color: var(--orange); }
+  .service-card.cyan { border-left-color: var(--accent2); }
+  .service-card.red { border-left-color: var(--red); }
+
+  /* ── CODE BLOCKS ── */
+  .code-wrap {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius:8px;
+    overflow:hidden;
+    margin:14px 0;
+  }
+  .code-header {
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+    padding:8px 16px;
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .code-lang {
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    color: var(--accent);
+    letter-spacing:0.5px;
+  }
+  .code-file {
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    color: var(--text-muted);
+  }
+  pre {
+    padding:20px;
+    overflow-x:auto;
+    font-family:'JetBrains Mono',monospace;
+    font-size:13px;
+    line-height:1.6;
+    color:#e2e8f0;
+  }
+  .kw { color:#ff79c6; }
+  .ann { color:#50fa7b; }
+  .str { color:#f1fa8c; }
+  .cmt { color:#6272a4; font-style:italic; }
+  .cls { color:#8be9fd; }
+  .num { color:#bd93f9; }
+  .fn { color:#ffb86c; }
+
+  /* ── EXPLANATION BOXES ── */
+  .explain-box {
+    background: rgba(59,130,246,0.05);
+    border: 1px solid rgba(59,130,246,0.2);
+    border-radius:8px;
+    padding:16px 20px;
+    margin:12px 0;
+  }
+  .explain-box.green {
+    background: rgba(16,185,129,0.05);
+    border-color: rgba(16,185,129,0.2);
+  }
+  .explain-box.yellow {
+    background: rgba(245,158,11,0.05);
+    border-color: rgba(245,158,11,0.2);
+  }
+  .explain-box.red {
+    background: rgba(239,68,68,0.05);
+    border-color: rgba(239,68,68,0.2);
+  }
+  .explain-box.purple {
+    background: rgba(139,92,246,0.05);
+    border-color: rgba(139,92,246,0.2);
+  }
+  .explain-label {
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px;
+    font-weight:600;
+    letter-spacing:1px;
+    text-transform:uppercase;
+    margin-bottom:8px;
+    color: var(--accent);
+  }
+  .explain-box.green .explain-label { color: var(--green); }
+  .explain-box.yellow .explain-label { color: var(--yellow); }
+  .explain-box.red .explain-label { color: var(--red); }
+  .explain-box.purple .explain-label { color: var(--accent3); }
+
+  /* ── FLOW DIAGRAM ── */
+  .flow {
+    display:flex; flex-wrap:wrap; align-items:center; gap:6px;
+    margin:14px 0;
+    padding:16px;
+    background: var(--surface2);
+    border-radius:8px;
+    border: 1px solid var(--border);
+  }
+  .flow-step {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius:6px;
+    padding:6px 14px;
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px;
+    color: var(--text);
+    white-space:nowrap;
+  }
+  .flow-arrow {
+    color: var(--accent);
+    font-size:16px;
+    font-weight:700;
+  }
+
+  /* ── ANNOTATION TABLE ── */
+  .ann-table {
+    width:100%;
+    border-collapse:collapse;
+    margin:16px 0;
+    font-size:13.5px;
+  }
+  .ann-table th {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    padding:10px 14px;
+    text-align:left;
+    font-family:'Syne',sans-serif;
+    font-size:12px;
+    font-weight:700;
+    color: var(--accent);
+    text-transform:uppercase;
+    letter-spacing:0.5px;
+  }
+  .ann-table td {
+    border: 1px solid var(--border);
+    padding:10px 14px;
+    vertical-align:top;
+    line-height:1.6;
+  }
+  .ann-table tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
+  .ann-table tr:hover td { background: rgba(59,130,246,0.04); }
+  .ann-name {
+    font-family:'JetBrains Mono',monospace;
+    color: var(--green);
+    font-size:13px;
+    font-weight:600;
+  }
+
+  /* ── Q&A ── */
+  .qa-item {
+    border: 1px solid var(--border);
+    border-radius:10px;
+    overflow:hidden;
+    margin-bottom:14px;
+  }
+  .qa-q {
+    background: var(--surface2);
+    padding:14px 20px;
+    font-weight:600;
+    color: var(--accent2);
+    display:flex; gap:10px;
+    cursor:default;
+  }
+  .qa-qnum {
+    background: var(--accent3);
+    color:#fff;
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px;
+    padding:2px 8px;
+    border-radius:4px;
+    align-self:flex-start;
+    margin-top:2px;
+    flex-shrink:0;
+  }
+  .qa-a {
+    background: var(--surface);
+    padding:16px 20px;
+    color: var(--text-dim);
+    line-height:1.8;
+    border-top: 1px solid var(--border);
+  }
+  .qa-a code {
+    background: var(--code-bg);
+    color: var(--green);
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px;
+    padding:1px 6px;
+    border-radius:3px;
+  }
+
+  /* ── CHEAT SHEET ── */
+  .cheat-grid {
+    display:grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap:16px;
+    margin:16px 0;
+  }
+  .cheat-item {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius:8px;
+    padding:16px;
+  }
+  .cheat-key {
+    font-family:'JetBrains Mono',monospace;
+    color: var(--accent);
+    font-size:13px;
+    font-weight:600;
+    margin-bottom:6px;
+  }
+  .cheat-val {
+    color: var(--text-dim);
+    font-size:13px;
+    line-height:1.6;
+  }
+
+  /* ── POWER SENTENCES ── */
+  .power-sentence {
+    background: linear-gradient(135deg, rgba(139,92,246,0.1), rgba(59,130,246,0.1));
+    border: 1px solid rgba(139,92,246,0.3);
+    border-left: 4px solid var(--accent3);
+    border-radius:8px;
+    padding:16px 20px;
+    margin:10px 0;
+    font-style:italic;
+    color: var(--text);
+    line-height:1.7;
+  }
+  .power-sentence::before {
+    content:'"';
+    font-size:40px;
+    line-height:0;
+    vertical-align:-14px;
+    color: var(--accent3);
+    margin-right:6px;
+    font-family:'Syne',sans-serif;
+  }
+
+  /* ── INLINE CODE ── */
+  code {
+    background: var(--code-bg);
+    color: var(--accent2);
+    font-family:'JetBrains Mono',monospace;
+    font-size:12.5px;
+    padding:2px 7px;
+    border-radius:4px;
+    border: 1px solid var(--border);
+  }
+
+  p { margin-bottom:10px; color: var(--text-dim); }
+  ul, ol { padding-left:22px; margin:8px 0; }
+  li { margin-bottom:5px; color: var(--text-dim); }
+  strong { color: var(--text); font-weight:600; }
+
+  .grid-2 {
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:16px;
+  }
+  @media(max-width:768px) { .grid-2 { grid-template-columns:1fr; } }
+
+  .tag {
+    display:inline-block;
+    padding:2px 10px;
+    border-radius:20px;
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    font-weight:600;
+    margin:2px;
+  }
+  .tag-blue { background:rgba(59,130,246,0.15); color:var(--accent); border:1px solid rgba(59,130,246,0.3); }
+  .tag-green { background:rgba(16,185,129,0.15); color:var(--green); border:1px solid rgba(16,185,129,0.3); }
+  .tag-purple { background:rgba(139,92,246,0.15); color:var(--accent3); border:1px solid rgba(139,92,246,0.3); }
+  .tag-yellow { background:rgba(245,158,11,0.15); color:var(--yellow); border:1px solid rgba(245,158,11,0.3); }
+  .tag-red { background:rgba(239,68,68,0.15); color:var(--red); border:1px solid rgba(239,68,68,0.3); }
+
+  .divider {
+    border:none;
+    border-top:1px solid var(--border);
+    margin:32px 0;
+  }
+
+  .ascii-box {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius:8px;
+    padding:20px;
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px;
+    color: var(--accent2);
+    line-height:1.5;
+    overflow-x:auto;
+    white-space:pre;
+  }
+
+  .port-table { width:100%; border-collapse:collapse; margin:12px 0; font-size:13px; }
+  .port-table th, .port-table td { border:1px solid var(--border); padding:9px 14px; }
+  .port-table th { background:var(--surface2); color:var(--accent); font-family:'Syne',sans-serif; font-size:12px; text-transform:uppercase; }
+  .port-table td:first-child { font-family:'JetBrains Mono',monospace; color:var(--green); }
+  .port-table tr:hover td { background:rgba(59,130,246,0.04); }
+
+  .warn-box {
+    background: rgba(245,158,11,0.07);
+    border: 1px solid rgba(245,158,11,0.3);
+    border-left: 4px solid var(--yellow);
+    border-radius:8px;
+    padding:14px 18px;
+    margin:14px 0;
+    color: var(--text-dim);
+    font-size:13.5px;
+  }
+  .warn-box strong { color: var(--yellow); }
+
+  .tip-box {
+    background: rgba(16,185,129,0.07);
+    border: 1px solid rgba(16,185,129,0.3);
+    border-left: 4px solid var(--green);
+    border-radius:8px;
+    padding:14px 18px;
+    margin:14px 0;
+    color: var(--text-dim);
+    font-size:13.5px;
+  }
+  .tip-box strong { color: var(--green); }
+
+  .footer {
+    text-align:center;
+    padding:40px;
+    color: var(--text-muted);
+    font-size:13px;
+    border-top:1px solid var(--border);
+    font-family:'JetBrains Mono',monospace;
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge">Interview Prep · Full Stack Microservices</div>
+  <h1>FounderLink Platform<br/>Complete Interview Guide</h1>
+  <p>A deep-dive reference covering every microservice, every annotation, every flow, and every keyword in your Spring Boot + React microservices platform. Built to make you sound like a senior architect on interview day.</p>
+  <div class="hero-tags">
+    <span class="hero-tag">Spring Boot</span>
+    <span class="hero-tag">Spring Cloud</span>
+    <span class="hero-tag">Spring Security + JWT</span>
+    <span class="hero-tag">RabbitMQ</span>
+    <span class="hero-tag">OpenFeign</span>
+    <span class="hero-tag">Redis</span>
+    <span class="hero-tag">PostgreSQL + JPA</span>
+    <span class="hero-tag">React + Redux Toolkit</span>
+    <span class="hero-tag">Docker</span>
+    <span class="hero-tag">Razorpay</span>
+    <span class="hero-tag">Saga Pattern</span>
+    <span class="hero-tag">GitHub Actions</span>
+    <span class="hero-tag">Prometheus + Grafana</span>
+  </div>
+</div>
+
+<!-- TOC BAR -->
+<nav class="toc-bar">
+  <a href="#s1">1. Requirements</a>
+  <a href="#s2">2. System Design</a>
+  <a href="#s3">3. Microservices</a>
+  <a href="#s4">4. Annotations</a>
+  <a href="#s5">5. Java Keywords</a>
+  <a href="#s6">6. Request Flow</a>
+  <a href="#s7">7. Security + JWT</a>
+  <a href="#s8">8. OpenFeign</a>
+  <a href="#s9">9. RabbitMQ</a>
+  <a href="#s10">10. Database Flow</a>
+  <a href="#s11">11. Frontend</a>
+  <a href="#s12">12. Docker</a>
+  <a href="#s13">13. CI/CD + Monitoring</a>
+  <a href="#s14">14. API Endpoints</a>
+  <a href="#s15">15. Interview Q&amp;A</a>
+  <a href="#s16">16. Situational Q&amp;A</a>
+  <a href="#s17">17. Cheat Sheet</a>
+  <a href="#s18">18. Power Sentences</a>
+</nav>
+
+<div class="container">
+
+<!-- ════════════════════════════════════════════════════════════
+     SECTION 1 — REQUIREMENT UNDERSTANDING
+     ════════════════════════════════════════════════════════════ -->
+<section class="section" id="s1">
+  <div class="section-header">
+    <span class="section-num">01</span>
+    <h2>Requirement Understanding</h2>
+    <span class="badge">FOUNDATION</span>
+  </div>
+
+  <h3>Problem Statement</h3>
+  <p>India's startup ecosystem is fragmented. Founders struggle to find investors, co-founders, and team members. Investors have no structured way to discover vetted startups. There is no unified platform that handles discovery, team formation, investment, and real-time communication under one roof.</p>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon">💡</div>
+      <div>
+        <div class="card-title">FounderLink — The Solution</div>
+        <div class="card-subtitle">A full-stack microservices-based startup ecosystem platform</div>
+      </div>
+    </div>
+    <p><strong>FounderLink</strong> is a platform that connects Founders, Co-Founders, and Investors on a single platform. It allows founders to register startups, investors to discover and invest in startups, team members to collaborate, and admins to govern the ecosystem — all with real-time notifications, secure payments, and event-driven architecture.</p>
+  </div>
+
+  <h3>Real-World Use Cases</h3>
+  <div class="grid-2">
+    <div class="service-card">
+      <strong>👨‍💼 Founder</strong>
+      <ul>
+        <li>Registers a startup with details (funding goal, industry, stage)</li>
+        <li>Waits for Admin approval</li>
+        <li>Receives investment requests</li>
+        <li>Accepts or rejects investments (triggers Saga)</li>
+        <li>Invites co-founders to their team</li>
+      </ul>
+    </div>
+    <div class="service-card green">
+      <strong>💰 Investor</strong>
+      <ul>
+        <li>Browses approved startups with filters</li>
+        <li>Follows startups of interest</li>
+        <li>Initiates Razorpay payment to invest</li>
+        <li>Receives notification when founder accepts/rejects</li>
+      </ul>
+    </div>
+    <div class="service-card purple">
+      <strong>🤝 Co-Founder</strong>
+      <ul>
+        <li>Discovers startups looking for co-founders</li>
+        <li>Accepts team invitations</li>
+        <li>Collaborates on startup updates</li>
+        <li>Uses real-time messaging with team</li>
+      </ul>
+    </div>
+    <div class="service-card yellow">
+      <strong>🛡️ Admin</strong>
+      <ul>
+        <li>Reviews submitted startups</li>
+        <li>Approves or rejects startups</li>
+        <li>Views all users and platform data</li>
+        <li>Cannot be self-registered (hardcoded protection)</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>Actors Involved</h3>
+  <table class="ann-table">
+    <tr><th>Actor</th><th>Role</th><th>Key Actions</th></tr>
+    <tr><td class="ann-name">ROLE_FOUNDER</td><td>Startup Owner</td><td>Create/Update/Delete startup, Accept/Reject investments, Invite team members</td></tr>
+    <tr><td class="ann-name">ROLE_INVESTOR</td><td>Capital Provider</td><td>Browse startups, Follow startups, Make investments via Razorpay</td></tr>
+    <tr><td class="ann-name">ROLE_COFOUNDER</td><td>Team Member</td><td>Accept invitations, View/Edit startup, Collaborate</td></tr>
+    <tr><td class="ann-name">ROLE_ADMIN</td><td>Platform Admin</td><td>Approve/Reject startups, View all data, Seed roles</td></tr>
+  </table>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════
+     SECTION 2 — SYSTEM DESIGN
+     ════════════════════════════════════════════════════════════ -->
+<section class="section" id="s2">
+  <div class="section-header">
+    <span class="section-num">02</span>
+    <h2>System Design</h2>
+    <span class="badge">ARCHITECTURE</span>
+  </div>
+
+  <h3>Architecture Diagram</h3>
+  <div class="ascii-box">
+┌─────────────────────────────────────────────────────────────────────┐
+│                         FOUNDERLINK PLATFORM                        │
+│                                                                     │
+│  ┌─────────────┐     ┌───────────────┐     ┌──────────────────┐    │
+│  │  React+TS   │────▶│  API Gateway  │────▶│  Config Server   │    │
+│  │  Frontend   │     │  Port: 8080   │     │  Port: 8888      │    │
+│  │  (Vite)     │     │  JWT Filter   │     │  (Git-backed)    │    │
+│  └─────────────┘     └──────┬────────┘     └──────────────────┘    │
+│                             │                                       │
+│              ┌──────────────┼──────────────────────┐               │
+│              │              │                      │               │
+│              ▼              ▼                      ▼               │
+│  ┌─────────────────────────────────────────────────────────┐       │
+│  │              Eureka Discovery Server :8761              │       │
+│  │           (All services register here)                  │       │
+│  └─────────────────────────────────────────────────────────┘       │
+│                                                                     │
+│  ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐             │
+│  │   Auth   │ │   User   │ │ Startup  │ │   Team   │             │
+│  │ :8081    │ │ :8082    │ │ :8083    │ │ :8084    │             │
+│  └──────────┘ └──────────┘ └──────────┘ └──────────┘             │
+│                                                                     │
+│  ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐             │
+│  │Investment│ │Messaging │ │Notificat │ │ Payment  │             │
+│  │ :8085    │ │ :8086    │ │ :8087    │ │ :8088    │             │
+│  └──────────┘ └──────────┘ └──────────┘ └──────────┘             │
+│                                                                     │
+│  ─────────────── INFRASTRUCTURE LAYER ──────────────────           │
+│  ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐             │
+│  │PostgreSQL│ │ RabbitMQ │ │  Redis   │ │ Razorpay │             │
+│  │ :5432    │ │ :5672    │ │ :6379    │ │  (ext)   │             │
+│  └──────────┘ └──────────┘ └──────────┘ └──────────┘             │
+│                                                                     │
+│  ─────────────── OBSERVABILITY ─────────────────────               │
+│  ┌──────────────┐   ┌──────────┐   ┌──────────┐                   │
+│  │  Prometheus  │──▶│ Grafana  │   │  Zipkin  │                   │
+│  │ :9090        │   │ :3001    │   │ :9411    │                   │
+│  └──────────────┘   └──────────┘   └──────────┘                   │
+└─────────────────────────────────────────────────────────────────────┘</div>
+
+  <h3>Microservices Communication Diagram</h3>
+  <div class="ascii-box">
+  REQUEST-RESPONSE (Synchronous — OpenFeign)
+  ────────────────────────────────────────
+  TeamService ──[FeignClient]──▶ StartupService (validates startup exists)
+  TeamService ──[FeignClient]──▶ UserService    (validates user exists)
+
+  EVENT-DRIVEN (Asynchronous — RabbitMQ Topic Exchange)
+  ─────────────────────────────────────────────────────
+  AuthService     ──[user.registered]──────────▶ NotificationService
+                                       ────────▶ UserService (creates profile)
+
+  StartupService  ──[startup.created]──────────▶ NotificationService
+  StartupService  ──[startup.rejected]─────────▶ NotificationService
+  StartupService  ──[startup.deleted]──────────▶ InvestmentService
+                                       ────────▶ TeamService
+
+  InvestmentService ──[investment.created]─────▶ NotificationService
+  InvestmentService ──[investment.approved]────▶ NotificationService
+
+  PaymentService  ──[payment.success]──────────▶ NotificationService
+  PaymentService  ──[payment.failed]───────────▶ NotificationService</div>
+
+  <h3>Microservice Port Map</h3>
+  <table class="port-table">
+    <tr><th>Service</th><th>Port</th><th>Purpose</th><th>DB Schema</th></tr>
+    <tr><td>Config Server</td><td>8888</td><td>Centralized config from Git</td><td>N/A</td></tr>
+    <tr><td>Eureka Server</td><td>8761</td><td>Service Registry & Discovery</td><td>N/A</td></tr>
+    <tr><td>API Gateway</td><td>8080</td><td>Entry point, JWT validation, routing</td><td>N/A</td></tr>
+    <tr><td>Auth Service</td><td>8081</td><td>Register, Login, JWT issue</td><td>auth_db (users, roles)</td></tr>
+    <tr><td>User Service</td><td>8082</td><td>User profiles</td><td>user_db (user_profiles)</td></tr>
+    <tr><td>Startup Service</td><td>8083</td><td>Startup CRUD, approval</td><td>startup_db (startups)</td></tr>
+    <tr><td>Team Service</td><td>8084</td><td>Invitations, team members</td><td>team_db (members, invitations)</td></tr>
+    <tr><td>Investment Service</td><td>8085</td><td>Investment requests</td><td>investment_db</td></tr>
+    <tr><td>Messaging Service</td><td>8086</td><td>Real-time chat, WebSocket</td><td>messaging_db</td></tr>
+    <tr><td>Notification Service</td><td>8087</td><td>In-app + email notifications</td><td>notification_db</td></tr>
+    <tr><td>Payment Service</td><td>8088</td><td>Razorpay, Saga orchestration</td><td>payment_db</td></tr>
+  </table>
+
+  <h3>Database Design (Entity-Relationship Summary)</h3>
+  <div class="grid-2">
+    <div class="service-card">
+      <strong>auth_db</strong>
+      <ul>
+        <li><code>users</code> — id, name, email, password, created_at</li>
+        <li><code>roles</code> — id, name (ROLE_FOUNDER etc.)</li>
+        <li><code>user_roles</code> — join table (user_id FK, role_id FK)</li>
+      </ul>
+    </div>
+    <div class="service-card green">
+      <strong>startup_db</strong>
+      <ul>
+        <li><code>startups</code> — id, name, description, industry, funding_goal, stage (ENUM), founder_id, is_approved, is_rejected</li>
+        <li><code>startup_followers</code> — startup_id FK, investor_id</li>
+      </ul>
+    </div>
+    <div class="service-card purple">
+      <strong>team_db</strong>
+      <ul>
+        <li><code>team_members</code> — id, startup_id, user_id, role (ENUM), joined_at</li>
+        <li><code>team_invitations</code> — id, startup_id, invited_user_id, role, status (ENUM)</li>
+      </ul>
+    </div>
+    <div class="service-card yellow">
+      <strong>payment_db</strong>
+      <ul>
+        <li><code>payments</code> — id, investor_id, founder_id, startup_id, amount, razorpay_order_id, status</li>
+        <li><code>payment_sagas</code> — id, payment_id, current_step, status, failure_reason</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════
+     SECTION 3 — COMPLETE MICROSERVICE BREAKDOWN
+     ════════════════════════════════════════════════════════════ -->
+<section class="section" id="s3">
+  <div class="section-header">
+    <span class="section-num">03</span>
+    <h2>Complete Microservice Breakdown</h2>
+    <span class="badge">DEEP DIVE</span>
+  </div>
+
+  <!-- ── CONFIG SERVER ── -->
+  <h3>Config Server</h3>
+  <div class="service-card cyan">
+    <strong>Purpose:</strong> Centralized configuration management. All 11 microservices pull their <code>application.yml</code> properties from this server on startup instead of bundling config inside their JARs. This enables zero-downtime config changes.
+  </div>
+  <div class="code-wrap">
+    <div class="code-header"><span class="code-lang">JAVA</span><span class="code-file">ConfigServerApplication.java</span></div>
+    <pre><span class="ann">@SpringBootApplication</span>          <span class="cmt">// Enables auto-config, component scan, property loading</span>
+<span class="ann">@EnableConfigServer</span>             <span class="cmt">// Activates Spring Cloud Config Server magic</span>
+<span class="kw">public class</span> <span class="cls">ConfigServerApplication</span> {
+    <span class="kw">public static void</span> <span class="fn">main</span>(String[] args) {
+        SpringApplication.<span class="fn">run</span>(ConfigServerApplication.<span class="kw">class</span>, args);
+    }
+}</pre>
+  </div>
+  <div class="explain-box green">
+    <div class="explain-label">🔑 How it works internally</div>
+    <p><strong>@EnableConfigServer</strong> tells Spring to activate a <code>EnvironmentController</code> that exposes REST endpoints like <code>/auth-service/default</code>. When any microservice starts with <code>spring.config.import=configserver:http://localhost:8888</code>, it makes an HTTP GET to this endpoint and receives all the YAML properties. The Config Server in this project reads YAMLs from the local <code>Git-Config-Repo</code> folder.</p>
+  </div>
+
+  <!-- ── EUREKA SERVER ── -->
+  <h3>Eureka Server (Service Registry)</h3>
+  <div class="service-card cyan">
+    <strong>Purpose:</strong> Acts as a phone directory for microservices. When StartupService wants to call UserService, it doesn't need a hardcoded IP. It asks Eureka: "Where is user-service?" Eureka returns the current host:port.
+  </div>
+  <div class="code-wrap">
+    <div class="code-header"><span class="code-lang">JAVA</span><span class="code-file">EurekaServerApplication.java</span></div>
+    <pre><span class="ann">@SpringBootApplication</span>
+<span class="ann">@EnableEurekaServer</span>     <span class="cmt">// Turns this app into a Eureka registry dashboard</span>
+<span class="kw">public class</span> <span class="cls">EurekaServerApplication</span> {
+    <span class="kw">public static void</span> <span class="fn">main</span>(String[] args) {
+        SpringApplication.<span class="fn">run</span>(EurekaServerApplication.<span class="kw">class</span>, args);
+    }
+}</pre>
+  </div>
+  <div class="explain-box">
+    <div class="explain-label">🔑 Eureka Internals</div>
+    <p><strong>Registration:</strong> Each microservice (with <code>@EnableDiscoveryClient</code> or <code>spring-cloud-starter-netflix-eureka-client</code> dependency) sends a <strong>heartbeat every 30 seconds</strong> to Eureka. If 3 heartbeats are missed, Eureka removes the instance.</p>
+    <p><strong>Discovery:</strong> OpenFeign clients call Eureka to resolve <code>startup-service</code> to an actual IP. Load balancing (via Spring Cloud LoadBalancer) distributes calls across multiple instances.</p>
+  </div>
+
+  <!-- ── API GATEWAY ── -->
+  <h3>API Gateway</h3>
+  <div class="service-card">
+    <strong>Purpose:</strong> Single entry point for all frontend requests. Routes traffic to appropriate microservices, validates JWT tokens before forwarding requests, adds X-User-Id and X-User-Roles headers, handles CORS.
+  </div>
+  <div class="code-wrap">
+    <div class="code-header"><span class="code-lang">JAVA</span><span class="code-file">JwtAuthenticationFilter.java — API Gateway</span></div>
+    <pre><span class="ann">@Component</span>
+<span class="kw">public class</span> <span class="cls">JwtAuthenticationFilter</span> 
+        <span class="kw">extends</span> <span class="cls">AbstractGatewayFilterFactory</span>&lt;<span class="cls">Config</span>&gt; {
+
+    <span class="kw">private static final</span> List&lt;String&gt; PUBLIC_PATHS = 
+        List.<span class="fn">of</span>(<span class="str">"/auth/register"</span>, <span class="str">"/auth/login"</span>, <span class="str">"/auth/refresh"</span>);
+
+    <span class="ann">@Override</span>
+    <span class="kw">public</span> <span class="cls">GatewayFilter</span> <span class="fn">apply</span>(<span class="cls">Config</span> config) {
+        <span class="kw">return</span> (exchange, chain) -> {
+            String path = exchange.getRequest().getURI().getPath();
+
+            <span class="cmt">// 1. Skip token check for public endpoints</span>
+            <span class="kw">if</span> (<span class="fn">isPublicPath</span>(path)) <span class="kw">return</span> chain.<span class="fn">filter</span>(exchange);
+
+            <span class="cmt">// 2. Extract Bearer token from Authorization header</span>
+            String authHeader = request.getHeaders().<span class="fn">getFirst</span>(AUTHORIZATION);
+            <span class="kw">if</span> (authHeader == <span class="kw">null</span> || !authHeader.<span class="fn">startsWith</span>(<span class="str">"Bearer "</span>)) {
+                exchange.getResponse().<span class="fn">setStatusCode</span>(HttpStatus.UNAUTHORIZED);
+                <span class="kw">return</span> exchange.getResponse().<span class="fn">setComplete</span>();
+            }
+
+            <span class="cmt">// 3. Validate JWT and extract claims</span>
+            String token = authHeader.<span class="fn">substring</span>(<span class="num">7</span>);
+            Claims claims = <span class="fn">extractAllClaims</span>(token); <span class="cmt">// throws on invalid/expired</span>
+
+            <span class="cmt">// 4. Forward enriched request to downstream service</span>
+            <span class="cls">ServerHttpRequest</span> modifiedReq = request.mutate()
+                .<span class="fn">header</span>(<span class="str">"X-User-Id"</span>, claims.<span class="fn">get</span>(<span class="str">"userId"</span>).toString())
+                .<span class="fn">header</span>(<span class="str">"X-User-Roles"</span>, String.<span class="fn">join</span>(<span class="str">","</span>, roles))
+                .<span class="fn">build</span>();
+
+            <span class="kw">return</span> chain.<span class="fn">filter</span>(exchange.mutate().<span class="fn">request</span>(modifiedReq).<span class="fn">build</span>());
+        };
+    }
+}</pre>
+  </div>
+  <div class="explain-box yellow">
+    <div class="explain-label">⚡ Critical Interview Point — Why does Gateway validate JWT?</div>
+    <p>The API Gateway validates the JWT token itself (not by calling Auth Service) because it has the <strong>same JWT secret</strong> injected via Config Server. This avoids a network round-trip to Auth Service on every request — dramatically improving latency. Once validated, the Gateway adds <code>X-User-Id</code> and <code>X-User-Roles</code> as trusted headers so downstream services know the authenticated user without re-validating the token.</p>
+  </div>
+
+  <!-- ── AUTH SERVICE ── -->
+  <h3>Auth Service</h3>
+  <div class="service-card green">
+    <strong>Purpose:</strong> Handles user registration, login, JWT issuance, and token refresh. Publishes <code>user.registered</code> event to RabbitMQ after registration.
+  </div>
+
+  <h4>AuthController.java — Detailed Breakdown</h4>
+  <div class="code-wrap">
+    <div class="code-header"><span class="code-lang">JAVA</span><span class="code-file">AuthController.java</span></div>
+    <pre><span class="ann">@RestController</span>              <span class="cmt">// = @Controller + @ResponseBody: returns JSON, not views</span>
+<span class="ann">@RequestMapping</span>(<span class="str">"/auth"</span>)    <span class="cmt">// All endpoints in this class are prefixed with /auth</span>
+<span class="kw">public class</span> <span class="cls">AuthController</span> {
+
+    <span class="cmt">// Constructor Injection (preferred over @Autowired — testable, immutable)</span>
+    <span class="kw">private final</span> <span class="cls">IAuthService</span> authService;      <span class="cmt">// Interface, not impl (loose coupling)</span>
+    <span class="kw">private final</span> <span class="cls">UserRepository</span> userRepository;
+    <span class="kw">private final</span> <span class="cls">AuthMapper</span> authMapper;
+
+    <span class="kw">public</span> <span class="cls">AuthController</span>(<span class="cls">IAuthService</span> authService, ...) {
+        <span class="kw">this</span>.authService = authService;
+        ...
+    }
+
+    <span class="ann">@PostMapping</span>(<span class="str">"/register"</span>)  <span class="cmt">// HTTP POST /auth/register</span>
+    <span class="kw">public</span> <span class="cls">ResponseEntity</span>&lt;<span class="cls">ApiResponse</span>&lt;<span class="cls">RegisterResponse</span>&gt;&gt; <span class="fn">register</span>(
+            <span class="ann">@Valid</span> <span class="ann">@RequestBody</span> <span class="cls">RegisterRequest</span> request) {
+        <span class="cmt">// @Valid → triggers Bean Validation (Jakarta @NotBlank etc. on DTO)</span>
+        <span class="cmt">// @RequestBody → deserializes JSON body into RegisterRequest object</span>
+        <span class="cls">RegisterResponse</span> response = authService.<span class="fn">register</span>(request);
+        <span class="kw">return</span> ResponseEntity.<span class="fn">status</span>(HttpStatus.CREATED)   <span class="cmt">// HTTP 201</span>
+            .<span class="fn">body</span>(ApiResponse.<span class="fn">success</span>(<span class="str">"User registered successfully"</span>, response));
+    }
+
+    <span class="ann">@PostMapping</span>(<span class="str">"/login"</span>)
+    <span class="kw">public</span> <span class="cls">ResponseEntity</span>&lt;<span class="cls">ApiResponse</span>&lt;<span class="cls">AuthResponse</span>&gt;&gt; <span class="fn">login</span>(
+            <span class="ann">@Valid</span> <span class="ann">@RequestBody</span> <span class="cls">LoginRequest</span> request) {
+        <span class="cls">AuthResponse</span> response = authService.<span class="fn">login</span>(request);
+        <span class="kw">return</span> ResponseEntity.<span class="fn">ok</span>(ApiResponse.<span class="fn">success</span>(<span class="str">"Login successful"</span>, response));
+    }
+
+    <span class="ann">@GetMapping</span>(<span class="str">"/users/{id}"</span>)  <span class="cmt">// Used by other services to fetch user info</span>
+    <span class="kw">public</span> <span class="cls">ResponseEntity</span>&lt;<span class="cls">UserSummaryDto</span>&gt; <span class="fn">getUserById</span>(<span class="ann">@PathVariable</span> Long id) {
+        <span class="kw">return</span> userRepository.<span class="fn">findById</span>(id)        <span class="cmt">// Returns Optional&lt;UserEntity&gt;</span>
+            .<span class="fn">map</span>(u -> ResponseEntity.<span class="fn">ok</span>(authMapper.<span class="fn">toUserSummaryDto</span>(u)))
+            .<span class="fn">orElse</span>(ResponseEntity.<span class="fn">notFound</span>().<span class="fn">build</span>());
+    }
+}</pre>
+  </div>
+
+  <h4>AuthService.java — Business Logic</h4>
+  <div class="code-wrap">
+    <div class="code-header"><span class="code-lang">JAVA</span><span class="code-file">AuthService.java</span></div>
+    <pre><span class="ann">@Service</span>    <span class="cmt">// Marks as Spring-managed business logic bean</span>
+<span class="ann">@Slf4j</span>      <span class="cmt">// Lombok: injects private static final Logger log = LoggerFactory.getLogger(AuthService.class)</span>
+<span class="kw">public class</span> <span class="cls">AuthService</span> <span class="kw">implements</span> <span class="cls">IAuthService</span> {
+
+    <span class="ann">@Transactional</span>              <span class="cmt">// Wraps entire method in a DB transaction. Rolls back on RuntimeException.</span>
+    <span class="kw">public</span> <span class="cls">RegisterResponse</span> <span class="fn">register</span>(<span class="cls">RegisterRequest</span> request) {
+
+        <span class="cmt">// Guard 1: Block admin self-registration</span>
+        <span class="kw">if</span> (<span class="str">"ROLE_ADMIN"</span>.<span class="fn">equalsIgnoreCase</span>(request.<span class="fn">getRole</span>()))
+            <span class="kw">throw new</span> <span class="cls">CustomException</span>(<span class="str">"Admin cannot self-register"</span>, HttpStatus.FORBIDDEN);
+
+        <span class="cmt">// Guard 2: Check email uniqueness</span>
+        <span class="kw">if</span> (userRepository.<span class="fn">existsByEmail</span>(request.<span class="fn">getEmail</span>()))
+            <span class="kw">throw new</span> <span class="cls">CustomException</span>(<span class="str">"Email already registered"</span>, HttpStatus.CONFLICT);
+
+        <span class="cmt">// Fetch role entity or fail with meaningful error</span>
+        <span class="cls">RoleEntity</span> role = roleRepository.<span class="fn">findByName</span>(request.<span class="fn">getRole</span>())
+            .<span class="fn">orElseThrow</span>(() -> <span class="kw">new</span> <span class="cls">CustomException</span>(<span class="str">"Invalid role"</span>, HttpStatus.BAD_REQUEST));
+
+        <span class="cmt">// Build entity using Lombok @Builder pattern</span>
+        <span class="cls">UserEntity</span> user = UserEntity.<span class="fn">builder</span>()
+            .<span class="fn">name</span>(request.<span class="fn">getName</span>())
+            .<span class="fn">email</span>(request.<span class="fn">getEmail</span>())
+            .<span class="fn">password</span>(passwordEncoder.<span class="fn">encode</span>(request.<span class="fn">getPassword</span>())) <span class="cmt">// BCrypt hash</span>
+            .<span class="fn">roles</span>(Set.<span class="fn">of</span>(role))
+            .<span class="fn">build</span>();
+
+        <span class="cls">UserEntity</span> savedUser = userRepository.<span class="fn">save</span>(user);  <span class="cmt">// JPA INSERT + flush</span>
+
+        <span class="cmt">// Send welcome email synchronously</span>
+        welcomeEmailService.<span class="fn">sendWelcome</span>(savedUser.<span class="fn">getEmail</span>(), ...);
+
+        <span class="cmt">// Publish async event (fire-and-forget, non-blocking)</span>
+        <span class="kw">try</span> {
+            rabbitTemplate.<span class="fn">convertAndSend</span>(exchange, <span class="str">"user.registered"</span>,
+                UserRegisteredEvent.<span class="fn">builder</span>().<span class="fn">userId</span>(savedUser.<span class="fn">getId</span>())....<span class="fn">build</span>());
+        } <span class="kw">catch</span> (Exception e) {
+            log.<span class="fn">warn</span>(<span class="str">"RabbitMQ publish failed — continuing anyway"</span>); <span class="cmt">// graceful degradation</span>
+        }
+    }
+}</pre>
+  </div>
+
+  <div class="explain-box purple">
+    <div class="explain-label">🧠 Why is the RabbitMQ call in a try-catch?</div>
+    <p>This is called <strong>graceful degradation</strong>. The RabbitMQ event is not critical to the registration transaction. If RabbitMQ is down, we don't want to fail the user's registration. We log a warning and move on. The user is still created in the DB. This is a common real-world pattern in event-driven systems.</p>
+  </div>
+
+  <h4>UserEntity.java — JPA Entity</h4>
+  <div class="code-wrap">
+    <div class="code-header"><span class="code-lang">JAVA</span><span class="code-file">UserEntity.java</span></div>
+    <pre><span class="ann">@Entity</span>              <span class="cmt">// Marks as JPA-managed class. Hibernate creates/manages the table.</span>
+<span class="ann">@Table</span>(name = <span class="str">"users"</span>) <span class="cmt">// Maps to the "users" table in PostgreSQL</span>
+<span class="ann">@Data</span>                <span class="cmt">// Lombok: generates getters, setters, toString, equals, hashCode</span>
+<span class="ann">@Builder</span>             <span class="cmt">// Lombok: enables UserEntity.builder().name("x").email("y").build()</span>
+<span class="ann">@NoArgsConstructor</span>   <span class="cmt">// Lombok: required by JPA (JPA needs a no-arg constructor to instantiate)</span>
+<span class="ann">@AllArgsConstructor</span>  <span class="cmt">// Lombok: used by @Builder internally</span>
+<span class="kw">public class</span> <span class="cls">UserEntity</span> {
+
+    <span class="ann">@Id</span>                                        <span class="cmt">// Primary key field</span>
+    <span class="ann">@GeneratedValue</span>(strategy = GenerationType.IDENTITY) <span class="cmt">// DB auto-increment</span>
+    <span class="kw">private</span> Long id;
+
+    <span class="ann">@Column</span>(nullable = <span class="kw">false</span>)               <span class="cmt">// NOT NULL constraint in DB</span>
+    <span class="kw">private</span> String name;
+
+    <span class="ann">@Column</span>(nullable = <span class="kw">false</span>, unique = <span class="kw">true</span>)<span class="cmt">// UNIQUE constraint — prevents duplicate emails</span>
+    <span class="kw">private</span> String email;
+
+    <span class="ann">@ManyToMany</span>(fetch = FetchType.EAGER)     <span class="cmt">// Load roles immediately with user (no lazy loading)</span>
+    <span class="ann">@JoinTable</span>(
+        name = <span class="str">"user_roles"</span>,                 <span class="cmt">// Creates a join table in DB</span>
+        joinColumns = <span class="ann">@JoinColumn</span>(name = <span class="str">"user_id"</span>),
+        inverseJoinColumns = <span class="ann">@JoinColumn</span>(name = <span class="str">"role_id"</span>)
+    )
+    <span class="ann">@Builder.Default</span>
+    <span class="kw">private</span> Set&lt;<span class="cls">RoleEntity</span>&gt; roles = <span class="kw">new</span> HashSet&lt;&gt;();
+
+    <span class="ann">@PrePersist</span>                              <span class="cmt">// JPA lifecycle hook: called just before INSERT</span>
+    <span class="kw">protected void</span> <span class="fn">onCreate</span>() {
+        <span class="kw">this</span>.createdAt = LocalDateTime.<span class="fn">now</span>();
+    }
+}</pre>
+  </div>
+
+  <!-- ── STARTUP SERVICE ── -->
+  <h3>Startup Service</h3>
+  <div class="service-card orange">
+    <strong>Purpose:</strong> Core domain service. Manages startup lifecycle: creation, admin approval/rejection, search with filters, follower management, and publishing events when startups are created/deleted/rejected.
+  </div>
+
+  <h4>StartupController.java — Key Patterns</h4>
+  <div class="code-wrap">
+    <div class="code-header"><span class="code-lang">JAVA</span><span class="code-file">StartupController.java</span></div>
+    <pre><span class="ann">@RestController</span>
+<span class="ann">@RequestMapping</span>(<span class="str">"/startups"</span>)
+<span class="kw">public class</span> <span class="cls">StartupController</span> {
+
+    <span class="cmt">// CQRS pattern: separate Command and Query services</span>
+    <span class="kw">private final</span> <span class="cls">StartupCommandService</span> startupCommandService;  <span class="cmt">// Writes (CREATE/UPDATE/DELETE)</span>
+    <span class="kw">private final</span> <span class="cls">StartupQueryService</span> startupQueryService;      <span class="cmt">// Reads (GET/SEARCH)</span>
+
+    <span class="ann">@PostMapping</span>
+    <span class="ann">@PreAuthorize</span>(<span class="str">"hasAuthority('ROLE_FOUNDER')"</span>)  <span class="cmt">// Method-level auth. Only founders can create.</span>
+    <span class="kw">public</span> <span class="cls">ResponseEntity</span>&lt;<span class="cls">StartupResponse</span>&gt; <span class="fn">createStartup</span>(
+            <span class="cls">Authentication</span> authentication,         <span class="cmt">// Injected by Spring Security — current user</span>
+            <span class="ann">@Valid</span> <span class="ann">@RequestBody</span> <span class="cls">StartupRequest</span> request) {
+        Long founderId = Long.<span class="fn">parseLong</span>(authentication.<span class="fn">getName</span>()); <span class="cmt">// getName() returns X-User-Id</span>
+        <span class="cls">StartupResponse</span> response = startupCommandService.<span class="fn">createStartup</span>(founderId, request);
+        <span class="kw">return new</span> <span class="cls">ResponseEntity</span>&lt;&gt;(response, HttpStatus.CREATED);
+    }
+
+    <span class="ann">@GetMapping</span>
+    <span class="kw">public</span> <span class="cls">ResponseEntity</span>&lt;<span class="cls">Page</span>&lt;<span class="cls">StartupResponse</span>&gt;&gt; <span class="fn">getAllApprovedStartups</span>(
+            <span class="ann">@RequestParam</span>(defaultValue = <span class="str">"0"</span>) <span class="kw">int</span> page,
+            <span class="ann">@RequestParam</span>(defaultValue = <span class="str">"10"</span>) <span class="kw">int</span> size) {
+        <span class="cls">Pageable</span> pageable = PageRequest.<span class="fn">of</span>(page, size);  <span class="cmt">// Pagination object</span>
+        <span class="kw">return</span> ResponseEntity.<span class="fn">ok</span>(startupQueryService.<span class="fn">getAllApprovedStartups</span>(pageable));
+    }
+
+    <span class="ann">@PutMapping</span>(<span class="str">"/{id}/approve"</span>)
+    <span class="ann">@PreAuthorize</span>(<span class="str">"hasAuthority('ROLE_ADMIN')"</span>)  <span class="cmt">// Only admins can approve</span>
+    <span class="kw">public</span> <span class="cls">ResponseEntity</span>&lt;<span class="cls">StartupResponse</span>&gt; <span class="fn">approveStartup</span>(<span class="ann">@PathVariable</span> Long id) {
+        <span class="kw">return</span> ResponseEntity.<span class="fn">ok</span>(startupCommandService.<span class="fn">approveStartup</span>(id));
+    }
+}</pre>
+  </div>
+
+  <h4>Startup Entity</h4>
+  <div class="code-wrap">
+    <div class="code-header"><span class="code-lang">JAVA</span><span class="code-file">Startup.java</span></div>
+    <pre><span class="ann">@Entity</span>
+<span class="ann">@Table</span>(name = <span class="str">"startups"</span>)
+<span class="ann">@Getter</span> <span class="ann">@Setter</span> <span class="ann">@Builder</span> <span class="ann">@NoArgsConstructor</span> <span class="ann">@AllArgsConstructor</span>
+<span class="kw">public class</span> <span class="cls">Startup</span> {
+
+    <span class="ann">@Id</span> <span class="ann">@GeneratedValue</span>(strategy = GenerationType.IDENTITY)
+    <span class="kw">private</span> Long id;
+
+    <span class="ann">@Column</span>(columnDefinition = <span class="str">"TEXT"</span>)  <span class="cmt">// TEXT type in PostgreSQL for long strings</span>
+    <span class="kw">private</span> String description;
+
+    <span class="ann">@Enumerated</span>(EnumType.STRING)  <span class="cmt">// Stores enum name ("SEED","SERIES_A") not ordinal (0,1)</span>
+    <span class="ann">@Column</span>(nullable = <span class="kw">false</span>)
+    <span class="kw">private</span> <span class="cls">StartupStage</span> stage;
+
+    <span class="ann">@Column</span>(nullable = <span class="kw">false</span>, precision = <span class="num">15</span>, scale = <span class="num">2</span>)  <span class="cmt">// DECIMAL(15,2) in DB</span>
+    <span class="kw">private</span> BigDecimal fundingGoal;
+
+    <span class="ann">@Builder.Default</span>
+    <span class="kw">private</span> Boolean isApproved = <span class="kw">false</span>; <span class="cmt">// New startups are pending by default</span>
+
+    <span class="ann">@CreationTimestamp</span>  <span class="cmt">// Hibernate sets automatically on INSERT</span>
+    <span class="ann">@Column</span>(updatable = <span class="kw">false</span>)
+    <span class="kw">private</span> LocalDateTime createdAt;
+
+    <span class="ann">@UpdateTimestamp</span>    <span class="cmt">// Hibernate updates automatically on every UPDATE</span>
+    <span class="kw">private</span> LocalDateTime updatedAt;
+}</pre>
+  </div>
+
+  <!-- ── TEAM SERVICE ── -->
+  <h3>Team Service</h3>
+  <div class="service-card purple">
+    <strong>Purpose:</strong> Manages team formation. Founders invite users to join their startup as co-founders or team members. Uses OpenFeign to validate that the startup and user exist before creating an invitation. Listens to <code>startup.deleted</code> events to clean up team data.
+  </div>
+  <div class="code-wrap">
+    <div class="code-header"><span class="code-lang">JAVA</span><span class="code-file">StartupClient.java — OpenFeign</span></div>
+    <pre><span class="ann">@FeignClient</span>(
+    name = <span class="str">"startup-service"</span>,                    <span class="cmt">// Matches spring.application.name in Eureka</span>
+    configuration = FeignClientConfig.<span class="kw">class</span>,      <span class="cmt">// Custom headers (JWT forwarding)</span>
+    fallbackFactory = StartupClientFallbackFactory.<span class="kw">class</span>  <span class="cmt">// Circuit breaker fallback</span>
+)
+<span class="kw">public interface</span> <span class="cls">StartupClient</span> {
+
+    <span class="ann">@GetMapping</span>(<span class="str">"/startups/{id}"</span>)
+    <span class="cls">StartupDTO</span> <span class="fn">getStartupById</span>(<span class="ann">@PathVariable</span>(<span class="str">"id"</span>) Long id);
+}</pre>
+  </div>
+  <div class="explain-box">
+    <div class="explain-label">🔑 How OpenFeign works internally</div>
+    <p>At startup, Spring scans for <code>@FeignClient</code> interfaces. It creates a <strong>dynamic proxy</strong> (using Java's Proxy API) that implements the interface. When you call <code>startupClient.getStartupById(1L)</code>, the proxy intercepts it, looks up <code>startup-service</code> in Eureka, picks an available instance, builds an HTTP GET request to <code>/startups/1</code>, executes it via an HTTP client (default: OkHttp), and deserializes the JSON response into a <code>StartupDTO</code>. You write zero HTTP boilerplate.</p>
+  </div>
+
+  <!-- ── PAYMENT SERVICE ── -->
+  <h3>Payment Service (Saga Pattern)</h3>
+  <div class="service-card red">
+    <strong>Purpose:</strong> Handles Razorpay order creation and payment verification. Implements the <strong>Saga Orchestration Pattern</strong> to manage multi-step distributed transactions with compensation logic.
+  </div>
+
+  <div class="explain-box yellow">
+    <div class="explain-label">💡 Saga Pattern — The Core Idea</div>
+    <p>In microservices, you can't use a single database transaction across multiple services. Instead, a <strong>Saga</strong> is a sequence of local transactions. If any step fails, <strong>compensating transactions</strong> are executed in reverse to undo the changes.</p>
+    <p>In FounderLink's payment flow:</p>
+    <div class="flow">
+      <span class="flow-step">ORDER_CREATED</span>
+      <span class="flow-arrow">→</span>
+      <span class="flow-step">PAYMENT_CAPTURED</span>
+      <span class="flow-arrow">→</span>
+      <span class="flow-step">AWAITING_APPROVAL</span>
+      <span class="flow-arrow">→</span>
+      <span class="flow-step">ACCEPTED ✅</span>
+    </div>
+    <p><strong>Compensation flow (on rejection):</strong></p>
+    <div class="flow">
+      <span class="flow-step">COMPENSATING</span>
+      <span class="flow-arrow">→</span>
+      <span class="flow-step">Razorpay Refund</span>
+      <span class="flow-arrow">→</span>
+      <span class="flow-step">Publish REJECTED event</span>
+      <span class="flow-arrow">→</span>
+      <span class="flow-step">COMPENSATED ✅</span>
+    </div>
+  </div>
+
+  <!-- ── NOTIFICATION SERVICE ── -->
+  <h3>Notification Service</h3>
+  <div class="service-card">
+    <strong>Purpose:</strong> Pure consumer service. Listens to events from ALL other services and creates in-app notifications. Uses <code>@RabbitListener</code> to receive events asynchronously.
+  </div>
+  <div class="code-wrap">
+    <div class="code-header"><span class="code-lang">JAVA</span><span class="code-file">NotificationEventListener.java</span></div>
+    <pre><span class="ann">@Component</span>
+<span class="ann">@RequiredArgsConstructor</span>  <span class="cmt">// Lombok: generates constructor for all final fields</span>
+<span class="ann">@Slf4j</span>
+<span class="kw">public class</span> <span class="cls">NotificationEventListener</span> {
+
+    <span class="kw">private final</span> <span class="cls">NotificationCommandService</span> notificationService;
+
+    <span class="ann">@RabbitListener</span>(queues = <span class="str">"${rabbitmq.queue.user-registered}"</span>)
+    <span class="cmt">// Spring AMQP: registers this method as a consumer for this queue.</span>
+    <span class="cmt">// Deserializes JSON message from RabbitMQ into UserRegisteredEvent using Jackson.</span>
+    <span class="kw">public void</span> <span class="fn">handleUserRegistered</span>(<span class="cls">UserRegisteredEvent</span> event) {
+        log.<span class="fn">info</span>(<span class="str">"Received user.registered for userId={}"</span>, event.<span class="fn">getUserId</span>());
+        notificationService.<span class="fn">createNotification</span>(
+            event.<span class="fn">getUserId</span>(),
+            <span class="str">"Welcome to FounderLink, "</span> + event.<span class="fn">getName</span>() + <span class="str">"!"</span>,
+            NotificationType.USER_REGISTERED
+        );
+    }
+
+    <span class="ann">@RabbitListener</span>(queues = <span class="str">"${rabbitmq.queue.payment-success}"</span>)
+    <span class="kw">public void</span> <span class="fn">handlePaymentSuccess</span>(<span class="cls">PaymentSuccessEvent</span> event) {
+        <span class="cmt">// Notifies BOTH investor and founder</span>
+        notificationService.<span class="fn">createNotification</span>(event.<span class="fn">getInvestorId</span>(), ...);
+        notificationService.<span class="fn">createNotification</span>(event.<span class="fn">getFounderId</span>(), ...);
+    }
+}</pre>
+  </div>
+
+  <!-- ── USER SERVICE ── -->
+  <h3>User Service</h3>
+  <div class="service-card green">
+    <strong>Purpose:</strong> Manages user profiles (separate from auth credentials). Listens to <code>user.registered</code> event and auto-creates a profile. Exposes endpoints for profile CRUD operations.
+  </div>
+  <div class="explain-box">
+    <div class="explain-label">🔑 Why is User Service separate from Auth Service?</div>
+    <p><strong>Auth Service</strong> only cares about credentials (email, password, role, JWT). <strong>User Service</strong> manages profile data (bio, location, skills, LinkedIn URL, profile picture). This is the <strong>Separation of Concerns</strong> principle. If we change the auth mechanism tomorrow (e.g., move to OAuth2), User Service doesn't change at all.</p>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════
+     SECTION 4 — ANNOTATION MASTER
+     ════════════════════════════════════════════════════════════ -->
+<section class="section" id="s4">
+  <div class="section-header">
+    <span class="section-num">04</span>
+    <h2>Annotation Master Explanation</h2>
+    <span class="badge">CRITICAL</span>
+  </div>
+
+  <h3>Spring Boot Core Annotations</h3>
+  <table class="ann-table">
+    <tr>
+      <th>Annotation</th>
+      <th>Definition</th>
+      <th>Internal Working</th>
+      <th>Used In</th>
+    </tr>
+    <tr>
+      <td><span class="ann-name">@SpringBootApplication</span></td>
+      <td>Meta-annotation = <code>@Configuration</code> + <code>@EnableAutoConfiguration</code> + <code>@ComponentScan</code></td>
+      <td>Triggers auto-configuration: Spring reads spring.factories, finds all AutoConfiguration classes matching your classpath, and configures Beans automatically. ComponentScan scans the package and sub-packages for @Component, @Service etc.</td>
+      <td>All *Application.java files</td>
+    </tr>
+    <tr>
+      <td><span class="ann-name">@EnableEurekaServer</span></td>
+      <td>Activates Eureka registry endpoint</td>
+      <td>Imports EurekaServerAutoConfiguration, EurekaServerInitializerConfiguration. Registers servlets that handle service registration (POST /eureka/apps/{appId}) and heartbeats. Dashboard served at port 8761.</td>
+      <td>EurekaServerApplication.java</td>
+    </tr>
+    <tr>
+      <td><span class="ann-name">@EnableConfigServer</span></td>
+      <td>Turns app into a Spring Cloud Config Server</td>
+      <td>Activates EnvironmentController with REST endpoints /&lt;app&gt;/&lt;profile&gt;. Reads from Git repository / filesystem. Clients call this during bootstrap phase before their own context loads.</td>
+      <td>ConfigServerApplication.java</td>
+    </tr>
+    <tr>
+      <td><span class="ann-name">@EnableDiscoveryClient</span></td>
+      <td>Enables Eureka client behavior</td>
+      <td>Registers the app with Eureka on startup, sends heartbeats every 30s, caches service registry locally for client-side load balancing.</td>
+      <td>(Implicit via starter dependency)</td>
+    </tr>
+    <tr>
+      <td><span class="ann-name">@FeignClient</span></td>
+      <td>Declares an interface as a REST client</td>
+      <td>Spring creates a JDK dynamic proxy at startup. The proxy uses Ribbon/Spring Cloud LoadBalancer to resolve the service name from Eureka, builds HTTP requests from method annotations, and returns deserialized responses.</td>
+      <td>StartupClient.java, UserClient.java</td>
+    </tr>
+  </table>
+
+  <h3>Spring MVC Annotations</h3>
+  <table class="ann-table">
+    <tr><th>Annotation</th><th>Definition</th><th>Internal Working</th></tr>
+    <tr>
+      <td><span class="ann-name">@RestController</span></td>
+      <td>Combination of @Controller + @ResponseBody</td>
+      <td>DispatcherServlet routes HTTP requests to this class. @ResponseBody tells Spring to serialize the return value to JSON using Jackson's ObjectMapper, instead of looking for a view (Thymeleaf/JSP).</td>
+    </tr>
+    <tr>
+      <td><span class="ann-name">@RequestMapping</span></td>
+      <td>Maps HTTP requests to handler classes/methods</td>
+      <td>Spring's HandlerMapping registers this path-to-method binding during application startup. URL patterns are stored in a Map for O(1) lookup at runtime.</td>
+    </tr>
+    <tr>
+      <td><span class="ann-name">@GetMapping / @PostMapping / @PutMapping / @DeleteMapping</span></td>
+      <td>HTTP method-specific shortcuts for @RequestMapping</td>
+      <td>Composed annotations. @GetMapping = @RequestMapping(method = RequestMethod.GET). DispatcherServlet checks the HTTP method AND path to route to the right handler.</td>
+    </tr>
+    <tr>
+      <td><span class="ann-name">@PathVariable</span></td>
+      <td>Extracts a value from the URI path</td>
+      <td>Spring's DefaultConversionService converts the String segment from the URL to the declared type (String, Long, etc.). Example: /startups/{id} → @PathVariable Long id.</td>
+    </tr>
+    <tr>
+      <td><span class="ann-name">@RequestBody</span></td>
+      <td>Deserializes HTTP request body into a Java object</td>
+      <td>Spring uses <code>HttpMessageConverter</code> (Jackson by default) to read the Content-Type (application/json) and deserialize the JSON string into the annotated parameter type.</td>
+    </tr>
+    <tr>
+      <td><span class="ann-name">@RequestParam</span></td>
+      <td>Extracts query parameter from URL</td>
+      <td>Reads from the query string. /startups?page=0&size=10 → @RequestParam int page. Can have defaultValue to avoid null.</td>
+    </tr>
+    <tr>
+      <td><span class="ann-name">@Valid</span></td>
+      <td>Triggers Bean Validation on the annotated parameter</td>
+      <td>Spring delegates to Hibernate Validator. It checks constraints like @NotBlank, @Email, @Size on the DTO fields. If any fail, MethodArgumentNotValidException is thrown and handled by @ExceptionHandler.</td>
+    </tr>
+    <tr>
+      <td><span class="ann-name">@PreAuthorize</span></td>
+      <td>Method-level security expression evaluated before execution</td>
+      <td>Spring AOP intercepts the call before the method runs. SecurityContextHolder provides the Authentication object. SpEL expression like hasAuthority('ROLE_FOUNDER') checks authorities. Throws AccessDeniedException if false.</td>
+    </tr>
+  </table>
+
+  <h3>Spring Component Annotations</h3>
+  <table class="ann-table">
+    <tr><th>Annotation</th><th>Definition</th><th>Difference</th></tr>
+    <tr>
+      <td><span class="ann-name">@Component</span></td>
+      <td>Generic Spring-managed bean</td>
+      <td>Base annotation. JwtAuthenticationFilter, EventPublisher, etc. use this.</td>
+    </tr>
+    <tr>
+      <td><span class="ann-name">@Service</span></td>
+      <td>@Component + semantic meaning: business logic layer</td>
+      <td>Treated same as @Component by Spring but signals architectural intent. All *Service.java files use this.</td>
+    </tr>
+    <tr>
+      <td><span class="ann-name">@Repository</span></td>
+      <td>@Component + translates DB exceptions to Spring's DataAccessException hierarchy</td>
+      <td>UserRepository, StartupRepository etc. Spring Data JPA creates proxy implementations automatically.</td>
+    </tr>
+    <tr>
+      <td><span class="ann-name">@Configuration</span></td>
+      <td>Marks a class as a source of @Bean definitions</td>
+      <td>Uses CGLIB proxy to ensure @Bean methods return the same singleton instance even if called multiple times. SecurityConfig, RabbitMQConfig, RedisConfig use this.</td>
+    </tr>
+    <tr>
+      <td><span class="ann-name">@Bean</span></td>
+      <td>Declares a method's return value as a Spring Bean</td>
+      <td>Spring calls the method once and registers the return value in ApplicationContext. Example: @Bean PasswordEncoder → BCryptPasswordEncoder instance.</td>
+    </tr>
+  </table>
+
+  <h3>JPA / Hibernate Annotations</h3>
+  <table class="ann-table">
+    <tr><th>Annotation</th><th>Definition</th><th>SQL Mapping</th></tr>
+    <tr>
+      <td><span class="ann-name">@Entity</span></td>
+      <td>Marks class as a JPA-managed persistent entity</td>
+      <td>Hibernate creates/manages a DB table for this class. Class name → table name (by default).</td>
+    </tr>
+    <tr>
+      <td><span class="ann-name">@Table(name)</span></td>
+      <td>Explicitly sets table name</td>
+      <td>Overrides Hibernate's naming convention. @Table(name="users") → table "users".</td>
+    </tr>
+    <tr>
+      <td><span class="ann-name">@Id</span></td>
+      <td>Marks the primary key field</td>
+      <td>Maps to PRIMARY KEY constraint.</td>
+    </tr>
+    <tr>
+      <td><span class="ann-name">@GeneratedValue(strategy = IDENTITY)</span></td>
+      <td>DB auto-increments the ID</td>
+      <td>Maps to SERIAL / BIGSERIAL in PostgreSQL. Hibernate defers ID assignment until INSERT.</td>
+    </tr>
+    <tr>
+      <td><span class="ann-name">@Column</span></td>
+      <td>Customizes column mapping</td>
+      <td>nullable=false → NOT NULL, unique=true → UNIQUE, columnDefinition="TEXT" → TEXT type.</td>
+    </tr>
+    <tr>
+      <td><span class="ann-name">@ManyToMany</span></td>
+      <td>Many-to-many relationship between entities</td>
+      <td>Requires a join table. UserEntity ↔ RoleEntity through user_roles table.</td>
+    </tr>
+    <tr>
+      <td><span class="ann-name">@Enumerated(EnumType.STRING)</span></td>
+      <td>Stores enum as its name (not ordinal number)</td>
+      <td>Stores "SEED" instead of 0. Safer — adding new enum values doesn't break existing data.</td>
+    </tr>
+    <tr>
+      <td><span class="ann-name">@PrePersist</span></td>
+      <td>JPA lifecycle callback before INSERT</td>
+      <td>Used to set createdAt = LocalDateTime.now(). No SQL trigger needed.</td>
+    </tr>
+    <tr>
+      <td><span class="ann-name">@CreationTimestamp / @UpdateTimestamp</span></td>
+      <td>Hibernate-specific: auto-set on create/update</td>
+      <td>CreationTimestamp → set once on INSERT. UpdateTimestamp → updated on every UPDATE.</td>
+    </tr>
+    <tr>
+      <td><span class="ann-name">@Transactional</span></td>
+      <td>Wraps method in a database transaction</td>
+      <td>Spring creates a proxy. On entry: opens transaction. On success: COMMIT. On RuntimeException: ROLLBACK. Enables atomicity across multiple DB operations.</td>
+    </tr>
+  </table>
+
+  <h3>Security Annotations</h3>
+  <table class="ann-table">
+    <tr><th>Annotation</th><th>Definition</th><th>Where</th></tr>
+    <tr>
+      <td><span class="ann-name">@EnableWebSecurity</span></td>
+      <td>Activates Spring Security's web security support</td>
+      <td>SecurityConfig.java — imports WebSecurityConfiguration, enables @EnableGlobalMethodSecurity behavior.</td>
+    </tr>
+    <tr>
+      <td><span class="ann-name">@EnableMethodSecurity</span></td>
+      <td>Enables @PreAuthorize, @PostAuthorize on methods</td>
+      <td>Required for @PreAuthorize("hasAuthority(...)") to work. Registered via AOP interceptors.</td>
+    </tr>
+    <tr>
+      <td><span class="ann-name">@Value("${prop}")</span></td>
+      <td>Injects a property from application.yml or Config Server</td>
+      <td>Used in JwtUtil for jwt.secret, jwt.access-token-expiration. PropertySourcesPlaceholderConfigurer resolves ${} expressions.</td>
+    </tr>
+  </table>
+
+  <h3>RabbitMQ Annotations</h3>
+  <table class="ann-table">
+    <tr><th>Annotation</th><th>Definition</th><th>Internal Behavior</th></tr>
+    <tr>
+      <td><span class="ann-name">@RabbitListener(queues="...")</span></td>
+      <td>Registers a method as a RabbitMQ message consumer</td>
+      <td>Spring AMQP creates a MessageListenerContainer for the queue. When a message arrives, Jackson deserializes the JSON body into the method parameter type. Runs in a separate thread pool.</td>
+    </tr>
+  </table>
+
+  <h3>Lombok Annotations</h3>
+  <table class="ann-table">
+    <tr><th>Annotation</th><th>What it generates</th></tr>
+    <tr><td><span class="ann-name">@Data</span></td><td>@Getter + @Setter + @ToString + @EqualsAndHashCode + @RequiredArgsConstructor</td></tr>
+    <tr><td><span class="ann-name">@Builder</span></td><td>Static inner Builder class with fluent methods for each field</td></tr>
+    <tr><td><span class="ann-name">@NoArgsConstructor</span></td><td>public ClassName() {} — Required by JPA</td></tr>
+    <tr><td><span class="ann-name">@AllArgsConstructor</span></td><td>Constructor with all fields as parameters — Used by @Builder internally</td></tr>
+    <tr><td><span class="ann-name">@RequiredArgsConstructor</span></td><td>Constructor for all final / @NonNull fields — enables constructor injection without writing boilerplate</td></tr>
+    <tr><td><span class="ann-name">@Slf4j</span></td><td>private static final Logger log = LoggerFactory.getLogger(ClassName.class);</td></tr>
+    <tr><td><span class="ann-name">@Builder.Default</span></td><td>Sets a default value for a field when @Builder is used (e.g., isApproved = false)</td></tr>
+  </table>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════
+     SECTION 5 — JAVA KEYWORDS
+     ════════════════════════════════════════════════════════════ -->
+<section class="section" id="s5">
+  <div class="section-header">
+    <span class="section-num">05</span>
+    <h2>Java Keywords &amp; Syntax Deep Explanation</h2>
+    <span class="badge">FUNDAMENTALS</span>
+  </div>
+
+  <h3>Access Modifiers</h3>
+  <table class="ann-table">
+    <tr><th>Keyword</th><th>Scope</th><th>Why used in the project</th></tr>
+    <tr>
+      <td><span class="ann-name">public</span></td>
+      <td>Accessible from anywhere</td>
+      <td>Controller methods are public — they must be accessible by Spring's reflection. Spring Security and AOP proxies call public methods. Service methods that form the API contract are public.</td>
+    </tr>
+    <tr>
+      <td><span class="ann-name">private</span></td>
+      <td>Accessible only within the class</td>
+      <td>Helper methods like buildToken(), extractAllClaims(), isPublicPath() are private — they're implementation details. Fields are private with getters (encapsulation). Prevents external classes from accessing internals.</td>
+    </tr>
+    <tr>
+      <td><span class="ann-name">protected</span></td>
+      <td>Accessible in same package + subclasses</td>
+      <td>The onCreate() method in UserEntity is protected — it should only be called by JPA lifecycle, not external code. Subclasses of AbstractGatewayFilterFactory need protected access.</td>
+    </tr>
+  </table>
+
+  <h3>Class-level Keywords</h3>
+  <table class="ann-table">
+    <tr><th>Keyword</th><th>Meaning</th><th>Usage in Project</th></tr>
+    <tr>
+      <td><span class="ann-name">class</span></td>
+      <td>Blueprint for objects</td>
+      <td>UserEntity.class, AuthService.class, etc. Every file in the project defines a class.</td>
+    </tr>
+    <tr>
+      <td><span class="ann-name">interface</span></td>
+      <td>Contract with no implementation</td>
+      <td>IAuthService defines the contract (register, login, refreshToken). AuthService implements it. This enables easy mocking in tests and swapping implementations.</td>
+    </tr>
+    <tr>
+      <td><span class="ann-name">extends</span></td>
+      <td>Inherits from a parent class (single inheritance)</td>
+      <td>JwtAuthenticationFilter extends AbstractGatewayFilterFactory — gets the GatewayFilter factory behavior. CustomException extends RuntimeException — makes Spring's @Transactional rollback on it.</td>
+    </tr>
+    <tr>
+      <td><span class="ann-name">implements</span></td>
+      <td>Fulfills all methods of an interface</td>
+      <td>AuthService implements IAuthService. The team is forced to implement all declared methods. Compiler enforces the contract.</td>
+    </tr>
+    <tr>
+      <td><span class="ann-name">abstract</span></td>
+      <td>Class that cannot be instantiated; may have abstract methods</td>
+      <td>AbstractGatewayFilterFactory is abstract — Spring Gateway provides it as a template. @Override apply() completes the pattern.</td>
+    </tr>
+    <tr>
+      <td><span class="ann-name">final</span></td>
+      <td>Variable: cannot be reassigned. Method: cannot be overridden. Class: cannot be extended.</td>
+      <td>All injected fields are private final — ensures immutability after constructor injection. Cannot be accidentally reassigned. Thread-safe by default.</td>
+    </tr>
+    <tr>
+      <td><span class="ann-name">static</span></td>
+      <td>Belongs to the class, not instances</td>
+      <td>PUBLIC_PATHS in JwtAuthenticationFilter is static final — one shared list for all filter instances. Factory methods like ApiResponse.success() are static utility methods.</td>
+    </tr>
+    <tr>
+      <td><span class="ann-name">void</span></td>
+      <td>Method returns nothing</td>
+      <td>handleUserRegistered() returns void — it's a fire-and-forget consumer. onCreate() returns void — it's a side-effect hook.</td>
+    </tr>
+    <tr>
+      <td><span class="ann-name">new</span></td>
+      <td>Creates a new object instance on the heap</td>
+      <td>new ResponseEntity<>(), new HashSet<>(), new Date(). Allocates memory and calls constructor. Avoid new with Spring beans — use DI instead.</td>
+    </tr>
+    <tr>
+      <td><span class="ann-name">this</span></td>
+      <td>Reference to the current object instance</td>
+      <td>In constructors: this.authService = authService distinguishes the field from the parameter. In builder callbacks: this.createdAt = LocalDateTime.now().</td>
+    </tr>
+    <tr>
+      <td><span class="ann-name">super</span></td>
+      <td>Reference to parent class</td>
+      <td>super(Config.class) in JwtAuthenticationFilter calls parent constructor of AbstractGatewayFilterFactory, passing the config type.</td>
+    </tr>
+  </table>
+
+  <h3>Return Types &amp; Generics</h3>
+  <div class="card">
+    <div class="card-header"><div class="card-icon">🔷</div><div><div class="card-title">ResponseEntity&lt;T&gt;</div></div></div>
+    <p><code>ResponseEntity&lt;ApiResponse&lt;RegisterResponse&gt;&gt;</code> — A wrapper for the full HTTP response including status code, headers, and body. The generic <code>T</code> is the body type. <code>ResponseEntity.status(201).body(data)</code> lets you set HTTP 201 Created. Controllers return ResponseEntity to control the HTTP response precisely.</p>
+  </div>
+  <div class="card">
+    <div class="card-header"><div class="card-icon">📄</div><div><div class="card-title">Page&lt;T&gt;</div></div></div>
+    <p>Spring Data's <code>Page&lt;StartupResponse&gt;</code> contains the list of items + metadata: total elements, total pages, current page, page size. Returned by <code>PagingAndSortingRepository.findAll(Pageable)</code>. The frontend uses this metadata for pagination UI.</p>
+  </div>
+  <div class="card">
+    <div class="card-header"><div class="card-icon">🔮</div><div><div class="card-title">Optional&lt;T&gt;</div></div></div>
+    <p><code>userRepository.findById(id)</code> returns <code>Optional&lt;UserEntity&gt;</code>. This forces you to handle the "not found" case explicitly. <code>.orElseThrow()</code> throws an exception if empty, <code>.map()</code> transforms the value if present. Eliminates NullPointerException for DB lookups.</p>
+  </div>
+
+  <h3>Constructor Injection vs @Autowired</h3>
+  <div class="grid-2">
+    <div class="service-card green">
+      <strong>✅ Constructor Injection (used in project)</strong>
+      <pre style="font-size:11px;margin-top:8px;background:transparent;padding:0">public AuthController(IAuthService s, ...) {
+  this.authService = s; // final field
+}</pre>
+      <ul>
+        <li>Fields can be <code>final</code> → immutable</li>
+        <li>Testable without Spring container</li>
+        <li>Null-safe — Spring fails fast if bean missing</li>
+        <li>Spring team recommends this</li>
+      </ul>
+    </div>
+    <div class="service-card red">
+      <strong>⚠️ @Autowired on field (avoid)</strong>
+      <pre style="font-size:11px;margin-top:8px;background:transparent;padding:0">@Autowired
+private IAuthService authService; // mutable</pre>
+      <ul>
+        <li>Field can't be final</li>
+        <li>Circular dependency harder to catch</li>
+        <li>Requires Spring container to test</li>
+        <li>Reflection injection is slower</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════
+     SECTION 6 — COMPLETE REQUEST FLOW
+     ════════════════════════════════════════════════════════════ -->
+<section class="section" id="s6">
+  <div class="section-header">
+    <span class="section-num">06</span>
+    <h2>Complete Request Flow (End-to-End)</h2>
+    <span class="badge">CRITICAL PATH</span>
+  </div>
+
+  <h3>Flow 1: User Registration</h3>
+  <div class="flow">
+    <span class="flow-step">React Form</span><span class="flow-arrow">→</span>
+    <span class="flow-step">Axios POST /auth/register</span><span class="flow-arrow">→</span>
+    <span class="flow-step">API Gateway :8080</span><span class="flow-arrow">→</span>
+    <span class="flow-step">Public Path? ✅ Skip JWT</span><span class="flow-arrow">→</span>
+    <span class="flow-step">Auth Service :8081</span><span class="flow-arrow">→</span>
+    <span class="flow-step">AuthController.register()</span><span class="flow-arrow">→</span>
+    <span class="flow-step">AuthService.register()</span><span class="flow-arrow">→</span>
+    <span class="flow-step">UserRepository.save()</span><span class="flow-arrow">→</span>
+    <span class="flow-step">PostgreSQL INSERT</span><span class="flow-arrow">→</span>
+    <span class="flow-step">RabbitMQ publish user.registered</span><span class="flow-arrow">→</span>
+    <span class="flow-step">HTTP 201 Response</span>
+  </div>
+  <div class="ascii-box">STEP-BY-STEP EXECUTION:
+
+1. React calls POST http://localhost:8080/auth/register
+   Body: { "name":"Alice", "email":"alice@x.com", "password":"pass", "role":"ROLE_FOUNDER" }
+
+2. API Gateway's JwtAuthenticationFilter.apply() executes
+   → path = "/auth/register" → isPublicPath() = true → chain.filter(exchange) (skip JWT)
+
+3. Gateway routes to Auth Service based on GatewayConfig routes
+
+4. Spring DispatcherServlet in Auth Service receives request
+   → HandlerMapping finds AuthController.register()
+
+5. @Valid triggers Bean Validation on RegisterRequest
+   → If email format wrong: MethodArgumentNotValidException → 400 Bad Request
+
+6. AuthController calls authService.register(request)
+
+7. AuthService.register() executes inside @Transactional:
+   a. Checks ROLE_ADMIN → throws 403 if tried
+   b. userRepository.existsByEmail() → SELECT query
+   c. roleRepository.findByName() → SELECT query
+   d. UserEntity.builder().password(BCrypt.encode()).build()
+   e. userRepository.save(user) → INSERT INTO users...
+   f. welcomeEmailService.sendWelcome() → synchronous SMTP
+
+8. rabbitTemplate.convertAndSend("founderlink.exchange", "user.registered", event)
+   → JSON serialized via Jackson2JsonMessageConverter
+   → Sent to RabbitMQ exchange → routed to user-registered queue
+
+9. ResponseEntity.status(201).body(ApiResponse.success(...)) returned
+   → Jackson serializes to JSON
+   → HTTP 201 sent back through Gateway to React
+
+10. NotificationService (async) receives user.registered event
+    → Creates welcome notification in notification_db
+
+11. UserService (async) receives user.registered event
+    → Creates empty user profile in user_db</div>
+
+  <h3>Flow 2: Login + JWT Issuance</h3>
+  <div class="flow">
+    <span class="flow-step">React Login Form</span><span class="flow-arrow">→</span>
+    <span class="flow-step">POST /auth/login</span><span class="flow-arrow">→</span>
+    <span class="flow-step">API Gateway (Public Path)</span><span class="flow-arrow">→</span>
+    <span class="flow-step">AuthController.login()</span><span class="flow-arrow">→</span>
+    <span class="flow-step">userRepository.findByEmail()</span><span class="flow-arrow">→</span>
+    <span class="flow-step">passwordEncoder.matches()</span><span class="flow-arrow">→</span>
+    <span class="flow-step">jwtUtil.generateAccessToken()</span><span class="flow-arrow">→</span>
+    <span class="flow-step">JWT + RefreshToken returned</span><span class="flow-arrow">→</span>
+    <span class="flow-step">Redux setCredentials()</span>
+  </div>
+
+  <h3>Flow 3: Authenticated Request (Create Startup)</h3>
+  <div class="flow">
+    <span class="flow-step">React POST /startups</span><span class="flow-arrow">→</span>
+    <span class="flow-step">Axios adds Bearer token</span><span class="flow-arrow">→</span>
+    <span class="flow-step">API Gateway: extractAllClaims(token)</span><span class="flow-arrow">→</span>
+    <span class="flow-step">Adds X-User-Id, X-User-Roles headers</span><span class="flow-arrow">→</span>
+    <span class="flow-step">Startup Service:8083</span><span class="flow-arrow">→</span>
+    <span class="flow-step">JwtAuthFilter rebuilds SecurityContext</span><span class="flow-arrow">→</span>
+    <span class="flow-step">@PreAuthorize checks ROLE_FOUNDER</span><span class="flow-arrow">→</span>
+    <span class="flow-step">StartupController.createStartup()</span><span class="flow-arrow">→</span>
+    <span class="flow-step">StartupCommandService</span><span class="flow-arrow">→</span>
+    <span class="flow-step">startupRepository.save()</span><span class="flow-arrow">→</span>
+    <span class="flow-step">RabbitMQ startup.created event</span>
+  </div>
+
+  <h3>Flow 4: Team Invitation (OpenFeign Cross-Service)</h3>
+  <div class="flow">
+    <span class="flow-step">Founder POSTs /teams/invite</span><span class="flow-arrow">→</span>
+    <span class="flow-step">Team Service</span><span class="flow-arrow">→</span>
+    <span class="flow-step">startupClient.getStartupById()</span><span class="flow-arrow">→</span>
+    <span class="flow-step">[Feign HTTP GET /startups/{id}]</span><span class="flow-arrow">→</span>
+    <span class="flow-step">Startup Service responds</span><span class="flow-arrow">→</span>
+    <span class="flow-step">userClient.getUserById()</span><span class="flow-arrow">→</span>
+    <span class="flow-step">[Feign HTTP GET /users/{id}]</span><span class="flow-arrow">→</span>
+    <span class="flow-step">User Service responds</span><span class="flow-arrow">→</span>
+    <span class="flow-step">invitationRepo.save()</span><span class="flow-arrow">→</span>
+    <span class="flow-step">RabbitMQ team.invite.sent</span>
+  </div>
+
+  <h3>Flow 5: Payment + Saga</h3>
+  <div class="flow">
+    <span class="flow-step">Investor initiates payment</span><span class="flow-arrow">→</span>
+    <span class="flow-step">POST /payments/create-order</span><span class="flow-arrow">→</span>
+    <span class="flow-step">Razorpay createOrder()</span><span class="flow-arrow">→</span>
+    <span class="flow-step">saga.startSaga() → ORDER_CREATED</span><span class="flow-arrow">→</span>
+    <span class="flow-step">Frontend: Razorpay popup</span><span class="flow-arrow">→</span>
+    <span class="flow-step">POST /payments/verify</span><span class="flow-arrow">→</span>
+    <span class="flow-step">saga.onPaymentCaptured()</span><span class="flow-arrow">→</span>
+    <span class="flow-step">saga.onAwaitingApproval()</span><span class="flow-arrow">→</span>
+    <span class="flow-step">Founder accepts → saga.onPaymentAccepted() → COMPLETED</span>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════
+     SECTION 7 — SPRING SECURITY + JWT
+     ════════════════════════════════════════════════════════════ -->
+<section class="section" id="s7">
+  <div class="section-header">
+    <span class="section-num">07</span>
+    <h2>Spring Security + JWT Deep Dive</h2>
+    <span class="badge">MOST ASKED</span>
+  </div>
+
+  <h3>Authentication vs Authorization</h3>
+  <div class="grid-2">
+    <div class="explain-box">
+      <div class="explain-label">🔐 Authentication — WHO are you?</div>
+      <p>Verifying identity. In FounderLink: <strong>Login</strong> with email + password. On success, Auth Service issues a JWT token containing userId, email, and roles. Every subsequent request carries this token as proof of identity.</p>
+    </div>
+    <div class="explain-box green">
+      <div class="explain-label">🛡️ Authorization — WHAT can you do?</div>
+      <p>Verifying permissions. In FounderLink: Even if you're authenticated, <code>@PreAuthorize("hasAuthority('ROLE_FOUNDER')")</code> blocks investors from creating startups. The JWT contains roles which are checked on every request.</p>
+    </div>
+  </div>
+
+  <h3>JWT Structure</h3>
+  <div class="ascii-box">JWT = Header.Payload.Signature
+
+HEADER (Base64 encoded):
+{
+  "alg": "HS256",   // HMAC-SHA256 signing algorithm
+  "typ": "JWT"
+}
+
+PAYLOAD (Base64 encoded — NOT encrypted, just encoded!):
+{
+  "userId": 42,
+  "email": "alice@example.com",
+  "roles": ["ROLE_FOUNDER"],
+  "sub": "alice@example.com",    // subject
+  "iat": 1703001600,             // issued at (Unix timestamp)
+  "exp": 1703088000              // expiration (Unix timestamp)
+}
+
+SIGNATURE:
+HMACSHA256(
+  base64UrlEncode(header) + "." + base64UrlEncode(payload),
+  SECRET_KEY
+)
+→ Only the server with the secret can generate/verify this.</div>
+
+  <h3>SecurityConfig.java — Deep Explanation</h3>
+  <div class="code-wrap">
+    <div class="code-header"><span class="code-lang">JAVA</span><span class="code-file">SecurityConfig.java</span></div>
+    <pre><span class="ann">@Configuration</span>
+<span class="ann">@EnableWebSecurity</span>   <span class="cmt">// Activates Spring Security's web layer</span>
+<span class="kw">public class</span> <span class="cls">SecurityConfig</span> {
+
+    <span class="ann">@Bean</span>
+    <span class="kw">public</span> <span class="cls">SecurityFilterChain</span> <span class="fn">securityFilterChain</span>(<span class="cls">HttpSecurity</span> http) <span class="kw">throws</span> Exception {
+        http
+            <span class="cmt">// Disable CSRF — stateless APIs don't need CSRF tokens</span>
+            <span class="cmt">// CSRF protects browser-based sessions (cookies), not Bearer tokens</span>
+            .<span class="fn">csrf</span>(<span class="cls">AbstractHttpConfigurer</span>::<span class="fn">disable</span>)
+
+            <span class="cmt">// STATELESS — no HttpSession created; every request is self-contained</span>
+            .<span class="fn">sessionManagement</span>(session -> session
+                .<span class="fn">sessionCreationPolicy</span>(SessionCreationPolicy.STATELESS))
+
+            .<span class="fn">authorizeHttpRequests</span>(auth -> auth
+                .<span class="fn">requestMatchers</span>(<span class="str">"/auth/**"</span>).<span class="fn">permitAll</span>()         <span class="cmt">// No auth for auth endpoints</span>
+                .<span class="fn">requestMatchers</span>(<span class="str">"/actuator/**"</span>).<span class="fn">permitAll</span>()    <span class="cmt">// Health checks open</span>
+                .<span class="fn">requestMatchers</span>(<span class="str">"/v3/api-docs/**"</span>).<span class="fn">permitAll</span>() <span class="cmt">// Swagger open</span>
+                .<span class="fn">anyRequest</span>().<span class="fn">authenticated</span>());             <span class="cmt">// Everything else needs auth</span>
+
+        <span class="kw">return</span> http.<span class="fn">build</span>();
+    }
+
+    <span class="ann">@Bean</span>
+    <span class="kw">public</span> <span class="cls">PasswordEncoder</span> <span class="fn">passwordEncoder</span>() {
+        <span class="kw">return new</span> <span class="cls">BCryptPasswordEncoder</span>();  <span class="cmt">// BCrypt: adaptive hash, salt built-in, ~10 rounds</span>
+    }
+
+    <span class="ann">@Bean</span>
+    <span class="kw">public</span> <span class="cls">AuthenticationManager</span> <span class="fn">authenticationManager</span>(<span class="cls">AuthenticationConfiguration</span> config) <span class="kw">throws</span> Exception {
+        <span class="kw">return</span> config.<span class="fn">getAuthenticationManager</span>(); <span class="cmt">// Used for programmatic authentication</span>
+    }
+}</pre>
+  </div>
+
+  <h3>JwtUtil.java — Token Generation &amp; Validation</h3>
+  <div class="code-wrap">
+    <div class="code-header"><span class="code-lang">JAVA</span><span class="code-file">JwtUtil.java</span></div>
+    <pre><span class="ann">@Component</span>
+<span class="kw">public class</span> <span class="cls">JwtUtil</span> {
+
+    <span class="cmt">// @Value injects values from application.yml or Config Server at startup</span>
+    <span class="kw">public</span> <span class="cls">JwtUtil</span>(
+            <span class="ann">@Value</span>(<span class="str">"${jwt.secret}"</span>) String secret,
+            <span class="ann">@Value</span>(<span class="str">"${jwt.access-token-expiration}"</span>) <span class="kw">long</span> accessTokenExpiration,
+            <span class="ann">@Value</span>(<span class="str">"${jwt.refresh-token-expiration}"</span>) <span class="kw">long</span> refreshTokenExpiration) { ... }
+
+    <span class="kw">private</span> <span class="cls">SecretKey</span> <span class="fn">getSigningKey</span>() {
+        <span class="cmt">// Decode Base64 secret → raw bytes → HMAC-SHA key</span>
+        <span class="kw">return</span> Keys.<span class="fn">hmacShaKeyFor</span>(Decoders.BASE64.<span class="fn">decode</span>(secret));
+    }
+
+    <span class="kw">public</span> String <span class="fn">generateAccessToken</span>(Long userId, String email, String role) {
+        <span class="kw">return</span> <span class="fn">buildToken</span>(
+            Map.<span class="fn">of</span>(<span class="str">"userId"</span>, userId, <span class="str">"email"</span>, email, <span class="str">"roles"</span>, List.<span class="fn">of</span>(role)),
+            email, accessTokenExpiration);
+    }
+
+    <span class="kw">private</span> String <span class="fn">buildToken</span>(Map&lt;String, Object&gt; claims, String subject, <span class="kw">long</span> expiration) {
+        <span class="kw">return</span> Jwts.<span class="fn">builder</span>()
+            .<span class="fn">claims</span>(claims)               <span class="cmt">// Custom payload fields</span>
+            .<span class="fn">subject</span>(subject)             <span class="cmt">// Standard "sub" field</span>
+            .<span class="fn">issuedAt</span>(<span class="kw">new</span> Date())         <span class="cmt">// Standard "iat" field</span>
+            .<span class="fn">expiration</span>(<span class="kw">new</span> Date(System.<span class="fn">currentTimeMillis</span>() + expiration)) <span class="cmt">// "exp" field</span>
+            .<span class="fn">signWith</span>(<span class="fn">getSigningKey</span>())    <span class="cmt">// Sign with HMAC-SHA256</span>
+            .<span class="fn">compact</span>();                   <span class="cmt">// Serialize to JWT string "header.payload.sig"</span>
+    }
+
+    <span class="kw">public boolean</span> <span class="fn">validateToken</span>(String token) {
+        <span class="kw">try</span> {
+            <span class="fn">extractAllClaims</span>(token);  <span class="cmt">// Throws if signature invalid or token expired</span>
+            <span class="kw">return true</span>;
+        } <span class="kw">catch</span> (Exception e) { <span class="kw">return false</span>; }
+    }
+
+    <span class="kw">private</span> <span class="cls">Claims</span> <span class="fn">extractAllClaims</span>(String token) {
+        <span class="kw">return</span> Jwts.<span class="fn">parser</span>()
+            .<span class="fn">verifyWith</span>(<span class="fn">getSigningKey</span>())  <span class="cmt">// Must match signing key — verifies signature</span>
+            .<span class="fn">build</span>()
+            .<span class="fn">parseSignedClaims</span>(token)   <span class="cmt">// Parses + validates signature + expiry</span>
+            .<span class="fn">getPayload</span>();
+    }
+}</pre>
+  </div>
+
+  <h3>Filter Chain Execution Order</h3>
+  <div class="ascii-box">HTTP Request arrives at microservice (e.g., Startup Service)
+
+1. JwtAuthenticationFilter (OncePerRequestFilter) executes:
+   a. Extract X-User-Id header (set by API Gateway)
+   b. Extract X-User-Roles header
+   c. Build UsernamePasswordAuthenticationToken(userId, null, authorities)
+   d. SecurityContextHolder.getContext().setAuthentication(token)
+   → SecurityContext is now populated for this request thread
+
+2. Spring Security's FilterSecurityInterceptor executes:
+   → Checks if the request path requires authentication (anyRequest().authenticated())
+   → If yes, checks SecurityContextHolder for Authentication object
+
+3. @PreAuthorize AOP interceptor executes (before controller method):
+   → Evaluates SpEL: hasAuthority('ROLE_FOUNDER')
+   → Checks authentication.getAuthorities()
+   → If false: throws AccessDeniedException → GlobalExceptionHandler → 403
+
+4. Controller method executes:
+   → Authentication authentication parameter injected from SecurityContextHolder
+
+5. SecurityContextHolder.clearContext() after request completes (STATELESS)</div>
+
+  <h3>Token Refresh Flow</h3>
+  <div class="flow">
+    <span class="flow-step">API call returns 401</span><span class="flow-arrow">→</span>
+    <span class="flow-step">Axios interceptor catches</span><span class="flow-arrow">→</span>
+    <span class="flow-step">isRefreshing? Queue the request</span><span class="flow-arrow">→</span>
+    <span class="flow-step">POST /auth/refresh with currentToken</span><span class="flow-arrow">→</span>
+    <span class="flow-step">Auth Service validates refresh token</span><span class="flow-arrow">→</span>
+    <span class="flow-step">Issues new access token</span><span class="flow-arrow">→</span>
+    <span class="flow-step">tokenService.setToken(newToken)</span><span class="flow-arrow">→</span>
+    <span class="flow-step">processQueue() — retry all queued requests</span>
+  </div>
+  <div class="tip-box">
+    <strong>💡 Interview Tip:</strong> The <code>isRefreshing</code> flag with <code>failedQueue</code> prevents multiple simultaneous refresh calls. This is called a <strong>token refresh mutex/lock pattern</strong>. If 3 API calls fail simultaneously with 401, only ONE refresh call is made. The other two are queued and retried with the new token.
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════
+     SECTION 8 — OPENFEIGN
+     ════════════════════════════════════════════════════════════ -->
+<section class="section" id="s8">
+  <div class="section-header">
+    <span class="section-num">08</span>
+    <h2>Inter-Service Communication (OpenFeign)</h2>
+    <span class="badge">DISTRIBUTED</span>
+  </div>
+
+  <h3>OpenFeign Internal Working</h3>
+  <div class="ascii-box">TeamService wants to call StartupService:
+
+1. COMPILE TIME:
+   @FeignClient(name="startup-service") on StartupClient interface
+   → Spring generates a JDK Proxy at application startup
+
+2. DEPENDENCY INJECTION:
+   Spring injects the Feign proxy wherever StartupClient is used
+   → startupClient.getStartupById(id) → goes to proxy
+
+3. AT CALL TIME:
+   Feign proxy:
+   a. Reads method annotations: @GetMapping("/startups/{id}")
+   b. Builds a Request: GET http://startup-service/startups/42
+   c. Asks Eureka/LoadBalancer: "What is the URL of startup-service?"
+   d. Gets: http://localhost:8083
+   e. Makes actual HTTP call: GET http://localhost:8083/startups/42
+   f. Receives JSON response
+   g. Deserializes to StartupDTO using Jackson
+   h. Returns StartupDTO to caller
+
+4. IF FAILURE:
+   → Connection timeout / service down
+   → Fallback factory kicks in
+   → Returns a safe default response (null / empty)</div>
+
+  <h3>Fallback Factory</h3>
+  <div class="code-wrap">
+    <div class="code-header"><span class="code-lang">JAVA</span><span class="code-file">StartupClientFallbackFactory.java</span></div>
+    <pre><span class="ann">@Component</span>
+<span class="kw">public class</span> <span class="cls">StartupClientFallbackFactory</span> 
+        <span class="kw">implements</span> <span class="cls">FallbackFactory</span>&lt;<span class="cls">StartupClient</span>&gt; {
+
+    <span class="ann">@Override</span>
+    <span class="kw">public</span> <span class="cls">StartupClient</span> <span class="fn">create</span>(Throwable cause) {
+        <span class="kw">return new</span> <span class="cls">StartupClient</span>() {
+            <span class="ann">@Override</span>
+            <span class="kw">public</span> <span class="cls">StartupDTO</span> <span class="fn">getStartupById</span>(Long id) {
+                <span class="cmt">// Log the cause and return safe default</span>
+                log.<span class="fn">error</span>(<span class="str">"StartupService unavailable: {}"</span>, cause.getMessage());
+                <span class="kw">return null</span>;  <span class="cmt">// Caller handles null gracefully</span>
+            }
+        };
+    }
+}</pre>
+  </div>
+  <div class="explain-box">
+    <div class="explain-label">🔑 Why FallbackFactory vs Fallback?</div>
+    <p>Regular <code>@FeignClient(fallback=MyFallback.class)</code> gives you a static fallback with no knowledge of what went wrong. <code>FallbackFactory</code> gives you the <code>Throwable cause</code> — so you can log the specific error (timeout? connection refused? HTTP 500?) and return different defaults based on the failure type.</p>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════
+     SECTION 9 — RABBITMQ EVENT-DRIVEN
+     ════════════════════════════════════════════════════════════ -->
+<section class="section" id="s9">
+  <div class="section-header">
+    <span class="section-num">09</span>
+    <h2>Event-Driven Architecture (RabbitMQ)</h2>
+    <span class="badge">ASYNC MESSAGING</span>
+  </div>
+
+  <h3>RabbitMQ Concepts</h3>
+  <table class="ann-table">
+    <tr><th>Concept</th><th>Definition</th><th>In FounderLink</th></tr>
+    <tr>
+      <td><span class="ann-name">Exchange</span></td>
+      <td>Receives messages from producers and routes to queues</td>
+      <td><code>founderlink.exchange</code> — TopicExchange. Routes based on routing key patterns like "user.registered", "startup.created"</td>
+    </tr>
+    <tr>
+      <td><span class="ann-name">Queue</span></td>
+      <td>Buffer that stores messages until consumed</td>
+      <td>user-registered-queue, startup-created-queue, investment-created-queue, payment-success-queue, etc.</td>
+    </tr>
+    <tr>
+      <td><span class="ann-name">Binding</span></td>
+      <td>Rule that links exchange to queue via routing key</td>
+      <td>user-registered-queue is bound to founderlink.exchange with key "user.registered". Any message with that routing key goes to that queue.</td>
+    </tr>
+    <tr>
+      <td><span class="ann-name">Routing Key</span></td>
+      <td>String that determines which queues receive the message</td>
+      <td>TopicExchange supports wildcards: "startup.*" matches "startup.created" and "startup.deleted"</td>
+    </tr>
+    <tr>
+      <td><span class="ann-name">Jackson2JsonMessageConverter</span></td>
+      <td>Serializes/Deserializes Java objects to/from JSON</td>
+      <td>rabbitTemplate.convertAndSend(UserRegisteredEvent) → Jackson → JSON bytes in queue → @RabbitListener method parameter receives UserRegisteredEvent</td>
+    </tr>
+  </table>
+
+  <h3>Producer Flow (AuthService)</h3>
+  <div class="code-wrap">
+    <div class="code-header"><span class="code-lang">JAVA</span><span class="code-file">AuthService.java — Producer</span></div>
+    <pre><span class="cmt">// rabbitTemplate is Spring's AMQP template — handles connection pooling</span>
+rabbitTemplate.<span class="fn">convertAndSend</span>(
+    exchange,                  <span class="cmt">// "founderlink.exchange" (TopicExchange)</span>
+    <span class="str">"user.registered"</span>,         <span class="cmt">// routing key</span>
+    UserRegisteredEvent.<span class="fn">builder</span>()
+        .<span class="fn">userId</span>(savedUser.<span class="fn">getId</span>())
+        .<span class="fn">name</span>(savedUser.<span class="fn">getName</span>())
+        .<span class="fn">email</span>(savedUser.<span class="fn">getEmail</span>())
+        .<span class="fn">role</span>(role.<span class="fn">getName</span>())
+        .<span class="fn">build</span>()
+);<span class="cmt">// Jackson2JsonMessageConverter serializes the event object to JSON automatically</span></pre>
+  </div>
+
+  <h3>Consumer Flow (NotificationService)</h3>
+  <div class="code-wrap">
+    <div class="code-header"><span class="code-lang">JAVA</span><span class="code-file">NotificationEventListener.java — Consumer</span></div>
+    <pre><span class="ann">@RabbitListener</span>(queues = <span class="str">"${rabbitmq.queue.user-registered}"</span>)
+<span class="cmt">// Spring AMQP creates a background thread watching this queue
+// When message arrives: Jackson deserializes JSON → UserRegisteredEvent
+// Method is called in a thread pool (not main thread)</span>
+<span class="kw">public void</span> <span class="fn">handleUserRegistered</span>(<span class="cls">UserRegisteredEvent</span> event) {
+    <span class="cmt">// If this method throws: message is nacked (negatively acknowledged)
+    // → RabbitMQ requeues it for retry (configurable dead-letter queue)</span>
+    notificationService.<span class="fn">createNotification</span>(
+        event.<span class="fn">getUserId</span>(),
+        <span class="str">"Welcome to FounderLink!"</span>,
+        NotificationType.USER_REGISTERED
+    );
+    <span class="cmt">// On success: message is acked (removed from queue)</span>
+}</pre>
+  </div>
+
+  <h3>RabbitMQ Config</h3>
+  <div class="code-wrap">
+    <div class="code-header"><span class="code-lang">JAVA</span><span class="code-file">RabbitMQConfig.java</span></div>
+    <pre><span class="ann">@Configuration</span>
+<span class="kw">public class</span> <span class="cls">RabbitMQConfig</span> {
+
+    <span class="ann">@Bean</span>
+    <span class="kw">public</span> <span class="cls">TopicExchange</span> <span class="fn">founderLinkExchange</span>() {
+        <span class="kw">return new</span> <span class="cls">TopicExchange</span>(exchange);
+        <span class="cmt">// TopicExchange: routes based on routing key patterns with wildcards
+        //   * matches one word: "startup.*" matches "startup.created"
+        //   # matches zero or more words: "startup.#" matches "startup.created.v2"</span>
+    }
+
+    <span class="ann">@Bean</span>
+    <span class="kw">public</span> <span class="cls">MessageConverter</span> <span class="fn">messageConverter</span>() {
+        <span class="kw">return new</span> <span class="cls">Jackson2JsonMessageConverter</span>();
+        <span class="cmt">// Registered globally: all rabbitTemplate.convertAndSend() calls
+        // automatically use Jackson for serialization</span>
+    }
+}</pre>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════
+     SECTION 10 — DATABASE FLOW
+     ════════════════════════════════════════════════════════════ -->
+<section class="section" id="s10">
+  <div class="section-header">
+    <span class="section-num">10</span>
+    <h2>Database Flow (JPA + Hibernate)</h2>
+    <span class="badge">DATA LAYER</span>
+  </div>
+
+  <h3>Complete DB Flow</h3>
+  <div class="flow">
+    <span class="flow-step">Controller receives request</span><span class="flow-arrow">→</span>
+    <span class="flow-step">Service calls Repository</span><span class="flow-arrow">→</span>
+    <span class="flow-step">Spring Data JPA proxy</span><span class="flow-arrow">→</span>
+    <span class="flow-step">Hibernate generates SQL</span><span class="flow-arrow">→</span>
+    <span class="flow-step">HikariCP connection pool</span><span class="flow-arrow">→</span>
+    <span class="flow-step">PostgreSQL executes</span><span class="flow-arrow">→</span>
+    <span class="flow-step">ResultSet → Entity</span><span class="flow-arrow">→</span>
+    <span class="flow-step">Mapper → DTO</span><span class="flow-arrow">→</span>
+    <span class="flow-step">Response</span>
+  </div>
+
+  <h3>Repository Layer</h3>
+  <div class="code-wrap">
+    <div class="code-header"><span class="code-lang">JAVA</span><span class="code-file">UserRepository.java</span></div>
+    <pre><span class="ann">@Repository</span>
+<span class="kw">public interface</span> <span class="cls">UserRepository</span> <span class="kw">extends</span> <span class="cls">JpaRepository</span>&lt;<span class="cls">UserEntity</span>, Long&gt; {
+    <span class="cmt">// JpaRepository provides: findAll(), findById(), save(), delete(), count(), etc.</span>
+    <span class="cmt">// Spring Data JPA auto-implements this interface at startup via proxy</span>
+
+    <span class="cmt">// Derived query: SELECT * FROM users WHERE email = ?</span>
+    Optional&lt;<span class="cls">UserEntity</span>&gt; <span class="fn">findByEmail</span>(String email);
+
+    <span class="cmt">// Derived query: SELECT COUNT(*) > 0 FROM users WHERE email = ?</span>
+    <span class="kw">boolean</span> <span class="fn">existsByEmail</span>(String email);
+
+    <span class="cmt">// JOIN query: SELECT u.* FROM users u JOIN user_roles ur ON u.id=ur.user_id
+    //            JOIN roles r ON ur.role_id=r.id WHERE r.name = ?</span>
+    List&lt;<span class="cls">UserEntity</span>&gt; <span class="fn">findByRolesName</span>(String roleName);
+}</pre>
+  </div>
+  <div class="explain-box">
+    <div class="explain-label">🔑 How Spring Data JPA Derives Queries</div>
+    <p>Spring Data parses method names at startup using a <strong>Query DSL</strong>. <code>findByEmail</code> → <code>SELECT ... WHERE email = ?</code>. <code>findByRolesName</code> → traverses the <code>roles</code> relationship and joins on <code>name</code>. This is called <strong>method name query derivation</strong>. You write zero SQL for common queries.</p>
+  </div>
+
+  <h3>Hibernate SQL Generation</h3>
+  <table class="ann-table">
+    <tr><th>JPA Operation</th><th>Generated SQL</th><th>Trigger</th></tr>
+    <tr><td>userRepository.save(newUser)</td><td>INSERT INTO users (name, email, password, created_at) VALUES (?, ?, ?, ?)</td><td>New entity (no ID set)</td></tr>
+    <tr><td>userRepository.save(existingUser)</td><td>UPDATE users SET name=?, email=? WHERE id=?</td><td>Managed entity (ID exists)</td></tr>
+    <tr><td>userRepository.findById(1L)</td><td>SELECT * FROM users u LEFT JOIN user_roles ur ... WHERE u.id=1</td><td>@ManyToMany(EAGER) triggers JOIN</td></tr>
+    <tr><td>userRepository.deleteById(1L)</td><td>DELETE FROM user_roles WHERE user_id=1; DELETE FROM users WHERE id=1</td><td>Cascade delete on join table</td></tr>
+  </table>
+
+  <h3>@Transactional Deep Dive</h3>
+  <div class="ascii-box">@Transactional method execution:
+
+1. Spring's TransactionInterceptor (AOP proxy) intercepts the call
+2. TransactionManager opens a connection from HikariCP pool
+3. BEGIN TRANSACTION
+4. Method body executes (multiple DB operations in one unit)
+5a. SUCCESS → COMMIT → connection returned to pool
+5b. RuntimeException thrown → ROLLBACK → connection returned to pool
+
+Example in AuthService.register():
+  - roleRepository.findByName()  ─┐
+  - userRepository.existsByEmail()│── All in ONE transaction
+  - userRepository.save()         │
+  - (any failure → rollback all)  ─┘
+
+Default: rolls back on RuntimeException, not checked Exception
+Use @Transactional(rollbackFor = Exception.class) for checked exceptions</div>
+
+  <h3>Redis Caching</h3>
+  <div class="code-wrap">
+    <div class="code-header"><span class="code-lang">JAVA</span><span class="code-file">RedisConfig.java (present in StartupService, TeamService, etc.)</span></div>
+    <pre><span class="ann">@Configuration</span>
+<span class="kw">public class</span> <span class="cls">RedisConfig</span> {
+
+    <span class="ann">@Bean</span>
+    <span class="kw">public</span> <span class="cls">RedisTemplate</span>&lt;String, Object&gt; <span class="fn">redisTemplate</span>(<span class="cls">RedisConnectionFactory</span> factory) {
+        <span class="cls">RedisTemplate</span>&lt;String, Object&gt; template = <span class="kw">new</span> <span class="cls">RedisTemplate</span>&lt;&gt;();
+        template.<span class="fn">setConnectionFactory</span>(factory);
+        template.<span class="fn">setValueSerializer</span>(<span class="kw">new</span> <span class="cls">GenericJackson2JsonRedisSerializer</span>());
+        <span class="kw">return</span> template;
+    }
+}</pre>
+  </div>
+  <p><strong>Why Redis?</strong> Frequently-read data (startup listings, user profiles) can be cached in Redis (in-memory) to reduce PostgreSQL load. Redis lookups are ~0.1ms vs ~5-50ms DB queries. TTL ensures data doesn't get stale.</p>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════
+     SECTION 11 — FRONTEND + BACKEND CONNECTION
+     ════════════════════════════════════════════════════════════ -->
+<section class="section" id="s11">
+  <div class="section-header">
+    <span class="section-num">11</span>
+    <h2>Frontend + Backend Connection</h2>
+    <span class="badge">REACT + REDUX</span>
+  </div>
+
+  <h3>Axios Configuration</h3>
+  <div class="code-wrap">
+    <div class="code-header"><span class="code-lang">TYPESCRIPT</span><span class="code-file">axiosConfig.ts</span></div>
+    <pre><span class="kw">const</span> api = axios.<span class="fn">create</span>({
+  baseURL: import.meta.env.VITE_API_BASE_URL || <span class="str">'http://localhost:8080'</span>,
+  <span class="cmt">// All requests go to API Gateway at :8080</span>
+  withCredentials: <span class="kw">true</span>,  <span class="cmt">// Send cookies with cross-origin requests</span>
+});
+
+<span class="cmt">// REQUEST INTERCEPTOR: Attach JWT to every request automatically</span>
+api.interceptors.request.<span class="fn">use</span>((config: InternalAxiosRequestConfig) => {
+  <span class="kw">const</span> token = tokenService.<span class="fn">getToken</span>();  <span class="cmt">// From localStorage</span>
+  <span class="kw">if</span> (token) config.headers.Authorization = <span class="str">`Bearer ${token}`</span>;
+  <span class="kw">return</span> config;
+});
+
+<span class="cmt">// RESPONSE INTERCEPTOR: Handle 401 → token refresh</span>
+api.interceptors.response.<span class="fn">use</span>(
+  (response) => response,
+  <span class="kw">async</span> (error: AxiosError) => {
+    <span class="kw">const</span> originalRequest = error.config <span class="kw">as</span> ... & { _retry?: boolean };
+
+    <span class="kw">if</span> (error.response?.status === <span class="num">401</span> && !originalRequest._retry) {
+      <span class="kw">if</span> (isRefreshing) {
+        <span class="cmt">// Queue this request until refresh completes</span>
+        <span class="kw">return new</span> <span class="cls">Promise</span>((resolve, reject) => {
+          failedQueue.<span class="fn">push</span>({ resolve, reject });
+        });
+      }
+
+      originalRequest._retry = <span class="kw">true</span>;
+      isRefreshing = <span class="kw">true</span>;
+
+      <span class="kw">try</span> {
+        <span class="kw">const</span> response = <span class="kw">await</span> api.<span class="fn">post</span>(<span class="str">'/auth/refresh'</span>, {}, { ... });
+        <span class="kw">const</span> newToken = response.data.token;
+        tokenService.<span class="fn">setToken</span>(newToken);
+        <span class="fn">processQueue</span>(<span class="kw">null</span>, newToken);  <span class="cmt">// Retry all queued requests</span>
+        <span class="kw">return</span> <span class="fn">api</span>(originalRequest);       <span class="cmt">// Retry original request</span>
+      } <span class="kw">catch</span> (refreshError) {
+        tokenService.<span class="fn">clearAll</span>();
+        window.location.href = <span class="str">'/login'</span>;  <span class="cmt">// Force logout</span>
+      }
+    }
+  }
+);</pre>
+  </div>
+
+  <h3>Redux Auth Slice</h3>
+  <div class="code-wrap">
+    <div class="code-header"><span class="code-lang">TYPESCRIPT</span><span class="code-file">authSlice.ts</span></div>
+    <pre><span class="kw">const</span> authSlice = <span class="fn">createSlice</span>({
+  name: <span class="str">'auth'</span>,
+  initialState: {
+    token: tokenService.<span class="fn">getToken</span>(),        <span class="cmt">// Restore from localStorage on app load</span>
+    user: tokenService.<span class="fn">getUser</span>(),
+    isAuthenticated: !!tokenService.<span class="fn">getToken</span>()
+  },
+  reducers: {
+    <span class="fn">setCredentials</span>: (state, action: PayloadAction&lt;SetCredentialsPayload&gt;) => {
+      <span class="kw">const</span> { token, userId, role, email, name } = action.payload;
+      state.token = token;
+      state.user = { userId, role, email, name };
+      state.isAuthenticated = <span class="kw">true</span>;
+      tokenService.<span class="fn">setToken</span>(token);   <span class="cmt">// Persist to localStorage</span>
+      tokenService.<span class="fn">setUser</span>({ ... });  <span class="cmt">// Persist user info</span>
+    },
+    <span class="fn">logout</span>: (state) => {
+      state.token = <span class="kw">null</span>;
+      state.isAuthenticated = <span class="kw">false</span>;
+      tokenService.<span class="fn">clearAll</span>();  <span class="cmt">// Remove from localStorage</span>
+    }
+  }
+});</pre>
+  </div>
+
+  <h3>Protected Routes</h3>
+  <div class="code-wrap">
+    <div class="code-header"><span class="code-lang">TYPESCRIPT</span><span class="code-file">ProtectedRoute.tsx</span></div>
+    <pre><span class="kw">const</span> <span class="cls">ProtectedRoute</span>: React.FC&lt;<span class="cls">ProtectedRouteProps</span>&gt; = ({ children, allowedRoles }) => {
+  <span class="kw">const</span> { isAuthenticated, role } = <span class="fn">useAuth</span>();  <span class="cmt">// Custom hook reading Redux state</span>
+  <span class="kw">const</span> token = tokenService.<span class="fn">getToken</span>();
+
+  <span class="cmt">// Not authenticated → redirect to login</span>
+  <span class="kw">if</span> (!isAuthenticated || !token) {
+    tokenService.<span class="fn">clearAll</span>();
+    <span class="kw">return</span> &lt;<span class="cls">Navigate</span> to=<span class="str">"/login"</span> replace /&gt;;  <span class="cmt">// replace=true removes from history</span>
+  }
+
+  <span class="cmt">// Wrong role → redirect to unauthorized page</span>
+  <span class="kw">if</span> (allowedRoles && role && !allowedRoles.<span class="fn">includes</span>(role)) {
+    <span class="kw">return</span> &lt;<span class="cls">Navigate</span> to=<span class="str">"/unauthorized"</span> replace /&gt;;
+  }
+
+  <span class="cmt">// children prop (explicit) OR &lt;Outlet/&gt; for nested routes</span>
+  <span class="kw">return</span> &lt;&gt;{children ?? &lt;<span class="cls">Outlet</span> /&gt;}&lt;/&gt;;
+};</pre>
+  </div>
+
+  <h3>WebSocket for Real-time Notifications</h3>
+  <div class="code-wrap">
+    <div class="code-header"><span class="code-lang">TYPESCRIPT</span><span class="code-file">useNotificationSocket.ts</span></div>
+    <pre><span class="kw">const</span> <span class="fn">useNotificationSocket</span> = (userId: number) => {
+  <span class="kw">const</span> wsUrl = `${import.meta.env.VITE_WS_URL}/ws/notifications?userId=${userId}`;
+  <span class="kw">const</span> socket = <span class="kw">new</span> <span class="cls">WebSocket</span>(wsUrl);
+
+  socket.onmessage = (event) => {
+    <span class="kw">const</span> notification = <span class="cls">JSON</span>.<span class="fn">parse</span>(event.data);
+    dispatch(<span class="fn">addNotification</span>(notification));  <span class="cmt">// Update Redux state → UI updates</span>
+  };
+};</pre>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════
+     SECTION 12 — DOCKER + DEPLOYMENT
+     ════════════════════════════════════════════════════════════ -->
+<section class="section" id="s12">
+  <div class="section-header">
+    <span class="section-num">12</span>
+    <h2>Docker + Deployment</h2>
+    <span class="badge">DEVOPS</span>
+  </div>
+
+  <h3>Dockerfile Pattern (Each Microservice)</h3>
+  <div class="code-wrap">
+    <div class="code-header"><span class="code-lang">DOCKERFILE</span><span class="code-file">AuthService/Dockerfile</span></div>
+    <pre><span class="cmt"># Stage 1: Build</span>
+<span class="kw">FROM</span> eclipse-temurin:17-jdk-alpine <span class="kw">AS</span> build
+<span class="kw">WORKDIR</span> /app
+<span class="kw">COPY</span> pom.xml .
+<span class="kw">COPY</span> src ./src
+<span class="kw">RUN</span> mvn clean package -DskipTests   <span class="cmt"># Build JAR inside container</span>
+
+<span class="cmt"># Stage 2: Runtime (smaller image)</span>
+<span class="kw">FROM</span> eclipse-temurin:17-jre-alpine  <span class="cmt"># JRE only — no compiler needed at runtime</span>
+<span class="kw">WORKDIR</span> /app
+<span class="kw">COPY</span> --from=build /app/target/*.jar app.jar  <span class="cmt"># Copy JAR from build stage</span>
+<span class="kw">EXPOSE</span> 8081
+<span class="kw">ENTRYPOINT</span> ["java", "-jar", "app.jar"]</pre>
+  </div>
+
+  <h3>docker-compose.yml — Infrastructure</h3>
+  <div class="code-wrap">
+    <div class="code-header"><span class="code-lang">YAML</span><span class="code-file">docker-compose.yml</span></div>
+    <pre>services:
+  postgres:                         <span class="cmt"># Single PostgreSQL instance</span>
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: ${DB_USERNAME}  <span class="cmt"># .env file — never hardcode credentials</span>
+    volumes:
+      - postgres_data:/var/lib/postgresql/data     <span class="cmt"># Persistent volume</span>
+      - ./postgres-init/init.sql:/docker-entrypoint-initdb.d/init.sql  <span class="cmt"># Auto-creates all schemas</span>
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME}"]
+      interval: 10s; retries: 10    <span class="cmt"># Services wait for postgres health before starting</span>
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    ports:
+      - "5672:5672"   <span class="cmt"># AMQP protocol port</span>
+      - "15672:15672" <span class="cmt"># Management UI</span>
+
+  redis:
+    image: redis:7-alpine
+    ports: ["6379:6379"]
+
+  config-server:
+    build: ./ConfigServer
+    ports: ["8888:8888"]
+    healthcheck: ...
+
+  eureka-server:
+    build: ./EurekaServer
+    depends_on:
+      config-server:
+        condition: service_healthy  <span class="cmt"># Wait for config-server to be ready</span>
+
+  auth-service:
+    build: ./AuthService
+    depends_on:
+      eureka-server: { condition: service_healthy }
+      postgres: { condition: service_healthy }
+      rabbitmq: { condition: service_healthy }</pre>
+  </div>
+
+  <div class="tip-box">
+    <strong>💡 Key Interview Point — Service Startup Order:</strong> Config Server starts first (others need their config). Eureka starts second (others need to register). Infrastructure (Postgres, RabbitMQ, Redis) starts in parallel. All business services wait for all three. The <code>depends_on: condition: service_healthy</code> ensures this order.
+  </div>
+
+  <h3>Service Networking in Docker</h3>
+  <div class="explain-box">
+    <div class="explain-label">🌐 Docker Network Magic</div>
+    <p>All services in <code>docker-compose.yml</code> are on the same Docker network by default. Services can reach each other using their <strong>service name</strong> as hostname. So <code>auth-service</code> connects to <code>postgres</code> via <code>jdbc:postgresql://postgres:5432/auth_db</code> — no IP needed. Docker's embedded DNS resolves service names to container IPs.</p>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════
+     SECTION 13 — CI/CD + MONITORING
+     ════════════════════════════════════════════════════════════ -->
+<section class="section" id="s13">
+  <div class="section-header">
+    <span class="section-num">13</span>
+    <h2>CI/CD + Monitoring</h2>
+    <span class="badge">DEVOPS</span>
+  </div>
+
+  <h3>GitHub Actions Pipeline</h3>
+  <div class="ascii-box">Pipeline: .github/workflows/ci-cd.yml
+
+Triggers:
+  - push to main branch
+  - pull_request to main
+
+Jobs (parallel where possible):
+  ┌──────────────────────────┐
+  │ Job 1: build-backend     │
+  │  → JDK 17 (Temurin)     │
+  │  → mvn clean package     │
+  │    -DskipTests           │
+  └───────────┬──────────────┘
+              │ (success)
+              ▼
+  ┌──────────────────────────┐    ┌──────────────────────────┐
+  │ Job 3: docker-push-backend│   │ Job 2: build-frontend    │
+  │  Matrix: 11 services      │   │  → Node.js 18            │
+  │  For each service:        │   │  → npm ci                │
+  │  → docker/build-push-action│  │  → npm run lint          │
+  │  → Push to Docker Hub     │   │  → npx tsc --noEmit      │
+  │  Tags: :latest, :sha      │   │  → npm run build         │
+  └──────────────────────────┘    └───────────┬──────────────┘
+                                              │ (success)
+                                              ▼
+                                  ┌──────────────────────────┐
+                                  │ Job 4: docker-push-frontend│
+                                  │  → Build with VITE env vars│
+                                  │  → Push to Docker Hub     │
+                                  └──────────────────────────┘</div>
+
+  <h3>Prometheus + Grafana Monitoring</h3>
+  <div class="explain-box">
+    <div class="explain-label">📊 Monitoring Stack</div>
+    <p><strong>Micrometer</strong> (included via Spring Boot Actuator) automatically instruments each microservice. It exposes a <code>/actuator/prometheus</code> endpoint that returns metrics in Prometheus format.</p>
+    <p><strong>Prometheus</strong> (at port 9090) scrapes each service's <code>/actuator/prometheus</code> every 15 seconds and stores the time-series data.</p>
+    <p><strong>Grafana</strong> (at port 3001) connects to Prometheus as a data source and renders dashboards. The project includes a pre-configured <code>founderlink.json</code> dashboard provisioned automatically.</p>
+  </div>
+
+  <h3>Key Metrics Monitored</h3>
+  <table class="ann-table">
+    <tr><th>Metric</th><th>What it measures</th></tr>
+    <tr><td class="ann-name">http_server_requests_seconds</td><td>HTTP request latency per endpoint — detect slow APIs</td></tr>
+    <tr><td class="ann-name">jvm_memory_used_bytes</td><td>JVM heap/non-heap usage — detect memory leaks</td></tr>
+    <tr><td class="ann-name">hikaricp_connections_active</td><td>DB connection pool usage — detect connection exhaustion</td></tr>
+    <tr><td class="ann-name">rabbitmq_queue_messages</td><td>Queue depth — detect consumer lag</td></tr>
+    <tr><td class="ann-name">process_cpu_usage</td><td>CPU usage per service</td></tr>
+  </table>
+
+  <h3>SonarQube Code Quality</h3>
+  <div class="explain-box green">
+    <div class="explain-label">🔍 SonarQube</div>
+    <p>The project includes SonarQube in docker-compose. <code>sonar-analyze-all.sh</code> runs SonarScanner against all microservices. It checks: code coverage, code duplication, security vulnerabilities (OWASP rules), code smells, and technical debt. Results visible at <code>http://localhost:9000</code>.</p>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════
+     SECTION 14 — API ENDPOINTS
+     ════════════════════════════════════════════════════════════ -->
+<section class="section" id="s14">
+  <div class="section-header">
+    <span class="section-num">14</span>
+    <h2>API Endpoint Deep Explanation</h2>
+    <span class="badge">API REFERENCE</span>
+  </div>
+
+  <h3>Auth Service APIs</h3>
+  <table class="port-table">
+    <tr><th>Method</th><th>Endpoint</th><th>Auth</th><th>Purpose</th><th>Response</th></tr>
+    <tr><td>POST</td><td>/auth/register</td><td>None</td><td>Register new user</td><td>201 + userId, name, email, role</td></tr>
+    <tr><td>POST</td><td>/auth/login</td><td>None</td><td>Login → JWT tokens</td><td>200 + accessToken, refreshToken, userId</td></tr>
+    <tr><td>POST</td><td>/auth/refresh</td><td>Bearer token</td><td>Refresh access token</td><td>200 + new tokens</td></tr>
+    <tr><td>GET</td><td>/auth/users/{id}</td><td>None (internal)</td><td>Get user summary by ID</td><td>200 + name, email, role</td></tr>
+    <tr><td>GET</td><td>/auth/users/by-role?role=ROLE_FOUNDER</td><td>None</td><td>List users by role</td><td>200 + List&lt;UserSummaryDto&gt;</td></tr>
+  </table>
+
+  <h3>Startup Service APIs</h3>
+  <table class="port-table">
+    <tr><th>Method</th><th>Endpoint</th><th>Role</th><th>Purpose</th></tr>
+    <tr><td>POST</td><td>/startups</td><td>ROLE_FOUNDER</td><td>Create startup (pending approval)</td></tr>
+    <tr><td>GET</td><td>/startups?page=0&size=10</td><td>All</td><td>List all APPROVED startups (paginated)</td></tr>
+    <tr><td>GET</td><td>/startups/{id}</td><td>All</td><td>Get startup details</td></tr>
+    <tr><td>PUT</td><td>/startups/{id}</td><td>FOUNDER/COFOUNDER</td><td>Update startup (only owner)</td></tr>
+    <tr><td>DELETE</td><td>/startups/{id}</td><td>FOUNDER/COFOUNDER/ADMIN</td><td>Delete startup → publishes startup.deleted event</td></tr>
+    <tr><td>GET</td><td>/startups/search?industry=fintech&stage=SEED</td><td>All</td><td>Filter startups (JPA Specification)</td></tr>
+    <tr><td>GET</td><td>/startups/admin/all</td><td>ROLE_ADMIN</td><td>All startups including pending</td></tr>
+    <tr><td>PUT</td><td>/startups/{id}/approve</td><td>ROLE_ADMIN</td><td>Approve startup → publishes event</td></tr>
+    <tr><td>PUT</td><td>/startups/{id}/reject</td><td>ROLE_ADMIN</td><td>Reject startup → publishes event</td></tr>
+    <tr><td>POST</td><td>/startups/{id}/follow</td><td>ROLE_INVESTOR</td><td>Follow a startup</td></tr>
+  </table>
+
+  <h3>Payment Service APIs</h3>
+  <table class="port-table">
+    <tr><th>Method</th><th>Endpoint</th><th>Role</th><th>Purpose</th></tr>
+    <tr><td>POST</td><td>/payments/create-order</td><td>ROLE_INVESTOR</td><td>Create Razorpay order → starts Saga</td></tr>
+    <tr><td>POST</td><td>/payments/verify</td><td>ROLE_INVESTOR</td><td>Verify Razorpay signature → mark as captured</td></tr>
+    <tr><td>POST</td><td>/payments/{id}/accept</td><td>ROLE_FOUNDER</td><td>Founder accepts → Saga COMPLETED</td></tr>
+    <tr><td>POST</td><td>/payments/{id}/reject</td><td>ROLE_FOUNDER</td><td>Founder rejects → Saga compensates (Razorpay refund)</td></tr>
+    <tr><td>GET</td><td>/payments/{id}/saga-status</td><td>Any party</td><td>Check saga state (ORDER_CREATED → COMPLETED)</td></tr>
+  </table>
+
+  <h3>Full Execution Path: Create Startup</h3>
+  <div class="ascii-box">POST /startups
+Authorization: Bearer eyJhbGci...
+Content-Type: application/json
+Body: { "name":"TechX", "industry":"fintech", "stage":"SEED", "fundingGoal": 500000, ... }
+
+EXECUTION:
+1. API Gateway: JwtAuthenticationFilter extracts claims
+   → X-User-Id: 42, X-User-Roles: ROLE_FOUNDER
+
+2. Routes to Startup Service :8083
+
+3. StartupService's JwtAuthenticationFilter:
+   → Reads X-User-Id header (trusts Gateway)
+   → Creates: UsernamePasswordAuthenticationToken("42", null, [ROLE_FOUNDER])
+   → Sets in SecurityContextHolder
+
+4. StartupController.createStartup():
+   → @PreAuthorize("hasAuthority('ROLE_FOUNDER')") → PASSES
+   → authentication.getName() returns "42" (userId)
+   → Calls startupCommandService.createStartup(42L, request)
+
+5. StartupCommandService.createStartup():
+   → Validates input
+   → Builds Startup entity with founderId=42, isApproved=false
+   → startupRepository.save(startup) → INSERT INTO startups
+   → rabbitTemplate.convertAndSend("startup.created", StartupCreatedEvent)
+
+6. Response: 201 Created
+   { "id":101, "name":"TechX", "isApproved":false, "stage":"SEED", ... }
+
+7. (Async) NotificationService receives startup.created
+   → Creates notification for founderId=42: "Your startup submitted for review"</div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════
+     SECTION 15 — TECHNICAL INTERVIEW Q&A
+     ════════════════════════════════════════════════════════════ -->
+<section class="section" id="s15">
+  <div class="section-header">
+    <span class="section-num">15</span>
+    <h2>Technical Interview Questions &amp; Answers</h2>
+    <span class="badge">35 QUESTIONS</span>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-q"><span class="qa-qnum">Q1</span>What is a microservices architecture and why did you use it in FounderLink?</div>
+    <div class="qa-a">Microservices architecture decomposes an application into small, independently deployable services, each owning its own data and business logic. I used it in FounderLink because each domain (Auth, Startup, Investment, Payment) has different <strong>scaling requirements</strong> — the Startup Service needs more resources during peak browsing, while Payment Service needs to scale during funding rounds. With microservices, I can scale each service independently. Additionally, <strong>fault isolation</strong> ensures that if the Messaging Service goes down, the Investment flow continues unaffected. Each service uses its own database schema, enforcing bounded contexts from Domain-Driven Design.</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-q"><span class="qa-qnum">Q2</span>Explain the role of API Gateway in your project.</div>
+    <div class="qa-a">The API Gateway is the single entry point for all client requests. It performs <strong>JWT validation</strong> — it decodes the JWT token using the shared secret, extracts <code>userId</code> and <code>roles</code> claims, and injects them as <code>X-User-Id</code> and <code>X-User-Roles</code> HTTP headers before forwarding the request to downstream services. This prevents each microservice from re-validating tokens. It also handles <strong>routing</strong> (based on URL patterns), <strong>CORS</strong> (via CorsConfig), and <strong>request logging</strong> (via RequestLoggingFilter). The reactive nature of Spring Cloud Gateway (built on Netty, not Servlet) makes it non-blocking and efficient for high throughput.</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-q"><span class="qa-qnum">Q3</span>How does JWT authentication work in FounderLink?</div>
+    <div class="qa-a">When a user logs in via <code>POST /auth/login</code>, the <code>AuthService</code> validates credentials using <code>BCryptPasswordEncoder.matches()</code>. On success, <code>JwtUtil.generateAccessToken(userId, email, role)</code> builds a JWT signed with HMAC-SHA256 using a secret key from Config Server. The token contains claims: <code>userId</code>, <code>email</code>, <code>roles</code>, and expiry. The client stores this token in localStorage via Redux/tokenService. For every subsequent request, Axios interceptors attach <code>Authorization: Bearer &lt;token&gt;</code>. The API Gateway validates the signature (without calling Auth Service), extracts claims, and passes them as headers. Downstream services read these headers to know the authenticated user's identity and roles.</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-q"><span class="qa-qnum">Q4</span>What is the Saga Pattern and how did you implement it?</div>
+    <div class="qa-a">The Saga pattern manages distributed transactions across microservices. Since we can't span a single ACID transaction across multiple services' databases, a Saga breaks the transaction into a sequence of local transactions. In FounderLink's payment flow: Step 1: Razorpay order created (<code>ORDER_CREATED</code>). Step 2: Payment captured by Razorpay (<code>PAYMENT_CAPTURED</code>). Step 3: Awaiting founder approval (<code>AWAITING_APPROVAL</code>). Step 4a: Accepted → <code>COMPLETED</code>. Step 4b: Rejected → <strong>compensating transaction</strong> executes a Razorpay refund (<code>COMPENSATING → COMPENSATED</code>). The <code>SagaOrchestrator</code> coordinates each step, persisting state in <code>payment_sagas</code> table for durability and audit. If the refund itself fails, the saga is marked <code>FAILED</code> with a failure reason for manual intervention.</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-q"><span class="qa-qnum">Q5</span>How does OpenFeign work internally?</div>
+    <div class="qa-a">OpenFeign creates a <strong>JDK dynamic proxy</strong> at application startup for every <code>@FeignClient</code> interface. When <code>startupClient.getStartupById(42L)</code> is called, the proxy: (1) reads the <code>@GetMapping("/startups/{id}")</code> annotation to determine method and URL template. (2) Substitutes path variables. (3) Asks Spring Cloud LoadBalancer to resolve <code>startup-service</code> from Eureka to an actual host:port. (4) Makes an HTTP GET request using the OkHttp/Apache client. (5) Deserializes the JSON response into <code>StartupDTO</code> using Jackson. If the service is down, the <code>FallbackFactory</code> kicks in and returns a safe default. This is circuit breaking via Resilience4j.</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-q"><span class="qa-qnum">Q6</span>Explain the CQRS pattern in StartupService.</div>
+    <div class="qa-a">CQRS stands for <strong>Command Query Responsibility Segregation</strong>. In StartupService, I separated write operations (create, update, delete, approve, reject) into <code>StartupCommandService</code> and read operations (get, search, list) into <code>StartupQueryService</code>. The benefits are: <strong>Single Responsibility</strong> — each service has one reason to change. <strong>Performance</strong> — query service can be optimized independently (e.g., add caching on reads without affecting writes). <strong>Testability</strong> — smaller classes are easier to unit test. In the <code>StartupController</code>, the constructor injects both services, and each endpoint delegates to the appropriate one based on whether it reads or writes data.</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-q"><span class="qa-qnum">Q7</span>What is Spring Cloud Config Server and why is it important?</div>
+    <div class="qa-a">Config Server provides <strong>externalized configuration</strong> management. Instead of each microservice having its own application.yml baked into the Docker image, they all pull config from a central Git-backed Config Server at startup. The benefits: (1) <strong>Single source of truth</strong> for all configs. (2) <strong>No rebuild needed</strong> to change a config value — update Git, restart service. (3) <strong>Secrets management</strong> — the JWT secret, DB passwords, RabbitMQ credentials are in one place. (4) <strong>Environment-specific configs</strong> — auth-service.yml, auth-service-prod.yml for different environments. Services use <code>spring.config.import=optional:configserver:http://config-server:8888</code> to pull their config.</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-q"><span class="qa-qnum">Q8</span>Explain @Transactional and when it rolls back.</div>
+    <div class="qa-a">@Transactional uses Spring AOP to wrap the method in a database transaction. Spring creates a CGLIB proxy around the bean. When the annotated method is called: (1) TransactionInterceptor opens a DB connection from HikariCP pool. (2) <code>BEGIN TRANSACTION</code> executes. (3) Your method body runs. (4) If method completes normally → <code>COMMIT</code>. (5) If a <code>RuntimeException</code> (unchecked) is thrown → <code>ROLLBACK</code>. Important: <strong>it does NOT rollback for checked exceptions by default</strong>. Use <code>@Transactional(rollbackFor = Exception.class)</code> if needed. In <code>AuthService.register()</code>, the transaction wraps email uniqueness check + user save + role assignment — if the save fails for any reason, all changes are rolled back atomically.</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-q"><span class="qa-qnum">Q9</span>How does RabbitMQ event-driven communication work in your project?</div>
+    <div class="qa-a">FounderLink uses a <strong>Topic Exchange</strong> named <code>founderlink.exchange</code>. When AuthService completes registration, it calls <code>rabbitTemplate.convertAndSend(exchange, "user.registered", event)</code>. Jackson2JsonMessageConverter serializes the <code>UserRegisteredEvent</code> POJO to JSON. The exchange routes this message to all queues bound with routing key <code>user.registered</code>. Both the <strong>NotificationService</strong> and the <strong>UserService</strong> have queues bound to this key. Their <code>@RabbitListener</code> methods receive the message in separate threads. NotificationService creates a welcome notification; UserService creates an empty user profile. This is the <strong>fan-out on topic exchange</strong> pattern — one event, multiple consumers, fully asynchronous.</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-q"><span class="qa-qnum">Q10</span>What is the difference between @Bean and @Component?</div>
+    <div class="qa-a"><code>@Component</code> is a class-level annotation. Spring auto-detects it during component scan and registers the class as a bean. The class itself is the bean definition. <code>@Bean</code> is a method-level annotation inside a <code>@Configuration</code> class. You have explicit control over object creation — you call constructors, pass arguments, configure properties before returning. Use <code>@Bean</code> when: (1) The class is from a third-party library (you can't add @Component to it). Example: <code>@Bean PasswordEncoder → new BCryptPasswordEncoder()</code>. (2) You need conditional creation. (3) You need to pass constructor arguments. In FounderLink, <code>RabbitMQConfig</code> uses <code>@Bean</code> to configure <code>TopicExchange</code> and <code>Jackson2JsonMessageConverter</code> because these require constructor arguments and configuration.</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-q"><span class="qa-qnum">Q11</span>How does Eureka Service Discovery work?</div>
+    <div class="qa-a">On startup, each microservice (with Eureka client dependency) registers itself with Eureka by sending a POST to <code>/eureka/apps/{appId}</code> with its host, port, and health check URL. It then sends heartbeats every 30 seconds. If Eureka misses 3 consecutive heartbeats, it removes the instance from the registry. When OpenFeign needs to call <code>startup-service</code>, it asks Eureka for all healthy instances of <code>startup-service</code>. Spring Cloud LoadBalancer uses round-robin to pick one. Eureka also maintains a local cache in each client so they can still resolve services if Eureka itself briefly goes down — this is called <strong>self-preservation mode</strong>.</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-q"><span class="qa-qnum">Q12</span>Explain @PreAuthorize and how it works.</div>
+    <div class="qa-a"><code>@PreAuthorize("hasAuthority('ROLE_FOUNDER')")</code> uses Spring Security AOP. When the controller method is invoked, a <code>MethodSecurityInterceptor</code> proxy intercepts the call BEFORE execution. It retrieves the <code>Authentication</code> object from <code>SecurityContextHolder</code> (which was populated by the JWT filter). It evaluates the SpEL expression <code>hasAuthority('ROLE_FOUNDER')</code> against the authentication's authorities. If true, execution proceeds. If false, it throws <code>AccessDeniedException</code>, which is caught by the <code>GlobalExceptionHandler</code> and returned as HTTP 403. This is declarative authorization — the security logic is separated from business logic.</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-q"><span class="qa-qnum">Q13</span>Why did you use constructor injection instead of @Autowired?</div>
+    <div class="qa-a">Constructor injection is the Spring-recommended approach for three reasons: (1) <strong>Immutability</strong> — injected fields can be <code>final</code>, preventing accidental reassignment and making the object thread-safe. (2) <strong>Testability</strong> — you can instantiate the class in unit tests without a Spring container: <code>new AuthService(mockRepo, mockEncoder, ...)</code>. With @Autowired field injection, you need reflection or @SpringBootTest. (3) <strong>Fail-fast</strong> — if a required dependency is missing, the application fails to start immediately with a clear error: "No qualifying bean of type 'IAuthService'". With @Autowired, you might get a NullPointerException at runtime.</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-q"><span class="qa-qnum">Q14</span>How does BCrypt password hashing work?</div>
+    <div class="qa-a">BCrypt is an adaptive hashing function. Unlike MD5/SHA1, it's designed to be <strong>slow</strong> — this makes brute-force attacks computationally expensive. It automatically generates a random <strong>salt</strong> (22 characters) and embeds it in the output hash string. So two users with the same password have different hashes. The output format is <code>$2a$10$salthere22charshashhererest</code>. <code>10</code> is the work factor — the number of rounds doubles every time the factor increases by 1. You can increase the factor over time as hardware gets faster. <code>passwordEncoder.matches(rawPassword, encodedPassword)</code> extracts the salt, re-hashes the raw password with the same salt, and compares — no need to store plain text.</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-q"><span class="qa-qnum">Q15</span>What is STATELESS session management and why use it?</div>
+    <div class="qa-a">In FounderLink, <code>.sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))</code> tells Spring Security to never create an <code>HttpSession</code>. Each request is fully self-contained — the JWT token carries all identity information. This is critical for microservices because: (1) <strong>Horizontal scaling</strong> — if Session Service is stateful, all requests from a user must go to the same server. With stateless JWT, any instance of a service can handle any request. (2) <strong>No server memory</strong> wasted on sessions. (3) <strong>Works across services</strong> — JWT is valid for all 11 microservices using the same secret. The trade-off is JWT cannot be "invalidated" before expiry (unless you implement a blacklist in Redis).</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-q"><span class="qa-qnum">Q16</span>Explain Spring Data JPA's repository query derivation.</div>
+    <div class="qa-a">Spring Data JPA parses repository method names at application startup to derive SQL queries. The method name <code>findByRolesName(String roleName)</code> is parsed as: <code>find</code> (SELECT), <code>By</code> (WHERE clause), <code>Roles</code> (navigate the <code>roles</code> association with a JOIN), <code>Name</code> (filter on the <code>name</code> field of the joined entity). The generated SQL is approximately: <code>SELECT u.* FROM users u JOIN user_roles ur ON u.id=ur.user_id JOIN roles r ON ur.role_id=r.id WHERE r.name = ?</code>. For complex queries, you can use <code>@Query("SELECT ...")</code> with JPQL or native SQL. The JPA Specification API is used in StartupService for dynamic multi-criteria search (industry, stage, fundingGoal range).</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-q"><span class="qa-qnum">Q17</span>How does the token refresh mechanism work in the frontend?</div>
+    <div class="qa-a">The Axios response interceptor catches any 401 Unauthorized response. It checks if the request was already a retry (<code>_retry</code> flag). If not, it sets <code>isRefreshing = true</code> (preventing multiple concurrent refresh calls) and calls <code>POST /auth/refresh</code> with the current token. While refreshing, any other failed requests are pushed to <code>failedQueue</code>. On success, <code>processQueue(null, newToken)</code> resolves all queued promises, retrying them with the new token. On failure (refresh token also expired), <code>tokenService.clearAll()</code> removes stored tokens and the user is redirected to <code>/login</code>. This is the <strong>silent token refresh pattern</strong> — users never see a logout unless their refresh token is truly expired.</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-q"><span class="qa-qnum">Q18</span>What is the difference between TopicExchange, DirectExchange, and FanoutExchange?</div>
+    <div class="qa-a"><strong>DirectExchange</strong> routes messages to queues where the binding key exactly matches the routing key. Simple 1-to-1 routing. <strong>FanoutExchange</strong> ignores routing keys completely and delivers messages to ALL bound queues. Broadcasting. <strong>TopicExchange</strong> (used in FounderLink) routes based on pattern matching using wildcards: <code>*</code> matches exactly one word, <code>#</code> matches zero or more words. Example: <code>startup.*</code> matches <code>startup.created</code> and <code>startup.deleted</code>. I chose TopicExchange because different consumers need to subscribe to different patterns of events. NotificationService subscribes to <code>startup.*</code> for all startup events, while InvestmentService only subscribes to <code>startup.deleted</code>.</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-q"><span class="qa-qnum">Q19</span>How does Docker Compose manage service startup order?</div>
+    <div class="qa-a">Docker Compose uses <code>depends_on</code> with <code>condition: service_healthy</code>. Each service defines a <code>healthcheck</code> — for PostgreSQL: <code>pg_isready</code> command. For RabbitMQ: <code>rabbitmq-diagnostics ping</code>. The startup order in FounderLink: (1) PostgreSQL, RabbitMQ, Redis start in parallel. (2) Config Server starts and becomes healthy. (3) Eureka Server starts (after Config Server is healthy). (4) All business microservices start (after Eureka + all infrastructure is healthy). Without this ordering, a microservice might start before its Config Server is ready, failing to load properties, or start before Eureka is ready, failing to register.</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-q"><span class="qa-qnum">Q20</span>Explain the difference between @Entity and @Table.</div>
+    <div class="qa-a"><code>@Entity</code> tells JPA that this class represents a persistent entity — it should be mapped to a database table. Without @Entity, JPA ignores the class entirely. <code>@Table(name="users")</code> is optional and customizes the table name. Without it, JPA uses the class name converted by the naming strategy (e.g., <code>UserEntity</code> → <code>user_entity</code>). In FounderLink, <code>@Table(name="users")</code> explicitly sets the table to <code>users</code> (not <code>user_entity</code>). You can also use <code>@Table</code> to define indexes: <code>@Table(name="users", indexes = @Index(columnList="email"))</code> which creates a database index on the email column for faster lookups.</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-q"><span class="qa-qnum">Q21</span>What is @Builder.Default and why is it needed?</div>
+    <div class="qa-a">When using Lombok's <code>@Builder</code>, any field with an inline default value (like <code>private Boolean isApproved = false</code>) is <strong>NOT honored</strong> when using the builder pattern. Lombok generates a builder that defaults all fields to null/0/false unless set. <code>@Builder.Default</code> tells Lombok to use the specified default value in the builder. In <code>Startup.java</code>, <code>@Builder.Default private Boolean isApproved = false</code> ensures that when you call <code>Startup.builder().name("x").build()</code>, <code>isApproved</code> is <code>false</code> (not <code>null</code>). Without it, <code>isApproved</code> would be null in the database, violating the <code>@Column(nullable=false)</code> constraint.</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-q"><span class="qa-qnum">Q22</span>How does pagination work with Spring Data JPA?</div>
+    <div class="qa-a">The controller accepts <code>@RequestParam int page</code> and <code>@RequestParam int size</code>. It creates a <code>Pageable pageable = PageRequest.of(page, size)</code> object. This is passed to <code>startupRepository.findAll(pageable)</code> which returns <code>Page&lt;Startup&gt;</code>. Hibernate generates: <code>SELECT * FROM startups ORDER BY id LIMIT 10 OFFSET 0</code> and a separate <code>SELECT COUNT(*) FROM startups</code>. The <code>Page</code> object contains: the list of entities for this page, total elements count, total pages, current page, and whether it's the first/last page. The frontend uses <code>totalPages</code> to render pagination buttons.</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-q"><span class="qa-qnum">Q23</span>What is the purpose of DTOs and why not return entities directly?</div>
+    <div class="qa-a">DTOs (Data Transfer Objects) decouple the API contract from the database schema. Reasons not to return JPA entities directly: (1) <strong>Security</strong> — entities may have sensitive fields (password, internal flags) that should never be exposed in the API. (2) <strong>Serialization issues</strong> — @ManyToMany with LAZY loading causes LazyInitializationException during Jackson serialization. (3) <strong>Circular references</strong> — bidirectional relationships cause infinite recursion during JSON serialization. (4) <strong>API stability</strong> — you can change the DB schema without breaking the API contract. The Mapper classes (using <code>authMapper.toUserSummaryDto()</code>) convert entities to DTOs, keeping these concerns separate.</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-q"><span class="qa-qnum">Q24</span>How does Spring's @Value work?</div>
+    <div class="qa-a"><code>@Value("${jwt.secret}")</code> uses Spring's <code>PropertySourcesPlaceholderConfigurer</code>. At application startup, Spring loads properties from all registered PropertySources (application.yml, Config Server, environment variables). When a bean is being initialized and a field or constructor parameter has <code>@Value("${jwt.secret}")</code>, Spring resolves the <code>${jwt.secret}</code> placeholder by looking up the key in its property sources. The resolved String value is injected. If the key doesn't exist, Spring throws <code>IllegalArgumentException</code> unless a default is provided: <code>@Value("${jwt.secret:myDefaultSecret}")</code>. In FounderLink, the JWT secret comes from Config Server's <code>auth-service.yml</code>.</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-q"><span class="qa-qnum">Q25</span>Explain Spring Cloud Gateway's reactive nature.</div>
+    <div class="qa-a">Spring Cloud Gateway is built on <strong>Project Reactor</strong> and <strong>Netty</strong> (non-blocking I/O). Unlike traditional Servlet-based Spring MVC which uses one thread per request, Gateway uses an <strong>event loop</strong> model. A small number of threads (usually = number of CPU cores) handle thousands of concurrent connections using non-blocking I/O. The <code>GatewayFilter</code> returns a <code>Mono&lt;Void&gt;</code> (reactive stream). <code>chain.filter(exchange)</code> returns a Mono representing the downstream service call. The <code>return exchange.getResponse().setComplete()</code> for rejected requests is also reactive. This makes the Gateway extremely efficient under high concurrency — it doesn't block threads while waiting for downstream responses.</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-q"><span class="qa-qnum">Q26</span>What happens when multiple API calls fail with 401 simultaneously?</div>
+    <div class="qa-a">This is handled by the <strong>token refresh mutex pattern</strong> in <code>axiosConfig.ts</code>. When the first 401 response arrives, <code>isRefreshing</code> is set to <code>true</code> and the refresh call is initiated. When the second and third 401 responses arrive before the refresh completes, they see <code>isRefreshing = true</code> and push their resolve/reject callbacks to <code>failedQueue</code>. When the refresh succeeds, <code>processQueue(null, newToken)</code> iterates through failedQueue and resolves each promise with the new token. Each queued request then retries with <code>Authorization: Bearer &lt;newToken&gt;</code>. This ensures only ONE refresh call is made regardless of how many concurrent requests fail simultaneously.</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-q"><span class="qa-qnum">Q27</span>Explain FetchType.EAGER vs LAZY in JPA.</div>
+    <div class="qa-a"><code>FetchType.EAGER</code> loads the association immediately when the parent entity is loaded, via a JOIN query. In <code>UserEntity</code>, roles are <code>EAGER</code> — when we call <code>userRepository.findByEmail()</code>, Hibernate immediately joins and fetches roles. This is correct here because we always need roles for authentication. <code>FetchType.LAZY</code> (default for @ManyToOne, @OneToMany) creates a proxy that only loads data when you actually access the field. This is better for performance when you don't always need the association. The danger: if you access a LAZY field outside a transaction (e.g., during JSON serialization), Hibernate throws <code>LazyInitializationException</code> because the session is closed. DTOs solve this by fetching needed data within the transaction.</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-q"><span class="qa-qnum">Q28</span>How does the GitHub Actions CI/CD pipeline work?</div>
+    <div class="qa-a">The pipeline triggers on push or pull_request to main. <strong>Job 1 (build-backend)</strong>: Sets up JDK 17, runs <code>mvn clean package -DskipTests -q</code> on the Maven multi-module project to build all 11 microservice JARs. <strong>Job 2 (build-frontend)</strong>: Sets up Node.js 18, runs <code>npm ci</code> (clean install), linting, TypeScript check, and production build — in parallel with Job 1. <strong>Job 3 (docker-push-backend)</strong>: Uses a matrix strategy to build and push 11 Docker images to Docker Hub concurrently. Each image is tagged with <code>:latest</code> and <code>:git-sha</code> for versioning. <strong>Job 4 (docker-push-frontend)</strong>: Builds the React app with <code>VITE_API_BASE_URL</code> build arg injected from GitHub Secrets. Jobs 3 and 4 only run on push to main (not PRs) and depend on their respective build jobs.</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-q"><span class="qa-qnum">Q29</span>What is the CSRF protection and why is it disabled?</div>
+    <div class="qa-a">CSRF (Cross-Site Request Forgery) is an attack where a malicious site tricks a browser into making authenticated requests using stored cookies. Spring Security adds a CSRF token to HTML forms to prevent this. However, in FounderLink, authentication uses <strong>Bearer JWT tokens in the Authorization header</strong>, not cookies. CSRF attacks only work when credentials are automatically sent by the browser (cookies). JavaScript code must explicitly set the <code>Authorization</code> header — a cross-site script cannot access another site's localStorage. Therefore, CSRF protection is unnecessary and is disabled with <code>csrf(AbstractHttpConfigurer::disable)</code> to simplify the stateless REST API.</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-q"><span class="qa-qnum">Q30</span>What is @EnumType.STRING and why use it over ORDINAL?</div>
+    <div class="qa-a"><code>@Enumerated(EnumType.STRING)</code> stores the enum's name (e.g., "SEED") in the database column. <code>EnumType.ORDINAL</code> (the default) stores the position index (0, 1, 2). The problem with ORDINAL: if you insert a new enum value in the middle of the enum declaration, all existing data becomes incorrect. Example: <code>enum StartupStage { IDEA, SEED, SERIES_A }</code> — SEED is stored as 1. If you later add <code>PRE_SEED</code> before SEED: <code>enum StartupStage { IDEA, PRE_SEED, SEED, SERIES_A }</code> — now SEED is stored as 2, but the DB still has 1 for old records. This causes data corruption. STRING is always safe because it stores the actual name regardless of ordering.</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-q"><span class="qa-qnum">Q31</span>Explain the GlobalExceptionHandler pattern.</div>
+    <div class="qa-a">Each microservice has a <code>@RestControllerAdvice</code> class (GlobalExceptionHandler) that provides centralized exception handling. Instead of try-catch blocks scattered across controllers, exceptions bubble up and are caught here. <code>@ExceptionHandler(ResourceNotFoundException.class)</code> handles 404s. <code>@ExceptionHandler(MethodArgumentNotValidException.class)</code> handles validation failures (from <code>@Valid</code>). <code>@ExceptionHandler(CustomException.class)</code> handles business exceptions with a specific HttpStatus. Each handler returns a structured <code>ApiResponse</code> JSON body with a meaningful error message. This gives consistent error format across all endpoints and separates error-handling logic from business logic.</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-q"><span class="qa-qnum">Q32</span>What is HikariCP and why is it important?</div>
+    <div class="qa-a">HikariCP is Spring Boot's default JDBC connection pool (since Spring Boot 2.0). Creating a new database connection is expensive (100-200ms). HikariCP maintains a pool of pre-opened connections and reuses them. When <code>@Transactional</code> starts a transaction, it borrows a connection from the pool. On commit/rollback, the connection is returned. HikariCP is the fastest connection pool available for JVM — it uses bytecode-level optimization. Default pool size is 10. If all 10 connections are in use and a new transaction needs one, the caller waits up to <code>connectionTimeout</code> (30s default). Monitoring the <code>hikaricp_connections_active</code> metric in Grafana helps detect connection pool exhaustion.</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-q"><span class="qa-qnum">Q33</span>How does the ProtectedRoute work in React?</div>
+    <div class="qa-a"><code>ProtectedRoute</code> is a wrapper component that checks authentication before rendering children. It reads <code>isAuthenticated</code> and <code>role</code> from the <code>useAuth</code> hook (which reads Redux state). If <code>isAuthenticated</code> is false or the token is missing from localStorage, it clears all tokens and navigates to <code>/login</code> using React Router's <code>&lt;Navigate&gt;</code>. If <code>allowedRoles</code> is provided and the user's role isn't in the list, it navigates to <code>/unauthorized</code>. This implements both <strong>authentication guard</strong> (is user logged in?) and <strong>authorization guard</strong> (does user have the right role?). The <code>replace</code> prop means the login page replaces the current history entry so pressing Back doesn't go back to the protected page.</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-q"><span class="qa-qnum">Q34</span>Explain multi-stage Docker builds and their benefit.</div>
+    <div class="qa-a">Multi-stage builds use multiple <code>FROM</code> statements in a Dockerfile. Stage 1 (build): Uses a full JDK image to compile the code and build the JAR. Stage 2 (runtime): Copies only the built JAR from Stage 1 into a minimal JRE image. The final Docker image contains only what's needed to run — no Maven, no source code, no JDK compiler. Benefits: (1) <strong>Smaller image size</strong> — JRE image is ~100MB vs JDK image ~350MB. Smaller images mean faster deployment, less storage, faster Docker pulls. (2) <strong>Security</strong> — no compilation tools in production means a smaller attack surface. (3) <strong>Build reproducibility</strong> — build always happens inside Docker, not on developer's machine.</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-q"><span class="qa-qnum">Q35</span>What is Spring Boot Actuator and what endpoints does it expose?</div>
+    <div class="qa-a">Spring Boot Actuator adds production-ready monitoring endpoints to every microservice. Key endpoints: <code>/actuator/health</code> — reports UP/DOWN status (used by Docker healthcheck). <code>/actuator/prometheus</code> — Prometheus-format metrics scraped every 15s by Prometheus server. <code>/actuator/info</code> — application metadata. <code>/actuator/metrics</code> — lists all available metrics. <code>/actuator/env</code> — current environment properties (disabled in prod for security). In FounderLink, <code>/actuator/**</code> is <code>permitAll()</code> in SecurityConfig so Docker healthchecks and Prometheus scraping work without authentication. Actuator integrates with Micrometer for metric collection — counters, gauges, timers are automatically registered for JVM, Hikari, HTTP requests, etc.</div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════
+     SECTION 16 — SITUATIONAL QUESTIONS
+     ════════════════════════════════════════════════════════════ -->
+<section class="section" id="s16">
+  <div class="section-header">
+    <span class="section-num">16</span>
+    <h2>Situational / Scenario Questions</h2>
+    <span class="badge">REAL-WORLD</span>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-q"><span class="qa-qnum">S1</span>What happens if RabbitMQ goes down while a user is registering?</div>
+    <div class="qa-a">The <code>rabbitTemplate.convertAndSend()</code> call in <code>AuthService.register()</code> is wrapped in a <code>try-catch</code>. If RabbitMQ is unavailable, a <code>AmqpConnectException</code> is thrown. The catch block logs a warning but does NOT re-throw the exception. The registration transaction continues and commits — the user IS saved in the database. They just won't get a welcome notification or have their UserService profile created immediately. This is <strong>graceful degradation</strong>. A production improvement would be to use a <strong>transactional outbox pattern</strong> — save the event to a DB table inside the same transaction, then a background job polls and publishes events, guaranteeing at-least-once delivery.</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-q"><span class="qa-qnum">S2</span>How would you handle if the Startup Service is down when Team Service tries to validate a startup?</div>
+    <div class="qa-a">The <code>@FeignClient</code> on <code>StartupClient</code> has a <code>fallbackFactory</code>. When Startup Service is unavailable, the fallback returns <code>null</code>. The Team Service's <code>sendInvitation</code> method checks if the returned startup DTO is null and throws a <code>ServiceUnavailableException</code>, which is mapped to HTTP 503 by the GlobalExceptionHandler. For improvement, I'd add <strong>Resilience4j Circuit Breaker</strong>: after 5 consecutive failures, the circuit "opens" and immediately returns the fallback for 30 seconds without making network calls, preventing cascading failures and giving Startup Service time to recover.</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-q"><span class="qa-qnum">S3</span>If the platform needs to scale to 10,000 concurrent users, what would you change?</div>
+    <div class="qa-a">Multiple improvements: (1) <strong>Horizontal scaling</strong> — run multiple instances of high-traffic services (StartupService, AuthService) behind a load balancer. Eureka + Ribbon handles this automatically. (2) <strong>Redis caching</strong> for frequently read data (approved startup listings) with TTL to reduce DB load. (3) <strong>Database read replicas</strong> — route SELECT queries to read replicas, writes to primary. (4) <strong>Increase HikariCP pool size</strong> per instance. (5) <strong>Async processing</strong> — already using RabbitMQ for notifications, extending to more operations. (6) <strong>CDN</strong> for static React assets. (7) <strong>Kubernetes</strong> with HPA (Horizontal Pod Autoscaler) for auto-scaling based on CPU/memory metrics visible in Grafana.</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-q"><span class="qa-qnum">S4</span>How would you handle a failed Razorpay refund in the Saga?</div>
+    <div class="qa-a">In the <code>SagaOrchestrator.compensate()</code> method, if the Razorpay refund call fails (network error, Razorpay API issue), the exception is caught and logged. The saga is marked <code>SagaStatus.FAILED</code> with a <code>failureReason</code> ("Razorpay refund failed: &lt;error message&gt;"). The event rejection notification is STILL published (non-blocking) so both parties are informed. The <code>payment_sagas</code> table entry with status FAILED and the failure reason enables a support team to manually process the refund. A production improvement: implement a <strong>retry mechanism with exponential backoff</strong> for the refund call, and an admin dashboard to view and manually trigger failed saga compensations.</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-q"><span class="qa-qnum">S5</span>How would you prevent a founder from seeing other founders' pending startups?</div>
+    <div class="qa-a">The <code>GET /startups</code> endpoint only returns approved startups (isApproved=true). The <code>GET /startups/admin/all</code> endpoint is <code>@PreAuthorize("hasAuthority('ROLE_ADMIN')")</code>. The <code>GET /startups/founder/{founderId}</code> endpoint returns all startups for a specific founderId. In the implementation, the service checks if <code>authentication.getName()</code> (the requesting user's ID) matches <code>founderId</code> in the path — a founder can only see their own pending startups. If they request another founder's ID, they get a 403. Additionally, the filter chains in each service validate the JWT headers injected by the Gateway, preventing unauthorized header manipulation.</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-q"><span class="qa-qnum">S6</span>What would you do if two founders accidentally submit the same startup name?</div>
+    <div class="qa-a">Currently, there's no unique constraint on startup name in the schema (startups from different founders could have the same name). To prevent duplicate submissions from the same founder, I'd add a composite unique constraint: <code>@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"name", "founderId"}))</code>. If violated, Hibernate throws <code>DataIntegrityViolationException</code>, which the <code>GlobalExceptionHandler</code> catches and converts to a 409 Conflict response. For platform-wide uniqueness, a simple unique constraint on name with a <code>DuplicateResourceException</code> in the service layer checked before saving would work.</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-q"><span class="qa-qnum">S7</span>How would you add an audit trail for all admin actions?</div>
+    <div class="qa-a">I'd use <strong>Spring AOP</strong> with a <code>@Around</code> advice (similar to the existing <code>LoggingAspect</code> in each service). Create an <code>@Audit</code> annotation. Apply it to admin-only methods. The aspect intercepts these calls, extracts the <code>Authentication</code> from <code>SecurityContextHolder</code>, logs the admin's userId, the action performed, the entity affected, timestamp, and the before/after state to a dedicated audit_log table. This is the <strong>Aspect-Oriented Programming</strong> approach — audit logic is centralized and doesn't pollute business methods. Spring AOP is used throughout the project in <code>LoggingAspect.java</code> in every service.</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-q"><span class="qa-qnum">S8</span>How do you ensure the JWT secret is not exposed?</div>
+    <div class="qa-a">The JWT secret is stored in the <strong>Config Server's Git repository</strong>. In production, this Git repo would be private. For extra security: (1) The Config Server itself can encrypt sensitive properties using <code>spring.cloud.config.server.encrypt.key</code> — values are stored as <code>{cipher}encryptedValue</code> in YAML. (2) Environment variables can override config values — Docker Compose passes secrets from a <code>.env</code> file (which is in <code>.gitignore</code>). (3) For production Kubernetes, use <strong>Kubernetes Secrets</strong> or <strong>HashiCorp Vault</strong> as a Config Server backend. The <code>.env</code> file in the project root is already in <code>.gitignore</code> to prevent accidental commit.</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-q"><span class="qa-qnum">S9</span>If the notification service is slow, how would it affect other services?</div>
+    <div class="qa-a">Because RabbitMQ provides <strong>temporal decoupling</strong>, a slow NotificationService does NOT affect AuthService, StartupService, or any other service. When AuthService publishes a <code>user.registered</code> event, it immediately continues. The message sits in the RabbitMQ queue. NotificationService consumes it when it's ready, even if that's 10 seconds later. The queue acts as a buffer. This is the core advantage of async event-driven architecture over synchronous REST calls. If NotificationService uses synchronous calls instead, a slowdown there would block the entire registration flow. The queue depth metric in Prometheus/Grafana would alert us if NotificationService falls behind.</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-q"><span class="qa-qnum">S10</span>How would you implement rate limiting on the API Gateway?</div>
+    <div class="qa-a">Spring Cloud Gateway supports rate limiting with Redis. Add the <code>RequestRateLimiter</code> filter in <code>GatewayConfig</code>: configure a <code>RedisRateLimiter</code> with <code>replenishRate</code> (tokens per second) and <code>burstCapacity</code> (max burst). Use a <code>KeyResolver</code> (e.g., by IP address or <code>X-User-Id</code> header) to identify rate-limited subjects. Redis stores token bucket state. When a request arrives, the filter checks Redis. If tokens available: allow request, decrement token. If exhausted: return HTTP 429 Too Many Requests. This is the <strong>Token Bucket algorithm</strong>. Redis is already in the architecture so no new infrastructure is needed.</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-q"><span class="qa-qnum">S11</span>How would you debug a 401 error that only happens intermittently?</div>
+    <div class="qa-a">Steps: (1) Check the API Gateway logs — does the JWT filter reject the request? (2) Verify the JWT expiry — the token may be expiring during the session (access token might have a short expiry in Config Server). (3) Check Grafana for request latency — if the Gateway takes too long, the access token might expire in transit. (4) Check if it correlates with specific services — if only Startup Service returns 401, perhaps its local JWT filter has a different secret than the Gateway. (5) Use Zipkin distributed tracing — trace the request ID across services to see exactly where authentication fails. (6) Enable <code>logging.level.org.springframework.security=DEBUG</code> temporarily to see Spring Security's decision-making.</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-q"><span class="qa-qnum">S12</span>How would you migrate the database schema without downtime?</div>
+    <div class="qa-a">Use <strong>Flyway</strong> or <strong>Liquibase</strong> for database migration management. Add migration scripts (V1__create_users.sql, V2__add_startup_location.sql). On service startup, Flyway runs pending migrations in order. For zero-downtime: (1) <strong>Additive changes</strong> first — add new column as nullable (old code ignores it, new code uses it). (2) Deploy new code. (3) <strong>Non-null/constraints</strong> — only after all instances run new code. This is the <strong>expand-contract pattern</strong>. For the current project, <code>spring.jpa.hibernate.ddl-auto=validate</code> in production (not <code>create-drop</code>) ensures Hibernate validates the schema without modifying it, while Flyway handles migrations.</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-q"><span class="qa-qnum">S13</span>How would you handle a distributed transaction spanning Payment and Investment services?</div>
+    <div class="qa-a">This is exactly what the Saga pattern solves. When a payment is accepted, InvestmentService needs to update the investment status. Options: (1) <strong>Choreography-based Saga</strong> (current approach for notifications): PaymentService publishes <code>payment.accepted</code> event. InvestmentService subscribes and updates its state. No central coordinator. (2) <strong>Orchestration-based Saga</strong> (the SagaOrchestrator in PaymentService): Explicitly calls each step in sequence and handles rollbacks. Better visibility. I chose orchestration for payments because the payment flow has strict ordering (can't mark investment successful before payment is captured) and compensation logic (refund) that's difficult to implement with pure choreography.</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-q"><span class="qa-qnum">S14</span>A new requirement: investors can message founders directly. How do you implement it?</div>
+    <div class="qa-a">The MessagingService already exists (port 8086) with WebSocket support. Architecture: (1) MessagingService stores messages in messaging_db table (sender_id, receiver_id, content, timestamp, startup_id for context). (2) REST endpoint <code>POST /messages</code> to send a message and <code>GET /messages/conversation/{userId}</code> to fetch history. (3) WebSocket endpoint for real-time delivery — when a message arrives, if recipient is connected, push via WebSocket; otherwise store for later retrieval. (4) Frontend <code>useNotificationSocket</code> hook already handles WebSocket connections. (5) <code>@PreAuthorize</code> ensures only authenticated users can send. (6) Publish <code>message.sent</code> event to NotificationService for push notification when user is offline.</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-q"><span class="qa-qnum">S15</span>How would you implement startup search with multiple dynamic filters?</div>
+    <div class="qa-a">StartupService already uses <strong>JPA Specifications</strong> (<code>StartupSpecification</code>) for dynamic querying. <code>Specification&lt;Startup&gt;</code> is a functional interface that builds a JPA <code>Predicate</code>. For each non-null filter parameter (industry, stage, minFunding, location), a separate Specification is built and combined with <code>Specification.where(s1).and(s2).and(s3)</code>. Hibernate generates a single SQL query with a WHERE clause containing only the provided conditions. Example: searching by <code>industry=fintech&stage=SEED&minFunding=100000</code> generates <code>WHERE industry='fintech' AND stage='SEED' AND funding_goal >= 100000 AND is_approved=true</code>. This is more maintainable than building query strings manually.</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-q"><span class="qa-qnum">S16</span>Describe how you'd handle secrets in a production environment.</div>
+    <div class="qa-a">For production, I'd use <strong>HashiCorp Vault</strong> as a Config Server backend. Vault stores secrets encrypted at rest, supports fine-grained access policies, and has audit logging for every secret access. Spring Cloud Config Server has native Vault support. Alternatively, on AWS: store secrets in <strong>AWS Secrets Manager</strong> and reference them in ECS task definitions as environment variables. Kubernetes: use <strong>Kubernetes Secrets</strong> with RBAC policies so only specific service accounts can read the JWT secret. CI/CD: GitHub Secrets for Docker Hub credentials (already in use in the ci-cd.yml). Never commit secrets to Git — the <code>.env</code> file is gitignored, and the Config Server's Git repo with real secrets should be private.</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-q"><span class="qa-qnum">S17</span>What happens if two instances of TeamService try to send the same invitation?</div>
+    <div class="qa-a">There's a unique constraint on <code>(startup_id, invited_user_id)</code> in the team_invitations table (as a DuplicateResourceException guard in the service layer). If two instances race to create the same invitation, both hit the service layer check. If both pass the check (race condition window), Hibernate will try to INSERT both. The database constraint will reject the second INSERT, throwing <code>DataIntegrityViolationException</code>. The service catches this and throws <code>DuplicateResourceException</code> → HTTP 409. For stronger consistency: use <code>@Transactional</code> with <code>SELECT ... FOR UPDATE</code> (pessimistic locking) or database-level unique constraints as the final guard. This is the <strong>optimistic vs pessimistic locking</strong> consideration in distributed systems.</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-q"><span class="qa-qnum">S18</span>How would you monitor and alert on payment failures?</div>
+    <div class="qa-a">Several layers: (1) <strong>Prometheus metrics</strong> — create a custom counter <code>payment.saga.failures_total</code> using Micrometer, incremented whenever a saga enters FAILED state. Grafana alert rule fires when count increases. (2) <strong>RabbitMQ queue depth</strong> — if <code>payment-failed-queue</code> depth suddenly spikes, something is wrong. (3) <strong>payment_sagas table</strong> — SagaStatus.FAILED rows need immediate attention. An admin dashboard query showing FAILED sagas with failure reasons. (4) <strong>Email alerts</strong> — the <code>EmailService</code> in PaymentService is already set up; add an alert email to the ops team when saga fails. (5) <strong>Zipkin tracing</strong> — trace payment flows end-to-end to identify where failures occur.</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-q"><span class="qa-qnum">S19</span>How would you implement search functionality across all startups efficiently?</div>
+    <div class="qa-a">Current implementation uses JPA Specifications with SQL LIKE queries — acceptable for small datasets. For scale: (1) <strong>Elasticsearch</strong> — index startup documents (id, name, description, industry, stage, fundingGoal, location) in Elasticsearch. StartupCommandService publishes an event after each create/update. A new <strong>Search Service</strong> subscribes and indexes the document. Elasticsearch provides full-text search, aggregations, and geographic queries. (2) Alternatively, <strong>PostgreSQL Full-Text Search</strong> with <code>tsvector</code> columns and GIN indexes — significantly faster than LIKE queries, no extra infrastructure. (3) Short-term: add database indexes on <code>industry</code> and <code>stage</code> columns if not already present.</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-q"><span class="qa-qnum">S20</span>How would you version your APIs?</div>
+    <div class="qa-a">API versioning options: (1) <strong>URL versioning</strong> (simplest): <code>/api/v1/startups</code>, <code>/api/v2/startups</code>. API Gateway routes based on version prefix. (2) <strong>Header versioning</strong>: <code>Accept: application/vnd.founderlink.v2+json</code>. <code>@RequestMapping(headers="X-API-Version=2")</code> in controllers. (3) <strong>Content negotiation</strong>: Different DTOs for v1 and v2. For FounderLink, I'd use URL versioning — it's visible, bookmarkable, and easy to route at the Gateway. Migration path: run v1 and v2 simultaneously for 3 months, deprecate v1, then remove. The API Gateway's routing config simply maps <code>/v1/**</code> to old service endpoints and <code>/v2/**</code> to new ones, enabling gradual migration without downtime.</div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════
+     SECTION 17 — CHEAT SHEET
+     ════════════════════════════════════════════════════════════ -->
+<section class="section" id="s17">
+  <div class="section-header">
+    <span class="section-num">17</span>
+    <h2>Quick Revision Cheat Sheet</h2>
+    <span class="badge">REVISE BEFORE INTERVIEW</span>
+  </div>
+
+  <div class="cheat-grid">
+    <div class="cheat-item">
+      <div class="cheat-key">@SpringBootApplication</div>
+      <div class="cheat-val">= @Configuration + @EnableAutoConfiguration + @ComponentScan. Entry point of every service.</div>
+    </div>
+    <div class="cheat-item">
+      <div class="cheat-key">@EnableEurekaServer</div>
+      <div class="cheat-val">Activates service registry. All services register with heartbeats every 30s.</div>
+    </div>
+    <div class="cheat-item">
+      <div class="cheat-key">@EnableConfigServer</div>
+      <div class="cheat-val">Serves YAML config over HTTP. Backed by Git repo. Services import on startup.</div>
+    </div>
+    <div class="cheat-item">
+      <div class="cheat-key">@FeignClient</div>
+      <div class="cheat-val">Creates proxy for inter-service HTTP calls. Integrates with Eureka for service discovery + load balancing.</div>
+    </div>
+    <div class="cheat-item">
+      <div class="cheat-key">@RestController</div>
+      <div class="cheat-val">= @Controller + @ResponseBody. Returns JSON. Registered with DispatcherServlet.</div>
+    </div>
+    <div class="cheat-item">
+      <div class="cheat-key">@Transactional</div>
+      <div class="cheat-val">AOP proxy wraps method. BEGIN on entry. COMMIT on success. ROLLBACK on RuntimeException.</div>
+    </div>
+    <div class="cheat-item">
+      <div class="cheat-key">@PreAuthorize</div>
+      <div class="cheat-val">SpEL evaluated before method. Checks SecurityContextHolder. Throws 403 on failure.</div>
+    </div>
+    <div class="cheat-item">
+      <div class="cheat-key">@RabbitListener</div>
+      <div class="cheat-val">Consumer thread. JSON → Java object via Jackson. Ack on success, nack on exception.</div>
+    </div>
+    <div class="cheat-item">
+      <div class="cheat-key">@Entity + @Table</div>
+      <div class="cheat-val">Marks JPA entity. @Table sets table name. Hibernate generates SQL from annotations.</div>
+    </div>
+    <div class="cheat-item">
+      <div class="cheat-key">@GeneratedValue(IDENTITY)</div>
+      <div class="cheat-val">DB auto-increment. SERIAL/BIGSERIAL in PostgreSQL. Hibernate reads generated ID after INSERT.</div>
+    </div>
+    <div class="cheat-item">
+      <div class="cheat-key">@Enumerated(STRING)</div>
+      <div class="cheat-val">Stores enum name in DB. Safe against reordering. "SEED" not 1.</div>
+    </div>
+    <div class="cheat-item">
+      <div class="cheat-key">@Builder (Lombok)</div>
+      <div class="cheat-val">Generates fluent builder. @Builder.Default for defaults. @NoArgsConstructor for JPA.</div>
+    </div>
+    <div class="cheat-item">
+      <div class="cheat-key">JWT Structure</div>
+      <div class="cheat-val">Header.Payload.Signature. Payload = userId, email, roles, iat, exp. Signed with HMAC-SHA256.</div>
+    </div>
+    <div class="cheat-item">
+      <div class="cheat-key">API Gateway Role</div>
+      <div class="cheat-val">Single entry point. Validates JWT. Adds X-User-Id/X-User-Roles headers. Routes to services.</div>
+    </div>
+    <div class="cheat-item">
+      <div class="cheat-key">Saga Pattern</div>
+      <div class="cheat-val">Multi-step distributed transaction. Each step local. Compensating transactions on failure.</div>
+    </div>
+    <div class="cheat-item">
+      <div class="cheat-key">CQRS</div>
+      <div class="cheat-val">CommandService (writes) + QueryService (reads). Single Responsibility. Separate optimization.</div>
+    </div>
+    <div class="cheat-item">
+      <div class="cheat-key">RabbitMQ TopicExchange</div>
+      <div class="cheat-val">Routes by routing key pattern. * = one word. # = multiple words. fan-out to multiple queues.</div>
+    </div>
+    <div class="cheat-item">
+      <div class="cheat-key">BCrypt</div>
+      <div class="cheat-val">Adaptive hash. Built-in salt. Work factor adjustable. matches() for verification. Never store plain text.</div>
+    </div>
+    <div class="cheat-item">
+      <div class="cheat-key">STATELESS Sessions</div>
+      <div class="cheat-val">No HttpSession. JWT carries identity. Any service instance handles any request. Horizontal scaling.</div>
+    </div>
+    <div class="cheat-item">
+      <div class="cheat-key">HikariCP</div>
+      <div class="cheat-val">Default Spring Boot connection pool. Pre-opened connections reused. Default pool size: 10.</div>
+    </div>
+    <div class="cheat-item">
+      <div class="cheat-key">Spring Data JPA</div>
+      <div class="cheat-val">Proxy implements repository. findByEmail → SELECT WHERE email=?. No SQL needed for common queries.</div>
+    </div>
+    <div class="cheat-item">
+      <div class="cheat-key">Constructor Injection</div>
+      <div class="cheat-val">Fields can be final. Testable without Spring. Fail-fast on missing bean. Spring-recommended.</div>
+    </div>
+    <div class="cheat-item">
+      <div class="cheat-key">Axios Interceptors</div>
+      <div class="cheat-val">Request: attaches JWT. Response: catches 401, silent refresh, queues parallel requests, retries.</div>
+    </div>
+    <div class="cheat-item">
+      <div class="cheat-key">ProtectedRoute</div>
+      <div class="cheat-val">Auth guard + role guard. Reads Redux/tokenService. Navigate to /login or /unauthorized.</div>
+    </div>
+    <div class="cheat-item">
+      <div class="cheat-key">CSRF disabled</div>
+      <div class="cheat-val">Bearer token in header, not cookie. Browser can't auto-send headers cross-origin. CSRF irrelevant.</div>
+    </div>
+    <div class="cheat-item">
+      <div class="cheat-key">Docker Compose Order</div>
+      <div class="cheat-val">Postgres/Rabbit/Redis → Config → Eureka → All services. depends_on + healthcheck ensures order.</div>
+    </div>
+    <div class="cheat-item">
+      <div class="cheat-key">GitHub Actions Matrix</div>
+      <div class="cheat-val">matrix.include builds 11 Docker images in parallel. Tags with :latest + :git-sha. Pushes to Docker Hub.</div>
+    </div>
+    <div class="cheat-item">
+      <div class="cheat-key">Prometheus + Grafana</div>
+      <div class="cheat-val">Actuator exposes /actuator/prometheus. Prometheus scrapes every 15s. Grafana dashboards query Prometheus.</div>
+    </div>
+  </div>
+
+  <h3>Architecture Summary (Speak This)</h3>
+  <div class="explain-box purple">
+    <div class="explain-label">📝 60-Second Architecture Pitch</div>
+    <p>"FounderLink is a microservices-based startup ecosystem platform with 11 Spring Boot services, coordinated via Spring Cloud. The API Gateway is the single entry point — it validates JWTs and injects user identity headers. Eureka provides service discovery; Config Server provides centralized configuration from a Git repository. Services communicate synchronously via OpenFeign for real-time data needs and asynchronously via RabbitMQ's Topic Exchange for event-driven workflows. Authentication uses stateless JWT with BCrypt password hashing. The Payment Service implements a Saga orchestration pattern for distributed payment transactions with Razorpay integration and compensating refunds. The React + TypeScript frontend uses Redux Toolkit for state management, Axios interceptors for transparent token refresh, and protected routes for role-based access. The entire stack is containerized with Docker Compose and deployed via a GitHub Actions CI/CD pipeline that builds and pushes images to Docker Hub. Prometheus + Grafana provide real-time observability."</p>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════
+     SECTION 18 — POWER INTERVIEW SENTENCES
+     ════════════════════════════════════════════════════════════ -->
+<section class="section" id="s18">
+  <div class="section-header">
+    <span class="section-num">18</span>
+    <h2>Power Interview Sentences</h2>
+    <span class="badge">IMPRESS THE INTERVIEWER</span>
+  </div>
+
+  <p>Memorize these and use them confidently. They signal deep understanding, not just surface knowledge.</p>
+
+  <div class="power-sentence">I designed the API Gateway to validate JWT tokens locally using the shared HMAC secret, rather than calling the Auth Service on every request — this eliminated a synchronous network hop from the critical path and reduced authentication latency to near-zero.</div>
+
+  <div class="power-sentence">I applied the CQRS pattern in StartupService by separating CommandService for writes and QueryService for reads. This isn't premature optimization — it enforces Single Responsibility, enables independent caching strategies for reads, and makes the codebase significantly easier to maintain as the startup domain grows.</div>
+
+  <div class="power-sentence">The RabbitMQ event publishing in AuthService's register() method is intentionally wrapped in a try-catch because we practice graceful degradation — the user registration is more critical than the welcome notification, so a transient RabbitMQ failure shouldn't roll back a successful registration.</div>
+
+  <div class="power-sentence">I chose TopicExchange over FanoutExchange because I needed selective consumption — NotificationService subscribes to all events using wildcard patterns, while InvestmentService only subscribes to startup.deleted to clean up related data. FanoutExchange would force all consumers to handle all messages.</div>
+
+  <div class="power-sentence">The Saga orchestration in PaymentService persists each step transition in the payment_sagas table. This gives us durability — if the service restarts mid-saga, we can resume from the last known step rather than starting over. The FAILED state with a failure_reason field is essentially an audit trail for manual intervention when compensating transactions fail.</div>
+
+  <div class="power-sentence">Constructor injection with final fields is not just a stylistic choice — it makes the object genuinely immutable after construction, eliminates field injection's hidden null risks, and allows me to write meaningful unit tests without a Spring context by simply calling new AuthService(mockRepo, mockEncoder, ...).</div>
+
+  <div class="power-sentence">The token refresh logic in the Axios interceptor uses a mutex pattern with a failedQueue to handle multiple concurrent 401 errors. This guarantees that if 10 API calls fail simultaneously, exactly ONE refresh request is made. The other 9 queue up and retry with the fresh token — users experience this as completely seamless.</div>
+
+  <div class="power-sentence">@Enumerated(EnumType.STRING) is a deliberate choice over ORDINAL. With ORDINAL, inserting a new enum value anywhere in the declaration corrupts all existing database records. STRING stores the actual name, making schema evolution safe regardless of enum ordering changes.</div>
+
+  <div class="power-sentence">The Docker Compose healthcheck pattern with depends_on: condition: service_healthy isn't just convenience — it guarantees deterministic startup order across 15+ containers. Config Server must be healthy before Eureka starts, Eureka must be healthy before business services start. Without this, services fail silently due to missing configurations.</div>
+
+  <div class="power-sentence">Disabling CSRF is correct and intentional for a stateless JWT API. CSRF attacks exploit the browser's automatic cookie-sending behavior. Since our authentication lives in the Authorization header, which JavaScript must set explicitly, cross-site requests cannot carry our credentials. Spring Security's CSRF protection would only add unnecessary complexity without providing any security benefit.</div>
+
+  <div class="power-sentence">The fallbackFactory pattern in OpenFeign gives us control over the failure response — we get access to the actual Throwable that caused the failure, letting us log differently for a timeout versus a connection refused versus an HTTP 500. A static fallback would hide this context.</div>
+
+  <div class="power-sentence">SessionCreationPolicy.STATELESS combined with JWT means any of the N instances of StartupService can handle any request from any user. There's no session affinity requirement. This is the foundational principle that makes horizontal scaling in microservices straightforward.</div>
+
+  <div class="power-sentence">The GitHub Actions matrix strategy builds 11 Docker images in parallel — reducing CI pipeline time from what would be a sequential 20+ minutes to approximately 3-4 minutes. Each image is tagged with both :latest and the git commit SHA, giving us immutable, traceable versioning alongside convenient deployment via :latest.</div>
+
+  <div class="power-sentence">I use @Builder.Default on boolean flags like isApproved and isRejected because Lombok's @Builder ignores inline initializers by default. Without @Builder.Default, a new Startup built via the builder pattern would have isApproved=null, which would immediately violate the @Column(nullable=false) constraint on save — a silent, hard-to-debug failure.</div>
+
+  <div class="power-sentence">The PostgreSQL init.sql file in the docker-compose setup creates all separate schemas — auth_db, startup_db, team_db etc. — within a single PostgreSQL instance for development convenience. In production, each microservice would have its own isolated PostgreSQL instance, enforcing true database-per-service isolation — a core principle of microservices architecture.</div>
+</section>
+
+</div>
+
+<div class="footer">
+  FounderLink Interview Preparation Guide · Generated from actual project source code · Spring Boot + React Microservices Platform · Capgemini
+</div>
+
+</body>
+</html>
