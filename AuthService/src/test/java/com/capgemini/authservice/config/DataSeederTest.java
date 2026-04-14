@@ -43,7 +43,7 @@ class DataSeederTest {
     void run_shouldSeedRolesWhenNotPresent() throws Exception {
         when(roleRepository.findByName(any())).thenReturn(Optional.empty());
         when(roleRepository.save(any())).thenAnswer(inv -> inv.getArgument(0));
-        when(userRepository.findByEmail("admin@founderlink.com")).thenReturn(Optional.of(new UserEntity()));
+        when(userRepository.findByEmail("admin@gmail.com")).thenReturn(Optional.of(new UserEntity()));
 
         dataSeeder.run();
 
@@ -54,7 +54,7 @@ class DataSeederTest {
     void run_shouldNotSeedRolesWhenAlreadyPresent() throws Exception {
         RoleEntity existingRole = RoleEntity.builder().id(1L).name("ROLE_FOUNDER").build();
         when(roleRepository.findByName(any())).thenReturn(Optional.of(existingRole));
-        when(userRepository.findByEmail("admin@founderlink.com")).thenReturn(Optional.of(new UserEntity()));
+        when(userRepository.findByEmail("admin@gmail.com")).thenReturn(Optional.of(new UserEntity()));
 
         dataSeeder.run();
 
@@ -65,14 +65,14 @@ class DataSeederTest {
     void run_shouldSeedAdminUserWhenNotPresent() throws Exception {
         RoleEntity adminRole = RoleEntity.builder().id(4L).name("ROLE_ADMIN").build();
         when(roleRepository.findByName(any())).thenReturn(Optional.of(adminRole));
-        when(userRepository.findByEmail("admin@founderlink.com")).thenReturn(Optional.empty());
+        when(userRepository.findByEmail("admin@gmail.com")).thenReturn(Optional.empty());
         when(passwordEncoder.encode("Admin@123")).thenReturn("encoded-password");
         when(userRepository.save(any())).thenAnswer(inv -> inv.getArgument(0));
 
         dataSeeder.run();
 
         verify(userRepository).save(argThat(user ->
-                user.getEmail().equals("admin@founderlink.com") &&
+                user.getEmail().equals("admin@gmail.com") &&
                 user.getName().equals("Admin")
         ));
     }
@@ -81,7 +81,7 @@ class DataSeederTest {
     void run_shouldNotSeedAdminWhenAlreadyPresent() throws Exception {
         RoleEntity adminRole = RoleEntity.builder().id(4L).name("ROLE_ADMIN").build();
         when(roleRepository.findByName(any())).thenReturn(Optional.of(adminRole));
-        when(userRepository.findByEmail("admin@founderlink.com")).thenReturn(Optional.of(new UserEntity()));
+        when(userRepository.findByEmail("admin@gmail.com")).thenReturn(Optional.of(new UserEntity()));
 
         dataSeeder.run();
 

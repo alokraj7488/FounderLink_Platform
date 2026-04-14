@@ -41,12 +41,12 @@ public class DataSeeder implements CommandLineRunner {
         }
 
         // Seed default admin user if not exists
-        if (userRepository.findByEmail("admin@founderlink.com").isEmpty()) {
+        if (userRepository.findByEmail("admin@gmail.com").isEmpty()) {
             RoleEntity adminRole = roleRepository.findByName("ROLE_ADMIN")
                     .orElseThrow(() -> new RuntimeException("ROLE_ADMIN not found"));
             UserEntity admin = UserEntity.builder()
                     .name("Admin")
-                    .email("admin@founderlink.com")
+                    .email("admin@gmail.com")
                     .password(passwordEncoder.encode(adminPassword))
                     .roles(Set.of(adminRole))
                     .build();
