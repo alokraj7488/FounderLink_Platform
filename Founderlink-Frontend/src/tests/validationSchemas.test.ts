@@ -154,6 +154,7 @@ describe('startupSchema – Exception Handling', () => {
   });
 
   it('rejects missing required name', async () => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { name: _name, ...rest } = validStartup;
     await expect(startupSchema.validate(rest)).rejects.toThrow('required');
   });
