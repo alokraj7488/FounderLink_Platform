@@ -2,22 +2,23 @@ import React from 'react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { Bell, MessageSquare, LogOut, User, Sun, Moon } from 'lucide-react';
+import { Bell, MessageSquare, LogOut, User, Menu } from 'lucide-react';
 import { logout } from '../../store/slices/authSlice';
 import { setUnreadCount } from '../../store/slices/notificationSlice';
-import { toggleTheme, selectTheme } from '../../store/slices/themeSlice';
+import { toggleSidebar } from '../../store/slices/sidebarSlice';
 import { getUnreadNotifications } from '../../core/api/notificationApi';
 import useAuth from '../hooks/useAuth';
 import useNotificationSocket from '../hooks/useNotificationSocket';
 import type { RootState } from '../../types';
 import type { AppDispatch } from '../../store/store';
 
+const NAVBAR_H = 53;
+
 const Navbar: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const { user, userId, isFounder, isInvestor, isCoFounder } = useAuth();
   const unreadCount = useSelector((s: RootState) => s.notifications.unreadCount);
-  const theme = useSelector(selectTheme);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const cancelRef = useRef<HTMLButtonElement>(null);
   const modalRef = useRef<HTMLDivElement>(null);
@@ -72,52 +73,95 @@ const Navbar: React.FC = () => {
 
   const iconCls = 'p-2 rounded-[8px] transition-all duration-150 hover:[background:var(--surface-2)]';
 
+  const iconBtnStyle: React.CSSProperties = {
+    width: 32,
+    height: 32,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 8,
+    background: 'var(--surface-2)',
+    color: 'var(--text-muted)',
+    border: 'none',
+    cursor: 'pointer',
+    transition: 'background 150ms',
+    flexShrink: 0,
+  };
+
   return (
     <>
       <nav
-        className="sticky top-0 z-50 px-6 py-3 flex items-center justify-between"
-        style={{ background: 'var(--surface)', borderBottom: '1px solid var(--border)' }}
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          height: NAVBAR_H,
+          zIndex: 50,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          padding: '0 12px 0 12px',
+          background: 'var(--surface)',
+          borderBottom: '1px solid var(--border)',
+          boxSizing: 'border-box',
+          gap: 8,
+          minWidth: 0,
+        }}
       >
-        <Link to={dashboardLink} className="flex items-center gap-2.5">
-          <div
-            className="w-8 h-8 rounded-[10px] flex items-center justify-center text-white text-xs font-bold"
-            style={{ background: 'var(--brand)', boxShadow: '0 1px 4px rgba(5,150,105,0.4)' }}
-          >
-            FL
-          </div>
-          <span
-            className="text-base font-bold tracking-tight"
-            style={{ fontFamily: "'Syne', system-ui, sans-serif", color: 'var(--text-primary)' }}
-          >
-            FounderLink
-          </span>
-        </Link>
-
-        <div className="flex items-center gap-0.5">
-          {/* Theme toggle — FIRST item, before notification bell */}
+        {/* LEFT: Hamburger + Logo */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0, flexShrink: 1, overflow: 'hidden' }}>
           <button
-            onClick={() => dispatch(toggleTheme())}
-            aria-label="Toggle theme"
-            style={{
-              width: 32,
-              height: 32,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              borderRadius: 8,
-              background: 'var(--surface-2)',
-              color: 'var(--text-muted)',
-              border: 'none',
-              cursor: 'pointer',
-              transition: 'background 150ms',
-              marginRight: 2,
-            }}
+            onClick={() => dispatch(toggleSidebar())}
+            aria-label="Toggle sidebar"
+            style={{ ...iconBtnStyle, flexShrink: 0 }}
             onMouseEnter={e => (e.currentTarget.style.background = 'var(--surface-3)')}
             onMouseLeave={e => (e.currentTarget.style.background = 'var(--surface-2)')}
           >
-            {theme === 'dark' ? <Sun size={17} /> : <Moon size={17} />}
+            <Menu size={17} />
           </button>
 
+          <Link
+            to={dashboardLink}
+            style={{ display: 'flex', alignItems: 'center', gap: 8, textDecoration: 'none', minWidth: 0, flexShrink: 1 }}
+          >
+            <div
+              style={{
+                width: 28,
+                height: 28,
+                borderRadius: 8,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: '#fff',
+                fontSize: 10,
+                fontWeight: 700,
+                background: 'var(--brand)',
+                boxShadow: '0 1px 4px rgba(5,150,105,0.4)',
+                flexShrink: 0,
+              }}
+            >
+              FL
+            </div>
+            <span
+              style={{
+                fontFamily: "'Syne', system-ui, sans-serif",
+                fontSize: 15,
+                fontWeight: 700,
+                letterSpacing: '-0.02em',
+                color: 'var(--text-primary)',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+              }}
+            >
+              FounderLink
+            </span>
+          </Link>
+        </div>
+
+        {/* RIGHT: Actions */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 2, flexShrink: 0 }}>
           {(isFounder || isInvestor || isCoFounder) && (
             <>
               <Link
@@ -154,7 +198,7 @@ const Navbar: React.FC = () => {
           {user?.email && (
             <span
               className="text-xs hidden md:block mx-2 pl-3 font-medium"
-              style={{ color: 'var(--text-muted)', borderLeft: '1px solid var(--border-medium)' }}
+              style={{ color: 'var(--text-muted)', borderLeft: '1px solid var(--border-medium)', whiteSpace: 'nowrap' }}
             >
               {user.email}
             </span>

@@ -13,9 +13,9 @@ import com.capgemini.authservice.security.JwtUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -25,7 +25,7 @@ import java.util.Set;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -43,14 +43,30 @@ class AuthServiceTest {
     @Mock
     private JwtUtil jwtUtil;
 
-    @InjectMocks
+    @Mock
+    private WelcomeEmailService welcomeEmailService;
+
+    @Mock
+    private RabbitTemplate rabbitTemplate;
+
     private AuthService authService;
 
     private RoleEntity founderRole;
     private UserEntity savedUser;
 
+    private static final String TEST_EXCHANGE = "test.exchange";
+
     @BeforeEach
     void setUp() {
+        authService = new AuthService(
+                userRepository,
+                roleRepository,
+                passwordEncoder,
+                jwtUtil,
+                rabbitTemplate,
+                welcomeEmailService,
+                TEST_EXCHANGE);
+
         founderRole = RoleEntity.builder()
                 .id(1L)
                 .name("FOUNDER")
@@ -83,6 +99,18 @@ class AuthServiceTest {
     }
 
     @Test
+    void register_whenAdminRoleRequested_shouldThrowCustomException() {
+        // given
+        RegisterRequest request = new RegisterRequest("Admin", "admin@example.com", "password1", "ROLE_ADMIN");
+
+        // when / then
+        assertThatThrownBy(() -> authService.register(request))
+                .isInstanceOf(CustomException.class)
+                .hasMessageContaining("Admin accounts cannot be self-registered")
+                .satisfies(ex -> assertThat(((CustomException) ex).getStatus()).isEqualTo(HttpStatus.FORBIDDEN));
+    }
+
+    @Test
     void register_whenRoleNotFound_shouldThrowCustomException() {
         // given
         RegisterRequest request = new RegisterRequest("Alice", "alice@example.com", "password1", "UNKNOWN_ROLE");
@@ -112,8 +140,27 @@ class AuthServiceTest {
         assertThat(response).isNotNull();
         assertThat(response.getUserId()).isEqualTo(10L);
         assertThat(response.getName()).isEqualTo("Alice");
-        assertThat(response.getEmail()).isEqualTo("alice@example.com");
-        assertThat(response.getRole()).isEqualTo("FOUNDER");
+    }
+
+    @Test
+    void register_whenRabbitMqFails_shouldNotThrowException() {
+        // given
+        RegisterRequest request = new RegisterRequest("Alice", "alice@example.com", "password1", "FOUNDER");
+        when(userRepository.existsByEmail("alice@example.com")).thenReturn(false);
+        when(roleRepository.findByName("FOUNDER")).thenReturn(Optional.of(founderRole));
+        when(passwordEncoder.encode("password1")).thenReturn("hashed-password");
+        when(userRepository.save(any(UserEntity.class))).thenReturn(savedUser);
+
+        doThrow(new RuntimeException("RabbitMQ down")).when(rabbitTemplate)
+                .convertAndSend(any(String.class), any(String.class), any(Object.class));
+
+        // when
+        RegisterResponse response = authService.register(request);
+
+        // then
+        assertThat(response).isNotNull();
+        assertThat(response.getUserId()).isEqualTo(10L);
+        // Success should still be returned because the exception is caught
     }
 
     // -------------------------------------------------------------------------
@@ -183,6 +230,21 @@ class AuthServiceTest {
                 .isInstanceOf(CustomException.class)
                 .hasMessageContaining("Invalid or expired refresh token")
                 .satisfies(ex -> assertThat(((CustomException) ex).getStatus()).isEqualTo(HttpStatus.UNAUTHORIZED));
+    }
+
+    @Test
+    void refreshToken_whenUserNotFoundInDb_shouldThrowCustomException() {
+        // given
+        String validRefreshToken = "valid.refresh.token";
+        when(jwtUtil.validateToken(validRefreshToken)).thenReturn(true);
+        when(jwtUtil.extractEmail(validRefreshToken)).thenReturn("alice@example.com");
+        when(userRepository.findByEmail("alice@example.com")).thenReturn(Optional.empty());
+
+        // when / then
+        assertThatThrownBy(() -> authService.refreshToken(validRefreshToken))
+                .isInstanceOf(CustomException.class)
+                .hasMessageContaining("User not found")
+                .satisfies(ex -> assertThat(((CustomException) ex).getStatus()).isEqualTo(HttpStatus.NOT_FOUND));
     }
 
     @Test

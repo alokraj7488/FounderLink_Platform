@@ -1,7 +1,6 @@
 package com.capgemini.startup.service;
 
-import com.capgemini.startup.config.RabbitMQConfig;
-import com.capgemini.startup.dto.StartupCreatedEvent;
+import com.capgemini.startup.event.StartupCreatedEvent;
 import com.capgemini.startup.dto.StartupRequest;
 import com.capgemini.startup.dto.StartupResponse;
 import com.capgemini.startup.entity.Startup;
@@ -37,7 +36,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
@@ -55,7 +56,6 @@ class StartupServiceTest {
     @Mock
     private StartupMapper startupMapper;
 
-    @InjectMocks
     private StartupServiceImpl startupService;
 
     private Startup startup;
@@ -90,6 +90,18 @@ class StartupServiceTest {
                 .updatedAt(LocalDateTime.now())
                 .build();
 
+        // Manual instantiation to handle the new constructor with @Value strings
+        startupService = new StartupServiceImpl(
+                startupRepository,
+                startupFollowerRepository,
+                rabbitTemplate,
+                startupMapper,
+                "founderlink.exchange",
+                "startup.created",
+                "startup.rejected",
+                "startup.deleted"
+        );
+
         // Default mapper stub
         when(startupMapper.toResponse(any(Startup.class))).thenAnswer(inv -> {
             Startup s = inv.getArgument(0);
@@ -119,8 +131,8 @@ class StartupServiceTest {
         // then
         verify(startupRepository).save(any(Startup.class));
         verify(rabbitTemplate).convertAndSend(
-                eq(RabbitMQConfig.EXCHANGE_NAME),
-                eq(RabbitMQConfig.STARTUP_CREATED_ROUTING_KEY),
+                eq("founderlink.exchange"),
+                eq("startup.created"),
                 any(StartupCreatedEvent.class)
         );
         assertThat(response).isNotNull();

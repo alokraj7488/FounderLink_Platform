@@ -2,6 +2,7 @@ package com.capgemini.user.controller;
 
 import com.capgemini.user.dto.UserProfileRequest;
 import com.capgemini.user.dto.UserProfileResponse;
+import com.capgemini.user.exception.DuplicateResourceException;
 import com.capgemini.user.exception.GlobalExceptionHandler;
 import com.capgemini.user.exception.ResourceNotFoundException;
 import com.capgemini.user.filter.JwtAuthenticationFilter;
@@ -29,16 +30,21 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doAnswer;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(UserProfileController.class)
-@Import(GlobalExceptionHandler.class)
+@Import({GlobalExceptionHandler.class, com.capgemini.user.config.SecurityConfig.class})
 class UserProfileControllerTest {
 
     @Autowired private MockMvc mockMvc;
@@ -139,5 +145,55 @@ class UserProfileControllerTest {
         mockMvc.perform(get("/users").with(authentication(authFor(1L, "ROLE_ADMIN"))))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content[0].email").value("alice@example.com"));
+    }
+
+    @Test
+    void searchBySkill_withFounderRole_shouldReturn200() throws Exception {
+        given(userProfileQueryService.searchBySkill("Java")).willReturn(List.of(sampleResponse));
+
+        mockMvc.perform(get("/users/search").param("skill", "Java")
+                        .with(authentication(authFor(1L, "ROLE_FOUNDER"))))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].skills").value("Java, Spring"));
+    }
+
+    @Test
+    void searchBySkill_withInvestorRole_shouldReturn403() throws Exception {
+        mockMvc.perform(get("/users/search").param("skill", "Java")
+                        .with(authentication(authFor(2L, "ROLE_INVESTOR"))))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void getProfilesBatch_withFounderRole_shouldReturn200() throws Exception {
+        given(userProfileQueryService.getProfilesByUserIds(anyList(), anyString())).willReturn(List.of(sampleResponse));
+
+        mockMvc.perform(get("/users/profiles/batch").param("userIds", "1,2").param("skill", "Java")
+                        .with(authentication(authFor(1L, "ROLE_COFOUNDER"))))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].userId").value(1));
+    }
+
+    @Test
+    void createProfile_whenInvalidRequest_shouldReturn400() throws Exception {
+        validRequest.setEmail("not-an-email");
+
+        mockMvc.perform(post("/users/profile")
+                        .with(authentication(authFor(1L, "ROLE_FOUNDER"))).with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(validRequest)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void createProfile_whenDuplicate_shouldReturn409() throws Exception {
+        given(userProfileCommandService.createProfile(eq(1L), any(UserProfileRequest.class)))
+                .willThrow(new DuplicateResourceException("Conflict"));
+
+        mockMvc.perform(post("/users/profile")
+                        .with(authentication(authFor(1L, "ROLE_FOUNDER"))).with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(validRequest)))
+                .andExpect(status().isConflict());
     }
 }

@@ -13,7 +13,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Import;
@@ -33,10 +32,18 @@ import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(StartupController.class)
 @Import(StartupControllerTest.MethodSecurityConfig.class)
@@ -116,7 +123,7 @@ class StartupControllerTest {
     }
 
     // -----------------------------------------------------------------------
-    // POST /startups
+    // POST startups
     // -----------------------------------------------------------------------
 
     @Test
@@ -161,7 +168,7 @@ class StartupControllerTest {
     }
 
     // -----------------------------------------------------------------------
-    // GET /startups
+    // GET startups
     // -----------------------------------------------------------------------
 
     @Test
@@ -179,7 +186,7 @@ class StartupControllerTest {
     }
 
     // -----------------------------------------------------------------------
-    // GET /startups/{id}
+    // GET startups-id
     // -----------------------------------------------------------------------
 
     @Test
@@ -196,7 +203,7 @@ class StartupControllerTest {
     }
 
     // -----------------------------------------------------------------------
-    // PUT /startups/{id}
+    // PUT startups-id
     // -----------------------------------------------------------------------
 
     @Test
@@ -224,7 +231,7 @@ class StartupControllerTest {
     }
 
     // -----------------------------------------------------------------------
-    // DELETE /startups/{id}
+    // DELETE startups-id
     // -----------------------------------------------------------------------
 
     @Test
@@ -240,8 +247,21 @@ class StartupControllerTest {
                 .andExpect(jsonPath("$.message").value("Startup deleted successfully"));
     }
 
+    @Test
+    void deleteStartup_withAdminRole_shouldReturn200() throws Exception {
+        // given
+        doNothing().when(startupCommandService).deleteStartup(1L, 3L, true);
+
+        // when / then
+        mockMvc.perform(delete("/startups/1")
+                        .with(authentication(adminAuth))
+                        .with(SecurityMockMvcRequestPostProcessors.csrf()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message").value("Startup deleted successfully"));
+    }
+
     // -----------------------------------------------------------------------
-    // POST /startups/{id}/follow
+    // POST startups-id-follow
     // -----------------------------------------------------------------------
 
     @Test
@@ -258,7 +278,7 @@ class StartupControllerTest {
     }
 
     // -----------------------------------------------------------------------
-    // PUT /startups/{id}/approve
+    // PUT startups-id-approve
     // -----------------------------------------------------------------------
 
     @Test
@@ -292,5 +312,94 @@ class StartupControllerTest {
                 .andExpect(status().isForbidden());
 
         verify(startupCommandService, never()).approveStartup(any());
+    }
+
+    // -----------------------------------------------------------------------
+    // PUT startups-id-reject
+    // -----------------------------------------------------------------------
+
+    @Test
+    void rejectStartup_withAdminRole_shouldReturn200() throws Exception {
+        // given
+        when(startupCommandService.rejectStartup(100L)).thenReturn(startupResponse);
+
+        // when / then
+        mockMvc.perform(put("/startups/100/reject")
+                        .with(authentication(adminAuth))
+                        .with(SecurityMockMvcRequestPostProcessors.csrf()))
+                .andExpect(status().isOk());
+    }
+
+    // -----------------------------------------------------------------------
+    // GET startups-search
+    // -----------------------------------------------------------------------
+
+    @Test
+    void searchStartups_shouldReturn200() throws Exception {
+        // given
+        Page<StartupResponse> page = new PageImpl<>(List.of(startupResponse));
+        when(startupQueryService.searchStartups(any(), any(), any(), any(), any(), any())).thenReturn(page);
+
+        // when / then
+        mockMvc.perform(get("/startups/search")
+                        .param("industry", "CleanTech")
+                        .with(authentication(investorAuth)))
+                .andExpect(status().isOk());
+    }
+
+    // -----------------------------------------------------------------------
+    // GET startups-founder-founderId
+    // -----------------------------------------------------------------------
+
+    @Test
+    void getStartupsByFounder_shouldReturnList() throws Exception {
+        // given
+        when(startupQueryService.getStartupsByFounderId(1L)).thenReturn(List.of(startupResponse));
+
+        // when / then
+        mockMvc.perform(get("/startups/founder/1")
+                        .with(authentication(founderAuth)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].name").value("GreenTech"));
+    }
+
+    // -----------------------------------------------------------------------
+    // GET startups-admin-all
+    // -----------------------------------------------------------------------
+
+    @Test
+    void getAllStartupsForAdmin_withAdminRole_shouldReturn200() throws Exception {
+        // given
+        Page<StartupResponse> page = new PageImpl<>(List.of(startupResponse));
+        when(startupQueryService.getAllStartups(any())).thenReturn(page);
+
+        // when / then
+        mockMvc.perform(get("/startups/admin/all")
+                        .with(authentication(adminAuth)))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void getAllStartupsForAdmin_withFounderRole_shouldReturn403() throws Exception {
+        // when / then
+        mockMvc.perform(get("/startups/admin/all")
+                        .with(authentication(founderAuth)))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void updateStartup_withCofounderRole_shouldReturn200() throws Exception {
+        // given
+        UsernamePasswordAuthenticationToken cofounderAuth = new UsernamePasswordAuthenticationToken(
+                "1", null, List.of(new SimpleGrantedAuthority("ROLE_COFOUNDER")));
+        when(startupCommandService.updateStartup(eq(1L), eq(1L), any(StartupRequest.class))).thenReturn(startupResponse);
+
+        // when / then
+        mockMvc.perform(put("/startups/1")
+                        .with(authentication(cofounderAuth))
+                        .with(SecurityMockMvcRequestPostProcessors.csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(startupRequest)))
+                .andExpect(status().isOk());
     }
 }

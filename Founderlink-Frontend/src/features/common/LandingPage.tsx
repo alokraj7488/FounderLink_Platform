@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Menu, X, Check } from 'lucide-react';
+import { useSelector } from 'react-redux';
+import { selectTheme } from '../../store/slices/themeSlice';
 
 /* ─── Scroll fade-in hook ─────────────────────────────────────────────────── */
 const useFadeIn = (threshold = 0.15) => {
@@ -55,6 +57,7 @@ const Logo: React.FC<{ size?: number }> = ({ size = 32 }) => (
 );
 
 const LandingPage: React.FC = () => {
+  const theme = useSelector(selectTheme);
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -83,21 +86,25 @@ const LandingPage: React.FC = () => {
       <nav
         style={{
           position: 'fixed', top: 0, left: 0, right: 0, zIndex: 50,
-          transition: 'all 0.3s ease',
+          transition: 'background 0.3s ease, border-color 0.3s ease, backdrop-filter 0.3s ease',
           backdropFilter: scrolled ? 'blur(14px)' : 'none',
           WebkitBackdropFilter: scrolled ? 'blur(14px)' : 'none',
-          background: scrolled ? 'rgba(248,247,244,0.92)' : 'transparent',
+          background: scrolled
+            ? (theme === 'dark' ? 'rgba(10,10,10,0.92)' : 'rgba(248,247,244,0.92)')
+            : 'transparent',
           borderBottom: scrolled ? '1px solid var(--border)' : '1px solid transparent',
         }}
       >
-        <div style={{ maxWidth: 1100, margin: '0 auto', padding: '14px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none' }}>
+        <div style={{ padding: '12px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          {/* Logo — always pinned left */}
+          <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none', flexShrink: 0 }}>
             <Logo size={34} />
             <span style={{ fontFamily: "'Syne', system-ui, sans-serif", fontSize: 18, fontWeight: 700, color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
               FounderLink
             </span>
           </Link>
 
+          {/* Desktop nav links */}
           <div style={{ display: 'none' }} className="md:flex items-center gap-8">
             {navLinks.map(({ href, label }) => (
               <a key={href} href={href}
@@ -108,6 +115,7 @@ const LandingPage: React.FC = () => {
             ))}
           </div>
 
+          {/* Desktop right actions: auth buttons */}
           <div style={{ display: 'none' }} className="md:flex items-center gap-3">
             <Link to="/login" className="btn-secondary" style={{ textDecoration: 'none', padding: '8px 18px' }}>Sign in</Link>
             <Link to="/register" className="btn-primary" style={{ textDecoration: 'none' }}>
@@ -115,14 +123,16 @@ const LandingPage: React.FC = () => {
             </Link>
           </div>
 
-          <button
-            className="md:hidden"
-            style={{ padding: 8, borderRadius: 8, background: 'var(--surface-2)', border: 'none', cursor: 'pointer', color: 'var(--text-secondary)' }}
-            onClick={() => setMobileOpen(v => !v)}
-            aria-label="Toggle menu"
-          >
-            {mobileOpen ? <X size={20} /> : <Menu size={20} />}
-          </button>
+          {/* Mobile: hamburger only */}
+          <div className="md:hidden" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <button
+              style={{ padding: 8, borderRadius: 8, background: 'var(--surface-2)', border: 'none', cursor: 'pointer', color: 'var(--text-secondary)' }}
+              onClick={() => setMobileOpen(v => !v)}
+              aria-label="Toggle menu"
+            >
+              {mobileOpen ? <X size={20} /> : <Menu size={20} />}
+            </button>
+          </div>
         </div>
 
         {mobileOpen && (

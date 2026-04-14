@@ -26,6 +26,7 @@ import com.capgemini.investment.mapper.InvestmentMapper;
 import com.capgemini.investment.repository.InvestmentRepository;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -61,6 +62,14 @@ public class InvestmentService implements InvestmentCommandService, InvestmentQu
             throw new ResourceNotFoundException("Startup not found with id: " + request.getStartupId());
         }
 
+        // Ensuring the startup is vetted before allowing investment
+        if (Boolean.TRUE.equals(startup.getIsRejected())) {
+            throw new BadRequestException("You cannot invest in this startup because it has been rejected.");
+        }
+        if (!Boolean.TRUE.equals(startup.getIsApproved())) {
+            throw new BadRequestException("You cannot invest in this startup until it is approved by an Admin.");
+        }
+
         Investment investment = Investment.builder()
                 .startupId(request.getStartupId())
                 .investorId(investorId)
@@ -76,28 +85,39 @@ public class InvestmentService implements InvestmentCommandService, InvestmentQu
                 .investorId(investment.getInvestorId())
                 .founderId(startup.getFounderId())
                 .amount(investment.getAmount())
+                .startupName(startup.getName())
                 .build());
 
         log.info("Investment created: id={}, startupId={}, investorId={}",
                 investment.getId(), investment.getStartupId(), investment.getInvestorId());
 
-        return investmentMapper.toResponse(investment);
+        return investmentMapper.toResponse(investment, startup);
     }
 
     @Override
     @Cacheable(value = "investmentsByStartup", key = "#startupId")
     public List<InvestmentResponse> getInvestmentsByStartup(Long startupId) {
+        StartupDTO startup = fetchStartup(startupId);
         return investmentRepository.findByStartupId(startupId).stream()
-                .map(investmentMapper::toResponse)
-                .collect(java.util.stream.Collectors.toList());
+                .map(investment -> investmentMapper.toResponse(investment, startup))
+                .collect(Collectors.toList());
     }
 
     @Override
     @Cacheable(value = "investmentsByInvestor", key = "#investorId")
     public List<InvestmentResponse> getInvestmentsByInvestor(Long investorId) {
-        return investmentRepository.findByInvestorId(investorId).stream()
-                .map(investmentMapper::toResponse)
-                .collect(java.util.stream.Collectors.toList());
+        List<Investment> investments = investmentRepository.findByInvestorId(investorId);
+        return investments.stream()
+                .map(investment -> {
+                    StartupDTO startup = null;
+                    try {
+                        startup = fetchStartup(investment.getStartupId());
+                    } catch (Exception e) {
+                        log.warn("Failed to fetch startup details for investment enrichment: {}", e.getMessage());
+                    }
+                    return investmentMapper.toResponse(investment, startup);
+                })
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -131,7 +151,7 @@ public class InvestmentService implements InvestmentCommandService, InvestmentQu
 
         log.info("Investment approved: id={}", investmentId);
 
-        return investmentMapper.toResponse(investment);
+        return investmentMapper.toResponse(investment, startup);
     }
 
     @Override
@@ -158,7 +178,7 @@ public class InvestmentService implements InvestmentCommandService, InvestmentQu
 
         log.info("Investment rejected: id={}", investmentId);
 
-        return investmentMapper.toResponse(investment);
+        return investmentMapper.toResponse(investment, startup);
     }
 
 }

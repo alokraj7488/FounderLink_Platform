@@ -1,4 +1,3 @@
-
 package com.capgemini.eurekaserver;
 
 import org.springframework.boot.SpringApplication;

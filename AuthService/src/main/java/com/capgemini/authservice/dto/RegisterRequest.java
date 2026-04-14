@@ -1,7 +1,7 @@
 package com.capgemini.authservice.dto;
 
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,7 +16,8 @@ public class RegisterRequest {
     private String name;
 
     @NotBlank
-    @Email
+    @Pattern(regexp = "(?i)^[a-z0-9.]+@(gmail\\.com|yahoo\\.com|outlook\\.com|hotmail\\.com|example\\.com)$", 
+             message = "Please enter a valid Email")
     private String email;
 
     @NotBlank
@@ -25,4 +26,8 @@ public class RegisterRequest {
 
     @NotBlank
     private String role;
+    
+    public void setEmail(String email) {
+        this.email = email != null ? email.toLowerCase().trim() : null;
+    }
 }

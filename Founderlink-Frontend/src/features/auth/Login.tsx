@@ -72,30 +72,35 @@ const Login: React.FC = () => {
         background: 'radial-gradient(ellipse, rgba(5,150,105,0.06) 0%, transparent 70%)',
       }} />
 
-      {/* Top nav — mirrors landing page nav */}
+      {/* Top nav — fixed, consistent with other pages */}
       <nav style={{
-        position: 'relative', zIndex: 10,
-        padding: '16px 32px',
+        position: 'fixed', top: 0, left: 0, right: 0, zIndex: 50,
+        padding: '0 24px',
+        height: 56,
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        background: 'var(--surface)',
+        borderBottom: '1px solid var(--border)',
+        boxSizing: 'border-box',
       }}>
-        <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none' }}>
+        <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none', flexShrink: 0 }}>
           <Logo />
           <span style={{ fontFamily: SYNE, fontSize: 17, fontWeight: 700, color: 'var(--text-primary)', letterSpacing: '-0.01em' }}>
             FounderLink
           </span>
         </Link>
         <p style={{ fontFamily: DM, fontSize: 14, color: 'var(--text-muted)', margin: 0 }}>
-          No account?{' '}
-          <Link to="/register" style={{ color: 'var(--brand)', fontWeight: 600, textDecoration: 'none' }}>
-            Sign up free
-          </Link>
-        </p>
+            No account?{' '}
+            <Link to="/register" style={{ color: 'var(--brand)', fontWeight: 600, textDecoration: 'none' }}>
+              Sign up free
+            </Link>
+          </p>
       </nav>
 
       {/* Main centered content */}
       <div style={{
         flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center',
         padding: '24px 24px 64px', position: 'relative', zIndex: 1,
+        paddingTop: 80,
       }}>
         <div style={{ width: '100%', maxWidth: 420 }}>
 

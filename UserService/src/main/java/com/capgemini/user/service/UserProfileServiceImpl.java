@@ -1,6 +1,8 @@
 package com.capgemini.user.service;
 
-import lombok.extern.slf4j.Slf4j;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
@@ -17,13 +19,12 @@ import com.capgemini.user.exception.ResourceNotFoundException;
 import com.capgemini.user.mapper.UserProfileMapper;
 import com.capgemini.user.repository.UserProfileRepository;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Transactional
 @Slf4j
-public class UserProfileServiceImpl implements UserProfileService {
+public class UserProfileServiceImpl implements UserProfileCommandService, UserProfileQueryService {
 
     private final UserProfileRepository userProfileRepository;
     private final UserProfileMapper userProfileMapper;
@@ -46,16 +47,7 @@ public class UserProfileServiceImpl implements UserProfileService {
             throw new DuplicateResourceException("Email already in use: " + request.getEmail());
         }
 
-        UserProfile profile = UserProfile.builder()
-                .userId(userId)
-                .name(request.getName())
-                .email(request.getEmail())
-                .bio(request.getBio())
-                .skills(request.getSkills())
-                .experience(request.getExperience())
-                .portfolioLinks(request.getPortfolioLinks())
-                .build();
-
+        UserProfile profile = buildEntity(userId, request);
         UserProfile saved = userProfileRepository.save(profile);
         log.info("User profile created: userId={}", userId);
         return userProfileMapper.toResponse(saved);
@@ -84,15 +76,7 @@ public class UserProfileServiceImpl implements UserProfileService {
             if (userProfileRepository.existsByEmail(request.getEmail())) {
                 throw new DuplicateResourceException("Email already in use: " + request.getEmail());
             }
-            profile = UserProfile.builder()
-                    .userId(userId)
-                    .name(request.getName())
-                    .email(request.getEmail())
-                    .bio(request.getBio())
-                    .skills(request.getSkills())
-                    .experience(request.getExperience())
-                    .portfolioLinks(request.getPortfolioLinks())
-                    .build();
+            profile = buildEntity(userId, request);
             UserProfile created = userProfileRepository.save(profile);
             log.info("User profile created on first save: userId={}", userId);
             return userProfileMapper.toResponse(created);
@@ -105,16 +89,31 @@ public class UserProfileServiceImpl implements UserProfileService {
                     }
                 });
 
+        updateProfileFields(profile, request);
+        UserProfile updated = userProfileRepository.save(profile);
+        log.info("User profile updated: userId={}", userId);
+        return userProfileMapper.toResponse(updated);
+    }
+
+    private UserProfile buildEntity(Long userId, UserProfileRequest request) {
+        return UserProfile.builder()
+                .userId(userId)
+                .name(request.getName())
+                .email(request.getEmail())
+                .bio(request.getBio())
+                .skills(request.getSkills())
+                .experience(request.getExperience())
+                .portfolioLinks(request.getPortfolioLinks())
+                .build();
+    }
+
+    private void updateProfileFields(UserProfile profile, UserProfileRequest request) {
         profile.setName(request.getName());
         profile.setEmail(request.getEmail());
         profile.setBio(request.getBio());
         profile.setSkills(request.getSkills());
         profile.setExperience(request.getExperience());
         profile.setPortfolioLinks(request.getPortfolioLinks());
-
-        UserProfile updated = userProfileRepository.save(profile);
-        log.info("User profile updated: userId={}", userId);
-        return userProfileMapper.toResponse(updated);
     }
 
     @Override

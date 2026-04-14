@@ -1,16 +1,18 @@
 package com.capgemini.notification.event;
 
+import java.math.BigDecimal;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import java.math.BigDecimal;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class InvestmentApprovedEvent {
     private Long investmentId;
-    private Long startupId;
     private Long investorId;
+    private Long startupId;
     private BigDecimal amount;
 }

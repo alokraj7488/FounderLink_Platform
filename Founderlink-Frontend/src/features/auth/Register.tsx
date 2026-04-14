@@ -104,28 +104,33 @@ const Register: React.FC = () => {
 
       {/* Nav */}
       <nav style={{
-        position: 'relative', zIndex: 10,
-        padding: '16px 32px',
+        position: 'fixed', top: 0, left: 0, right: 0, zIndex: 50,
+        padding: '0 24px',
+        height: 56,
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        background: 'var(--surface)',
+        borderBottom: '1px solid var(--border)',
+        boxSizing: 'border-box',
       }}>
-        <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none' }}>
+        <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none', flexShrink: 0 }}>
           <Logo />
           <span style={{ fontFamily: SYNE, fontSize: 17, fontWeight: 700, color: 'var(--text-primary)', letterSpacing: '-0.01em' }}>
             FounderLink
           </span>
         </Link>
         <p style={{ fontFamily: DM, fontSize: 14, color: 'var(--text-muted)', margin: 0 }}>
-          Have an account?{' '}
-          <Link to="/login" style={{ color: 'var(--brand)', fontWeight: 600, textDecoration: 'none' }}>
-            Sign in
-          </Link>
-        </p>
+            Have an account?{' '}
+            <Link to="/login" style={{ color: 'var(--brand)', fontWeight: 600, textDecoration: 'none' }}>
+              Sign in
+            </Link>
+          </p>
       </nav>
 
       {/* Content */}
       <div style={{
         flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center',
         padding: '16px 24px 64px', position: 'relative', zIndex: 1,
+        paddingTop: 80,
       }}>
 
         {/* ── STEP 1: Role picker ────────────────────────────────────── */}

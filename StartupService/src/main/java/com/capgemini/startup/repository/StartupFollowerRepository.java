@@ -9,4 +9,7 @@ import com.capgemini.startup.entity.StartupFollower;
 public interface StartupFollowerRepository extends JpaRepository<StartupFollower, Long> {
 
     boolean existsByStartupIdAndInvestorId(Long startupId, Long investorId);
+
+    // Purging all follow records when a startup is deleted
+    void deleteByStartupId(Long startupId);
 }

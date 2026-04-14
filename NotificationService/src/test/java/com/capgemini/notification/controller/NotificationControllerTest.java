@@ -4,7 +4,8 @@ import com.capgemini.notification.config.JwtAuthenticationFilter;
 import com.capgemini.notification.config.JwtUtil;
 import com.capgemini.notification.dto.NotificationResponse;
 import com.capgemini.notification.enums.NotificationType;
-import com.capgemini.notification.service.NotificationService;
+import com.capgemini.notification.service.NotificationCommandService;
+import com.capgemini.notification.service.NotificationQueryService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.FilterChain;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,10 +23,15 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(NotificationController.class)
 class NotificationControllerTest {
@@ -34,7 +40,10 @@ class NotificationControllerTest {
     private MockMvc mockMvc;
 
     @MockitoBean
-    private NotificationService notificationService;
+    private NotificationCommandService notificationCommandService;
+
+    @MockitoBean
+    private NotificationQueryService notificationQueryService;
 
     @MockitoBean
     private JwtAuthenticationFilter jwtAuthenticationFilter;
@@ -84,7 +93,7 @@ class NotificationControllerTest {
     @Test
     void getNotifications_shouldReturn200WithList() throws Exception {
         // given
-        when(notificationService.getNotificationsByUser(10L))
+        when(notificationQueryService.getNotificationsByUser(10L))
                 .thenReturn(List.of(notificationResponse1, notificationResponse2));
 
         // when / then
@@ -106,7 +115,7 @@ class NotificationControllerTest {
     @Test
     void getUnreadNotifications_shouldReturn200WithList() throws Exception {
         // given — only unread notifications returned
-        when(notificationService.getUnreadNotifications(10L))
+        when(notificationQueryService.getUnreadNotifications(10L))
                 .thenReturn(List.of(notificationResponse1));
 
         // when / then
@@ -134,7 +143,7 @@ class NotificationControllerTest {
                 .isRead(true)
                 .createdAt(notificationResponse1.getCreatedAt())
                 .build();
-        when(notificationService.markAsRead(1L)).thenReturn(readResponse);
+        when(notificationCommandService.markAsRead(1L)).thenReturn(readResponse);
 
         // when / then
         mockMvc.perform(put("/notifications/1/read")
@@ -149,7 +158,7 @@ class NotificationControllerTest {
     @Test
     void markAsRead_whenNotFound_shouldPropagateEntityNotFoundException() {
         // given — EntityNotFoundException has no dedicated handler in @WebMvcTest
-        when(notificationService.markAsRead(99L))
+        when(notificationCommandService.markAsRead(99L))
                 .thenThrow(new EntityNotFoundException("Notification not found"));
 
         // when / then — exception propagates through MockMvc since no @ControllerAdvice handles it
@@ -170,6 +179,6 @@ class NotificationControllerTest {
         mockMvc.perform(get("/notifications/10"))
                 .andExpect(status().isUnauthorized());
 
-        verify(notificationService, never()).getNotificationsByUser(any());
+        verify(notificationQueryService, never()).getNotificationsByUser(any());
     }
 }

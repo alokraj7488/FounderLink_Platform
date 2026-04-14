@@ -7,22 +7,31 @@ import com.capgemini.team.dto.TeamMemberResponse;
 import com.capgemini.team.service.TeamCommandService;
 import com.capgemini.team.service.TeamQueryService;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/teams")
-@RequiredArgsConstructor
 public class TeamController {
 
     private final TeamCommandService teamCommandService;
     private final TeamQueryService teamQueryService;
+
+    public TeamController(TeamCommandService teamCommandService, TeamQueryService teamQueryService) {
+        this.teamCommandService = teamCommandService;
+        this.teamQueryService = teamQueryService;
+    }
 
     // Founder invites someone to the startup team
     @PostMapping("/invite")

@@ -9,10 +9,11 @@ import com.razorpay.Order;
 import com.razorpay.RazorpayClient;
 import com.razorpay.RazorpayException;
 import com.razorpay.Utils;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -21,23 +22,31 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-@RequiredArgsConstructor
 @Slf4j
-public class PaymentService implements IPaymentService {
+public class PaymentService implements PaymentCommandService, PaymentQueryService {
 
     private final PaymentRepository paymentRepository;
     private final RazorpayClient razorpayClient;
     private final SagaOrchestrator sagaOrchestrator;
+    private final String razorpayKeyId;
+    private final String razorpayKeySecret;
 
-    @Value("${razorpay.key-id}")
-    private String razorpayKeyId;
+    public PaymentService(PaymentRepository paymentRepository,
+                          RazorpayClient razorpayClient,
+                          SagaOrchestrator sagaOrchestrator,
+                          @Value("${razorpay.key-id}") String razorpayKeyId,
+                          @Value("${razorpay.key-secret}") String razorpayKeySecret) {
+        this.paymentRepository = paymentRepository;
+        this.razorpayClient = razorpayClient;
+        this.sagaOrchestrator = sagaOrchestrator;
+        this.razorpayKeyId = razorpayKeyId;
+        this.razorpayKeySecret = razorpayKeySecret;
+    }
 
-    @Value("${razorpay.key-secret}")
-    private String razorpayKeySecret;
-
-    // ── Step 1: Create Razorpay order ─────────────────────────────────────────
+    // â”€â”€ Step 1: Create Razorpay order â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
     @Override
+    @CacheEvict(value = {"investorPayments", "founderPayments", "startupPayments"}, allEntries = true)
     public Map<String, Object> createOrder(CreateOrderRequest request) throws RazorpayException {
         int amountInPaise = (int) (request.getAmount() * 100);
 
@@ -72,9 +81,10 @@ public class PaymentService implements IPaymentService {
         return response;
     }
 
-    // ── Step 2: Verify Razorpay signature and capture payment ────────────────
+    // â”€â”€ Step 2: Verify Razorpay signature and capture payment â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
     @Override
+    @CacheEvict(value = {"investorPayments", "founderPayments", "startupPayments"}, allEntries = true)
     public Map<String, Object> verifyPayment(VerifyPaymentRequest request) {
         Map<String, Object> response = new HashMap<>();
 
@@ -103,6 +113,17 @@ public class PaymentService implements IPaymentService {
             log.error("Payment lookup error: {}", e.getMessage());
             response.put("success", false);
             response.put("message", e.getMessage());
+            return response;
+        }
+
+        // Preventing double capture if the verification is re-sent
+        if (payment.getStatus() != Payment.PaymentStatus.PENDING) {
+            log.info("Payment already processed for order: {}. Current status: {}", 
+                    request.getRazorpayOrderId(), payment.getStatus());
+            response.put("success", true);
+            response.put("message", "Payment already processed");
+            response.put("paymentId", payment.getId());
+            response.put("status", payment.getStatus().toString());
             return response;
         }
 
@@ -139,9 +160,10 @@ public class PaymentService implements IPaymentService {
         return response;
     }
 
-    // ── Step 4a: Founder accepts — saga completes normally ───────────────────
+    // â”€â”€ Step 4a: Founder accepts â€” saga completes normally â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
     @Override
+    @CacheEvict(value = {"investorPayments", "founderPayments", "startupPayments"}, allEntries = true)
     public Map<String, Object> acceptPayment(Long paymentId) {
         Map<String, Object> response = new HashMap<>();
         Payment payment = paymentRepository.findById(paymentId)
@@ -160,9 +182,10 @@ public class PaymentService implements IPaymentService {
         return response;
     }
 
-    // ── Step 4b: Founder rejects — saga runs compensating transactions ───────
+    // â”€â”€ Step 4b: Founder rejects â€” saga runs compensating transactions â”€â”€â”€â”€â”€â”€â”€
 
     @Override
+    @CacheEvict(value = {"investorPayments", "founderPayments", "startupPayments"}, allEntries = true)
     public Map<String, Object> rejectPayment(Long paymentId) {
         Map<String, Object> response = new HashMap<>();
         Payment payment = paymentRepository.findById(paymentId)
@@ -186,24 +209,29 @@ public class PaymentService implements IPaymentService {
             response.put("message", "Investment rejected and refund initiated to investor's account");
         } else {
             response.put("success", false);
-            response.put("message", "Investment rejected but refund failed — please contact support");
+            response.put("message", "Investment rejected but refund failed â€” please contact support");
         }
         return response;
     }
 
-    // ── Query methods ─────────────────────────────────────────────────────────
+    // â”€â”€ Query methods â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
     @Override
+    // Lightning validation fetch for investor portfolio directly off Redis.
+    @Cacheable(value = "investorPayments", key = "#investorId")
     public List<Payment> getPaymentsByInvestor(Long investorId) {
         return paymentRepository.findByInvestorIdOrderByCreatedAtDesc(investorId);
     }
 
     @Override
+    // Fast queries to view all incoming startup traction without hitting Postgres.
+    @Cacheable(value = "founderPayments", key = "#founderId")
     public List<Payment> getPaymentsByFounder(Long founderId) {
         return paymentRepository.findByFounderIdOrderByCreatedAtDesc(founderId);
     }
 
     @Override
+    @Cacheable(value = "startupPayments", key = "#startupId")
     public List<Payment> getPaymentsByStartup(Long startupId) {
         return paymentRepository.findByStartupIdOrderByCreatedAtDesc(startupId);
     }

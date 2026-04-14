@@ -29,11 +29,14 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -74,14 +77,14 @@ class TeamControllerTest {
         sampleInvitationRequest = InvitationRequest.builder()
                 .startupId(10L)
                 .invitedUserId(2L)
-                .role(TeamRole.CO_FOUNDER)
+                .role(TeamRole.CTO)
                 .build();
 
         sampleInvitationResponse = InvitationResponse.builder()
                 .id(50L)
                 .startupId(10L)
                 .invitedUserId(2L)
-                .role(TeamRole.CO_FOUNDER)
+                .role(TeamRole.CTO)
                 .status(InvitationStatus.PENDING)
                 .createdAt(LocalDateTime.now())
                 .build();
@@ -90,7 +93,7 @@ class TeamControllerTest {
                 .id(200L)
                 .startupId(10L)
                 .userId(2L)
-                .role(TeamRole.CO_FOUNDER)
+                .role(TeamRole.CTO)
                 .joinedAt(LocalDateTime.now())
                 .build();
     }
@@ -116,6 +119,35 @@ class TeamControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").value(50))
                 .andExpect(jsonPath("$.status").value("PENDING"));
+    }
+
+    @Test
+    void inviteCoFounder_whenInvalidRequest_shouldReturn400() throws Exception {
+        UsernamePasswordAuthenticationToken founderAuth = new UsernamePasswordAuthenticationToken(
+                1L, null, List.of(new SimpleGrantedAuthority("ROLE_FOUNDER")));
+        sampleInvitationRequest.setStartupId(null); // Invalid
+
+        mockMvc.perform(post("/teams/invite")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(sampleInvitationRequest))
+                        .with(SecurityMockMvcRequestPostProcessors.authentication(founderAuth))
+                        .with(csrf()))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void inviteCoFounder_whenResourceNotFound_shouldReturn404() throws Exception {
+        UsernamePasswordAuthenticationToken founderAuth = new UsernamePasswordAuthenticationToken(
+                1L, null, List.of(new SimpleGrantedAuthority("ROLE_FOUNDER")));
+        when(teamCommandService.inviteCoFounder(any(), anyLong()))
+                .thenThrow(new com.capgemini.team.exception.ResourceNotFoundException("Not found"));
+
+        mockMvc.perform(post("/teams/invite")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(sampleInvitationRequest))
+                        .with(SecurityMockMvcRequestPostProcessors.authentication(founderAuth))
+                        .with(csrf()))
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -176,7 +208,7 @@ class TeamControllerTest {
                 .id(50L)
                 .startupId(10L)
                 .invitedUserId(2L)
-                .role(TeamRole.CO_FOUNDER)
+                .role(TeamRole.CTO)
                 .status(InvitationStatus.REJECTED)
                 .createdAt(LocalDateTime.now())
                 .build();
@@ -258,3 +290,4 @@ class TeamControllerTest {
                 .andExpect(jsonPath("$[0].invitedUserId").value(2));
     }
 }
+

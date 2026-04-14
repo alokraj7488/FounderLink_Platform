@@ -54,6 +54,7 @@ export interface Startup {
   isApproved: boolean;
   isRejected: boolean;
   createdAt: string;
+  updatedAt?: string;
 }
 
 export interface StartupFormData {
@@ -88,6 +89,8 @@ export interface Investment {
   id: number;
   investorId: number;
   startupId: number;
+  startupName: string;
+  startupIndustry: string;
   amount: number;
   status: string;
   createdAt: string;
@@ -141,6 +144,9 @@ export interface VerifyPaymentRequest {
 
 export interface VerifyPaymentResponse {
   success: boolean;
+  message?: string;
+  paymentId?: number;
+  status?: string;
 }
 
 // ─── Notification ────────────────────────────────────────────────────────────
@@ -175,10 +181,9 @@ export interface Conversation {
 
 export interface Message {
   id: number;
-  senderId: number;
-  receiverId: number;
-  content: string;
   conversationId: number;
+  senderId: number;
+  content: string;
   createdAt: string;
 }
 
@@ -186,18 +191,21 @@ export interface Message {
 
 export interface TeamMember {
   id: number;
-  userId: number;
   startupId: number;
+  userId: number;
+  startupName?: string;
+  userName?: string;
+  userEmail?: string;
   role: string;
-  status: string;
   joinedAt: string;
-  createdAt: string;
 }
 
 export interface Invitation {
   id: number;
   startupId: number;
   invitedUserId: number;
+  startupName?: string;
+  startupIndustry?: string;
   role: string;
   status: string;
   createdAt: string;
@@ -212,13 +220,17 @@ export interface InviteCoFounderData {
 // ─── User Profile ────────────────────────────────────────────────────────────
 
 export interface UserProfile {
+  id: number;
   userId: number;
   name: string;
   email: string;
+  role: string;
   bio?: string;
   skills?: string;
   experience?: string;
   portfolioLinks?: string;
+  createdAt: string;
+  updatedAt?: string;
 }
 
 export interface AuthUser {
@@ -242,11 +254,16 @@ export interface RouteLocationState {
 
 // ─── Redux Root State ────────────────────────────────────────────────────────
 
+export interface SidebarState {
+  open: boolean;
+}
+
 export interface RootState {
   auth: AuthState;
   notifications: NotificationState;
   theme: ThemeState;
   startups: StartupState;
+  sidebar: SidebarState;
 }
 
 // ─── API Response Wrapper ────────────────────────────────────────────────────
@@ -288,6 +305,11 @@ declare global {
 export interface PaymentSaga {
   id: number;
   paymentId: number;
+  razorpayOrderId?: string;
+  razorpayPaymentId?: string;
+  currentStep: string;
   status: string;
-  steps: string[];
+  failureReason?: string;
+  createdAt: string;
+  updatedAt: string;
 }

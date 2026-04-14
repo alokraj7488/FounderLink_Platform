@@ -9,11 +9,15 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RazorpayConfig {
 
-    @Value("${razorpay.key-id}")
-    private String keyId;
+    private final String keyId;
+    private final String keySecret;
 
-    @Value("${razorpay.key-secret}")
-    private String keySecret;
+    public RazorpayConfig(
+            @Value("${razorpay.key-id}") String keyId,
+            @Value("${razorpay.key-secret}") String keySecret) {
+        this.keyId = keyId;
+        this.keySecret = keySecret;
+    }
 
     @Bean
     public RazorpayClient razorpayClient() throws RazorpayException {

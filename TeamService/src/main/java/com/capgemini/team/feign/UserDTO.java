@@ -1,5 +1,9 @@
 package com.capgemini.team.feign;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @Setter
@@ -12,4 +16,8 @@ public class UserDTO {
     private String name;
     private String email;
     private String role;
+    private String bio;
+    private String skills;
+    private String experience;
+    private String portfolioLinks;
 }

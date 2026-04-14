@@ -1,6 +1,5 @@
 package com.capgemini.notification.service;
 
-import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -62,7 +61,7 @@ public class EmailService {
                           <tr>
                             <td style="background:linear-gradient(135deg,#4f46e5 0%%,#7c3aed 100%%);padding:40px 40px 30px;text-align:center;">
                               <h1 style="margin:0;color:#ffffff;font-size:28px;font-weight:700;letter-spacing:-0.5px;">FounderLink</h1>
-                              <p style="margin:8px 0 0;color:#c4b5fd;font-size:14px;">Connect · Build · Grow Together</p>
+                              <p style="margin:8px 0 0;color:#c4b5fd;font-size:14px;">Connect Â· Build Â· Grow Together</p>
                             </td>
                           </tr>
 
@@ -72,7 +71,7 @@ public class EmailService {
 
                               <!-- Greeting -->
                               <h2 style="margin:0 0 8px;color:#ffffff;font-size:22px;font-weight:600;">
-                                Welcome aboard, %s! 👋
+                                Welcome aboard, %s! ðŸ‘‹
                               </h2>
                               <p style="margin:0 0 24px;color:#9ca3af;font-size:15px;line-height:1.6;">
                                 Your account has been successfully created on FounderLink.
@@ -92,7 +91,7 @@ public class EmailService {
                               <!-- CTA -->
                               <div style="text-align:center;margin-top:32px;">
                                 <a href="http://localhost:3000" style="display:inline-block;background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#ffffff;text-decoration:none;padding:14px 36px;border-radius:10px;font-size:15px;font-weight:600;letter-spacing:0.3px;">
-                                  Go to FounderLink →
+                                  Go to FounderLink â†’
                                 </a>
                               </div>
 
@@ -165,7 +164,7 @@ public class EmailService {
         for (String step : steps) {
             sb.append("""
                     <li style="display:flex;align-items:center;gap:10px;padding:8px 0;color:#d1d5db;font-size:14px;">
-                      <span style="color:#4f46e5;font-size:16px;flex-shrink:0;">✓</span> %s
+                      <span style="color:#4f46e5;font-size:16px;flex-shrink:0;">âœ“</span> %s
                     </li>
                     """.formatted(step));
         }

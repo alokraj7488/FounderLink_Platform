@@ -114,11 +114,11 @@ const MyInvitations: React.FC = () => {
                 {pending.map((inv) => (
                   <div key={inv.id} style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '14px 18px', borderRadius: 14, border: '1px solid var(--border)', background: 'var(--surface)', boxShadow: 'var(--shadow-card)', flexWrap: 'wrap' }}>
                     <div style={{ width: 40, height: 40, borderRadius: 10, background: 'var(--brand-subtle)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, fontSize: 15, fontWeight: 700, color: 'var(--brand)' }}>
-                      {(startupMap[inv.startupId]?.name || 'S')[0].toUpperCase()}
+                      {(inv.startupName || startupMap[inv.startupId]?.name || 'S')[0].toUpperCase()}
                     </div>
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <p style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-primary)', marginBottom: 4 }}>
-                        {startupMap[inv.startupId]?.name || `Startup #${inv.startupId}`}
+                        {inv.startupName || startupMap[inv.startupId]?.name || `Startup #${inv.startupId}`}
                       </p>
                       <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', alignItems: 'center' }}>
                         <span className={ROLE_COLORS[inv.role] || 'badge-blue'} style={{ fontSize: 10 }}>
@@ -157,11 +157,11 @@ const MyInvitations: React.FC = () => {
                 {resolved.map((inv) => (
                   <div key={inv.id} style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '12px 18px', borderRadius: 14, border: '1px solid var(--border)', background: 'var(--surface)', opacity: 0.7, flexWrap: 'wrap' }}>
                     <div style={{ width: 36, height: 36, borderRadius: 10, background: 'var(--surface-2)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, fontSize: 13, fontWeight: 700, color: 'var(--text-muted)' }}>
-                      {(startupMap[inv.startupId]?.name || 'S')[0].toUpperCase()}
+                      {(inv.startupName || startupMap[inv.startupId]?.name || 'S')[0].toUpperCase()}
                     </div>
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <p style={{ fontSize: 13, fontWeight: 500, color: 'var(--text-primary)', marginBottom: 2 }}>
-                        {startupMap[inv.startupId]?.name || `Startup #${inv.startupId}`}
+                        {inv.startupName || startupMap[inv.startupId]?.name || `Startup #${inv.startupId}`}
                       </p>
                       <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', alignItems: 'center' }}>
                         <span className={ROLE_COLORS[inv.role] || 'badge-blue'} style={{ fontSize: 10 }}>{ROLE_LABEL[inv.role] || inv.role}</span>

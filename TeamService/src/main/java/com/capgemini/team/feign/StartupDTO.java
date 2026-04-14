@@ -1,6 +1,10 @@
 package com.capgemini.team.feign;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 
@@ -13,8 +17,14 @@ public class StartupDTO {
 
     private Long id;
     private String name;
-    private Long founderId;
+    private String description;
     private String industry;
-    private String stage;
+    private String problemStatement;
+    private String solution;
     private BigDecimal fundingGoal;
+    private String stage;
+    private String location;
+    private Long founderId;
+    private Boolean isApproved;
+    private Boolean isRejected;
 }

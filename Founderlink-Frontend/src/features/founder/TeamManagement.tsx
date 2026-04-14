@@ -8,8 +8,9 @@ import {
 import Layout from '../../shared/components/Layout';
 import { getCoFounderIds, getProfilesBatch, getAuthUserById } from '../../core/api/userApi';
 import { getTeamByStartup, inviteCoFounder, updateMemberRole } from '../../core/api/teamApi';
+import { getStartupById } from '../../core/api/startupApi';
 import useDebounce from '../../shared/hooks/useDebounce';
-import { TeamMember, UserProfile, AuthUser } from '../../types';
+import { TeamMember, UserProfile, AuthUser, Startup } from '../../types';
 
 interface RoleOption { value: string; label: string; }
 interface InviteRoleOption { value: string; label: string; }
@@ -18,7 +19,7 @@ interface MemberProfile { userId: number; name: string; email: string; bio?: str
 interface TeamManagementParams { startupId: string; [key: string]: string | undefined; }
 
 const UPDATE_ROLES: RoleOption[] = [
-  { value: 'CO_FOUNDER', label: 'Co-Founder' }, { value: 'CTO', label: 'CTO' },
+  { value: 'CTO', label: 'CTO' },
   { value: 'CPO', label: 'CPO' }, { value: 'MARKETING_HEAD', label: 'Marketing Head' },
   { value: 'ENGINEERING_LEAD', label: 'Engineering Lead' },
 ];
@@ -71,6 +72,8 @@ export default function TeamManagement(): React.ReactElement {
   const [members, setMembers] = useState<TeamMember[]>([]);
   const [memberProfiles, setMemberProfiles] = useState<Record<number, MemberProfile>>({});
   const [loadingTeam, setLoadingTeam] = useState<boolean>(true);
+  
+  const [startupData, setStartupData] = useState<Startup | null>(null);
 
   const [editingMemberId, setEditingMemberId] = useState<number | null>(null);
   const [editingRole, setEditingRole] = useState<string>('');
@@ -80,6 +83,14 @@ export default function TeamManagement(): React.ReactElement {
     if (!startupId || Number.isNaN(parsedStartupId)) { toast.error('Invalid startup'); setLoadingTeam(false); return; }
     setLoadingTeam(true);
     try {
+      // First, fetch the startup to ensure we know its approval status
+      try {
+        const startupRes = await getStartupById(parsedStartupId);
+        setStartupData(startupRes.data);
+      } catch (err) {
+        console.error("Failed to load startup details", err);
+      }
+
       const res = await getTeamByStartup(parsedStartupId);
       const teamMembers: TeamMember[] = res.data || [];
       setMembers(teamMembers);
@@ -146,13 +157,25 @@ export default function TeamManagement(): React.ReactElement {
             <h1 style={{ fontFamily: "'Syne', system-ui, sans-serif", fontSize: 28, fontWeight: 600, color: 'var(--text-primary)', margin: 0 }}>Team management</h1>
             <p style={{ color: 'var(--text-muted)', fontSize: 14, marginTop: 4 }}>Startup #{startupId} — invite and manage your co-founders</p>
           </div>
-          <button
-            onClick={() => setShowInviteForm(v => !v)}
-            className="btn-primary"
-            style={{ gap: 6 }}
-          >
-            <Plus size={14} /> Invite co-founder
-          </button>
+          
+          {startupData && startupData.isApproved ? (
+            <button
+              onClick={() => setShowInviteForm(v => !v)}
+              className="btn-primary"
+              style={{ gap: 6 }}
+            >
+              <Plus size={14} /> Invite co-founder
+            </button>
+          ) : (
+            <button
+              className="btn-primary"
+              style={{ gap: 6, opacity: 0.6, cursor: 'not-allowed' }}
+              title="Admin approval required to invite team members."
+              disabled
+            >
+              <Plus size={14} /> Pending approval
+            </button>
+          )}
         </div>
 
         {/* Inline invite form — slide-down */}
@@ -276,13 +299,17 @@ export default function TeamManagement(): React.ReactElement {
                 <Users size={20} style={{ color: 'var(--brand)' }} />
               </div>
               <p style={{ fontSize: 14, fontWeight: 500, color: 'var(--text-primary)', marginBottom: 4 }}>No team members yet</p>
-              <p style={{ fontSize: 12, color: 'var(--text-muted)' }}>Invite co-founders using the button above</p>
+              <p style={{ fontSize: 12, color: 'var(--text-muted)' }}>
+                {startupData && startupData.isApproved 
+                    ? 'Invite co-founders using the button above' 
+                    : 'Pending admin approval to invite team members.'}
+              </p>
             </div>
           ) : (
             members.map((m, idx) => {
               const profile = memberProfiles[m.userId];
-              const displayName = profile?.name || `User #${m.userId}`;
-              const displayEmail = profile?.email;
+              const displayName = m.userName || profile?.name || `User #${m.userId}`;
+              const displayEmail = m.userEmail || profile?.email;
               const isEditing = editingMemberId === m.id;
               return (
                 <div key={m.id} style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '14px 24px', borderBottom: idx < members.length - 1 ? '1px solid var(--border)' : 'none', flexWrap: 'wrap' }}>

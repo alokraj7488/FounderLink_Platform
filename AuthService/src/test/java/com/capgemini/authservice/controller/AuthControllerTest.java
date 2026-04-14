@@ -21,12 +21,17 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.Map;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import com.capgemini.authservice.dto.UserSummaryDto;
+import com.capgemini.authservice.entity.UserEntity;
+import java.util.List;
+import java.util.Optional;
 
 @WebMvcTest(AuthController.class)
 @Import({SecurityConfig.class, GlobalExceptionHandler.class})
@@ -146,7 +151,56 @@ class AuthControllerTest {
     }
 
     // -------------------------------------------------------------------------
-    // POST /auth/refresh
+    // GET auth-users-by-id
+    // -------------------------------------------------------------------------
+
+    @Test
+    void getUserById_whenExists_shouldReturn200() throws Exception {
+        // given
+        UserEntity user = UserEntity.builder().id(1L).email("a@b.com").name("A").build();
+        UserSummaryDto summary = UserSummaryDto.builder().userId(1L).email("a@b.com").name("A").build();
+        
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        when(authMapper.toUserSummaryDto(user)).thenReturn(summary);
+
+        // when / then
+        mockMvc.perform(get("/auth/users/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.userId").value(1))
+                .andExpect(jsonPath("$.email").value("a@b.com"));
+    }
+
+    @Test
+    void getUserById_whenNotFound_shouldReturn404() throws Exception {
+        // given
+        when(userRepository.findById(99L)).thenReturn(Optional.empty());
+
+        // when / then
+        mockMvc.perform(get("/auth/users/99"))
+                .andExpect(status().isNotFound());
+    }
+
+    // -------------------------------------------------------------------------
+    // GET auth-users-by-role
+    // -------------------------------------------------------------------------
+
+    @Test
+    void getUsersByRole_shouldReturnList() throws Exception {
+        // given
+        UserEntity user = UserEntity.builder().id(1L).email("a@b.com").name("A").build();
+        UserSummaryDto summary = UserSummaryDto.builder().userId(1L).email("a@b.com").name("A").role("FOUNDER").build();
+        
+        when(userRepository.findByRolesName("FOUNDER")).thenReturn(List.of(user));
+        when(authMapper.toUserSummaryDto(user)).thenReturn(summary);
+
+        // when / then
+        mockMvc.perform(get("/auth/users/by-role?role=FOUNDER"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].role").value("FOUNDER"));
+    }
+
+    // -------------------------------------------------------------------------
+    // POST auth-refresh
     // -------------------------------------------------------------------------
 
     @Test

@@ -9,21 +9,26 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import lombok.RequiredArgsConstructor;
-
 import java.util.List;
 import java.util.Set;
 
 @Component
-@RequiredArgsConstructor
 public class DataSeeder implements CommandLineRunner {
 
     private final RoleRepository roleRepository;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final String adminPassword;
 
-    @Value("${app.admin.password}")
-    private String adminPassword;
+    public DataSeeder(RoleRepository roleRepository,
+                      UserRepository userRepository,
+                      PasswordEncoder passwordEncoder,
+                      @Value("${app.admin.password}") String adminPassword) {
+        this.roleRepository = roleRepository;
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.adminPassword = adminPassword;
+    }
 
     @Override
     public void run(String... args) {

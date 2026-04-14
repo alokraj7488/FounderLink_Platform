@@ -6,6 +6,7 @@ import com.capgemini.investment.entity.Investment;
 import com.capgemini.investment.enums.InvestmentStatus;
 import com.capgemini.investment.event.EventPublisher;
 import com.capgemini.investment.exception.BadRequestException;
+import com.capgemini.investment.exception.ResourceNotFoundException;
 import com.capgemini.investment.exception.ServiceUnavailableException;
 import com.capgemini.investment.exception.UnauthorizedException;
 import com.capgemini.investment.feign.StartupClient;
@@ -18,6 +19,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.cloud.client.circuitbreaker.CircuitBreaker;
 import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
 
 import java.math.BigDecimal;
@@ -54,7 +56,7 @@ class InvestmentServiceTest {
     private CircuitBreakerFactory<?, ?> circuitBreakerFactory;
 
     @Mock
-    private org.springframework.cloud.client.circuitbreaker.CircuitBreaker circuitBreaker;
+    private CircuitBreaker circuitBreaker;
 
     @Mock
     private InvestmentMapper investmentMapper;
@@ -78,6 +80,8 @@ class InvestmentServiceTest {
                 .id(10L)
                 .name("TechStartup")
                 .founderId(1L)
+                .isApproved(true)
+                .isRejected(false)
                 .build();
 
         sampleInvestment = Investment.builder()
@@ -96,12 +100,17 @@ class InvestmentServiceTest {
                 .build();
 
         // Default mapper stub — returns a response matching the investment's fields
-        when(investmentMapper.toResponse(any(Investment.class))).thenAnswer(inv -> {
+        when(investmentMapper.toResponse(any(Investment.class), any())).thenAnswer(inv -> {
             Investment i = inv.getArgument(0);
-            return InvestmentResponse.builder()
+            StartupDTO s = inv.getArgument(1);
+            InvestmentResponse response = InvestmentResponse.builder()
                     .id(i.getId()).startupId(i.getStartupId()).investorId(i.getInvestorId())
                     .amount(i.getAmount()).status(i.getStatus()).createdAt(i.getCreatedAt())
                     .build();
+            if (s != null) {
+                response.setStartupName(s.getName());
+            }
+            return response;
         });
     }
 
@@ -144,6 +153,40 @@ class InvestmentServiceTest {
 
         verify(investmentRepository, never()).save(any());
         verify(eventPublisher, never()).publishInvestmentCreated(any());
+    }
+
+    @Test
+    void createInvestment_whenStartupNotFound_shouldThrowResourceNotFoundException() {
+        // given
+        when(startupClient.getStartupById(10L)).thenReturn(null);
+
+        // when / then
+        assertThatThrownBy(() -> investmentService.createInvestment(sampleRequest, 2L))
+                .isInstanceOf(ResourceNotFoundException.class);
+    }
+
+    @Test
+    void createInvestment_whenStartupRejected_shouldThrowBadRequestException() {
+        // given
+        sampleStartup.setIsRejected(true);
+        when(startupClient.getStartupById(10L)).thenReturn(sampleStartup);
+
+        // when / then
+        assertThatThrownBy(() -> investmentService.createInvestment(sampleRequest, 2L))
+                .isInstanceOf(BadRequestException.class)
+                .hasMessageContaining("rejected");
+    }
+
+    @Test
+    void createInvestment_whenStartupNotYetApproved_shouldThrowBadRequestException() {
+        // given
+        sampleStartup.setIsApproved(false);
+        when(startupClient.getStartupById(10L)).thenReturn(sampleStartup);
+
+        // when / then
+        assertThatThrownBy(() -> investmentService.createInvestment(sampleRequest, 2L))
+                .isInstanceOf(BadRequestException.class)
+                .hasMessageContaining("approved");
     }
 
     // -------------------------------------------------------------------------
@@ -190,6 +233,24 @@ class InvestmentServiceTest {
         verify(investmentRepository).findByInvestorId(2L);
     }
 
+    @Test
+    void getInvestmentsByInvestor_whenStartupFetchFails_shouldStillReturnResponseWithNullName() {
+        // given
+        when(investmentRepository.findByInvestorId(2L)).thenReturn(List.of(sampleInvestment));
+        // Force circuit breaker fallback triggers a ServiceUnavailableException
+        doAnswer(invocation -> {
+            Function<Throwable, ?> fallback = invocation.getArgument(1);
+            return fallback.apply(new RuntimeException("Service down"));
+        }).when(circuitBreaker).run(any(), any());
+
+        // when
+        List<InvestmentResponse> result = investmentService.getInvestmentsByInvestor(2L);
+
+        // then
+        assertThat(result).hasSize(1);
+        assertThat(result.get(0).getStartupName()).isNull();
+    }
+
     // -------------------------------------------------------------------------
     // approveInvestment
     // -------------------------------------------------------------------------
@@ -227,6 +288,16 @@ class InvestmentServiceTest {
                 .hasMessageContaining("founder");
 
         verify(investmentRepository, never()).save(any());
+    }
+
+    @Test
+    void approveInvestment_whenInvestmentNotFound_shouldThrowResourceNotFoundException() {
+        // given
+        when(investmentRepository.findById(999L)).thenReturn(Optional.empty());
+
+        // when / then
+        assertThatThrownBy(() -> investmentService.approveInvestment(999L, 1L))
+                .isInstanceOf(ResourceNotFoundException.class);
     }
 
     @Test
@@ -279,5 +350,27 @@ class InvestmentServiceTest {
         // then
         assertThat(response.getStatus()).isEqualTo(InvestmentStatus.REJECTED);
         verify(investmentRepository).save(any(Investment.class));
+    }
+
+    @Test
+    void rejectInvestment_whenNotPending_shouldThrowBadRequestException() {
+        // given
+        sampleInvestment.setStatus(InvestmentStatus.APPROVED);
+        when(investmentRepository.findById(100L)).thenReturn(Optional.of(sampleInvestment));
+
+        // when / then
+        assertThatThrownBy(() -> investmentService.rejectInvestment(100L, 1L))
+                .isInstanceOf(BadRequestException.class);
+    }
+
+    @Test
+    void rejectInvestment_whenNotFounder_shouldThrowUnauthorizedException() {
+        // given
+        when(investmentRepository.findById(100L)).thenReturn(Optional.of(sampleInvestment));
+        when(startupClient.getStartupById(10L)).thenReturn(sampleStartup);
+
+        // when / then
+        assertThatThrownBy(() -> investmentService.rejectInvestment(100L, 99L))
+                .isInstanceOf(UnauthorizedException.class);
     }
 }

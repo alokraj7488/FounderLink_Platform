@@ -4,14 +4,15 @@ import com.capgemini.payment.dto.CreateOrderRequest;
 import com.capgemini.payment.dto.VerifyPaymentRequest;
 import com.capgemini.payment.entity.Payment;
 import com.capgemini.payment.saga.SagaOrchestrator;
-import com.capgemini.payment.service.IPaymentService;
+import com.capgemini.payment.service.PaymentCommandService;
+import com.capgemini.payment.service.PaymentQueryService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.razorpay.RazorpayException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
@@ -20,18 +21,23 @@ import java.util.Map;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(PaymentController.class)
 class PaymentControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
-    @MockBean
-    private IPaymentService paymentService;
+    @MockitoBean
+    private PaymentCommandService paymentCommandService;
+    @MockitoBean
+    private PaymentQueryService paymentQueryService;
 
-    @MockBean
+    @MockitoBean
     private SagaOrchestrator sagaOrchestrator;
 
     @Autowired
@@ -55,9 +61,9 @@ class PaymentControllerTest {
                 "currency", "INR",
                 "keyId", "test_key_id"
         );
-        when(paymentService.createOrder(any(CreateOrderRequest.class))).thenReturn(response);
+        when(paymentCommandService.createOrder(any(CreateOrderRequest.class))).thenReturn(response);
 
-        mockMvc.perform(post("/api/payments/create-order")
+        mockMvc.perform(post("/payments/create-order")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
@@ -70,10 +76,10 @@ class PaymentControllerTest {
         CreateOrderRequest request = new CreateOrderRequest();
         request.setAmount(5000.0);
 
-        when(paymentService.createOrder(any(CreateOrderRequest.class)))
+        when(paymentCommandService.createOrder(any(CreateOrderRequest.class)))
                 .thenThrow(new RazorpayException("Razorpay error"));
 
-        mockMvc.perform(post("/api/payments/create-order")
+        mockMvc.perform(post("/payments/create-order")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest())
@@ -94,9 +100,9 @@ class PaymentControllerTest {
                 "message", "Payment received. Awaiting founder approval.",
                 "status", "AWAITING_APPROVAL"
         );
-        when(paymentService.verifyPayment(any(VerifyPaymentRequest.class))).thenReturn(response);
+        when(paymentCommandService.verifyPayment(any(VerifyPaymentRequest.class))).thenReturn(response);
 
-        mockMvc.perform(post("/api/payments/verify")
+        mockMvc.perform(post("/payments/verify")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
@@ -108,19 +114,19 @@ class PaymentControllerTest {
     @Test
     void acceptPayment_success_returns200() throws Exception {
         Map<String, Object> response = Map.of("success", true, "message", "Investment accepted successfully");
-        when(paymentService.acceptPayment(eq(1L))).thenReturn(response);
+        when(paymentCommandService.acceptPayment(eq(1L))).thenReturn(response);
 
-        mockMvc.perform(put("/api/payments/1/accept"))
+        mockMvc.perform(put("/payments/1/accept"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success").value(true));
     }
 
     @Test
     void acceptPayment_serviceThrows_returns400() throws Exception {
-        when(paymentService.acceptPayment(eq(99L)))
+        when(paymentCommandService.acceptPayment(eq(99L)))
                 .thenThrow(new RuntimeException("Payment not found"));
 
-        mockMvc.perform(put("/api/payments/99/accept"))
+        mockMvc.perform(put("/payments/99/accept"))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.error").value("Payment not found"));
     }
@@ -130,19 +136,19 @@ class PaymentControllerTest {
     @Test
     void rejectPayment_success_returns200() throws Exception {
         Map<String, Object> response = Map.of("success", true, "message", "Investment rejected");
-        when(paymentService.rejectPayment(eq(1L))).thenReturn(response);
+        when(paymentCommandService.rejectPayment(eq(1L))).thenReturn(response);
 
-        mockMvc.perform(put("/api/payments/1/reject"))
+        mockMvc.perform(put("/payments/1/reject"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success").value(true));
     }
 
     @Test
     void rejectPayment_serviceThrows_returns400() throws Exception {
-        when(paymentService.rejectPayment(eq(99L)))
+        when(paymentCommandService.rejectPayment(eq(99L)))
                 .thenThrow(new RuntimeException("Payment not found"));
 
-        mockMvc.perform(put("/api/payments/99/reject"))
+        mockMvc.perform(put("/payments/99/reject"))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.error").value("Payment not found"));
     }
@@ -152,9 +158,9 @@ class PaymentControllerTest {
     @Test
     void getPaymentsByInvestor_returnsList() throws Exception {
         Payment p = buildPayment(1L);
-        when(paymentService.getPaymentsByInvestor(10L)).thenReturn(List.of(p));
+        when(paymentQueryService.getPaymentsByInvestor(10L)).thenReturn(List.of(p));
 
-        mockMvc.perform(get("/api/payments/investor/10"))
+        mockMvc.perform(get("/payments/investor/10"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id").value(1));
     }
@@ -164,9 +170,9 @@ class PaymentControllerTest {
     @Test
     void getPaymentsByFounder_returnsList() throws Exception {
         Payment p = buildPayment(2L);
-        when(paymentService.getPaymentsByFounder(20L)).thenReturn(List.of(p));
+        when(paymentQueryService.getPaymentsByFounder(20L)).thenReturn(List.of(p));
 
-        mockMvc.perform(get("/api/payments/founder/20"))
+        mockMvc.perform(get("/payments/founder/20"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id").value(2));
     }
@@ -176,9 +182,9 @@ class PaymentControllerTest {
     @Test
     void getPaymentsByStartup_returnsList() throws Exception {
         Payment p = buildPayment(3L);
-        when(paymentService.getPaymentsByStartup(30L)).thenReturn(List.of(p));
+        when(paymentQueryService.getPaymentsByStartup(30L)).thenReturn(List.of(p));
 
-        mockMvc.perform(get("/api/payments/startup/30"))
+        mockMvc.perform(get("/payments/startup/30"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id").value(3));
     }

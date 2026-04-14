@@ -2,6 +2,7 @@ package com.capgemini.investment.mapper;
 
 import com.capgemini.investment.dto.InvestmentResponse;
 import com.capgemini.investment.entity.Investment;
+import com.capgemini.investment.feign.StartupDTO;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -16,5 +17,14 @@ public class InvestmentMapper {
                 .status(investment.getStatus())
                 .createdAt(investment.getCreatedAt())
                 .build();
+    }
+
+    public InvestmentResponse toResponse(Investment investment, StartupDTO startup) {
+        InvestmentResponse response = toResponse(investment);
+        if (startup != null) {
+            response.setStartupName(startup.getName());
+            response.setStartupIndustry(startup.getIndustry());
+        }
+        return response;
     }
 }

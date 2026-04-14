@@ -1,34 +1,36 @@
 package com.capgemini.apigateway.filter;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.io.Decoders;
-import io.jsonwebtoken.security.Keys;
+import java.util.List;
+import javax.crypto.SecretKey;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
 
-import javax.crypto.SecretKey;
-import java.util.List;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
 
 @Component
 public class JwtAuthenticationFilter extends AbstractGatewayFilterFactory<JwtAuthenticationFilter.Config> {
 
-    @Value("${jwt.secret}")
-    private String secret;
+    private final String secret;
 
     private static final List<String> PUBLIC_PATHS = List.of(
             "/auth/register",
             "/auth/login",
             "/auth/refresh"
     );
-
-    public JwtAuthenticationFilter() {
+    
+    public JwtAuthenticationFilter(@Value("${jwt.secret}") String secret) {
         super(Config.class);
+        this.secret = secret;
     }
 
     @Override
@@ -37,7 +39,7 @@ public class JwtAuthenticationFilter extends AbstractGatewayFilterFactory<JwtAut
             ServerHttpRequest request = exchange.getRequest();
             String path = request.getURI().getPath();
 
-            if (isPublicPath(path)) {
+            if (isPublicPath(path) || request.getMethod().equals(HttpMethod.OPTIONS)) {
                 return chain.filter(exchange);
             }
 

@@ -151,17 +151,44 @@ class MessagingServiceTest {
         Message msg2 = Message.builder().id(2L).conversationId(CONV_ID).senderId(RECEIVER_ID)
                 .content("Hey").createdAt(LocalDateTime.now().minusMinutes(1)).build();
 
+        given(conversationRepository.findById(CONV_ID)).willReturn(Optional.of(existingConversation));
         given(messageRepository.findByConversationIdOrderByCreatedAtAsc(CONV_ID))
                 .willReturn(List.of(msg1, msg2));
 
         // when
-        List<MessageResponse> responses = messagingService.getConversationMessages(CONV_ID);
+        List<MessageResponse> responses = messagingService.getConversationMessages(CONV_ID, SENDER_ID);
 
         // then
         assertThat(responses).hasSize(2);
         assertThat(responses.get(0).getContent()).isEqualTo("Hi");
         assertThat(responses.get(1).getContent()).isEqualTo("Hey");
         verify(messageRepository).findByConversationIdOrderByCreatedAtAsc(CONV_ID);
+    }
+
+    @Test
+    void getConversationMessages_whenNotFound_shouldThrowRuntimeException() {
+        // given
+        given(conversationRepository.findById(999L)).willReturn(Optional.empty());
+
+        // when / then
+        try {
+            messagingService.getConversationMessages(999L, SENDER_ID);
+        } catch (RuntimeException e) {
+            assertThat(e.getMessage()).isEqualTo("Conversation not found");
+        }
+    }
+
+    @Test
+    void getConversationMessages_whenNotParticipant_shouldThrowRuntimeException() {
+        // given
+        given(conversationRepository.findById(CONV_ID)).willReturn(Optional.of(existingConversation));
+
+        // when / then — participant 3 (not 1 or 2) tries to access
+        try {
+            messagingService.getConversationMessages(CONV_ID, 3L);
+        } catch (RuntimeException e) {
+            assertThat(e.getMessage()).contains("Access denied");
+        }
     }
 
     // ── getMyConversations ─────────────────────────────────────────────────────

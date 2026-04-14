@@ -1,10 +1,13 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import {
   LayoutDashboard, Rocket, Search, DollarSign,
-  ShieldCheck, TrendingUp, Mail, CreditCard,
+  ShieldCheck, TrendingUp, Mail, CreditCard, X,
 } from 'lucide-react';
 import useAuth from '../hooks/useAuth';
+import { setSidebar } from '../../store/slices/sidebarSlice';
+import type { AppDispatch } from '../../store/store';
 
 interface SidebarLink {
   to: string;
@@ -13,6 +16,7 @@ interface SidebarLink {
 }
 
 const Sidebar: React.FC = () => {
+  const dispatch = useDispatch<AppDispatch>();
   const { isFounder, isInvestor, isCoFounder } = useAuth();
 
   const founderLinks: SidebarLink[] = [
@@ -22,9 +26,9 @@ const Sidebar: React.FC = () => {
     { to: '/founder/payments',    icon: <CreditCard size={16} />,      label: 'Received Payments' },
   ];
   const coFounderLinks: SidebarLink[] = [
-    { to: '/cofounder/dashboard',  icon: <LayoutDashboard size={16} />, label: 'Dashboard' },
-    { to: '/cofounder/startups',   icon: <Search size={16} />,          label: 'Browse Startups' },
-    { to: '/cofounder/invitations',  icon: <Mail size={16} />,            label: 'My Invitations' },
+    { to: '/cofounder/dashboard',   icon: <LayoutDashboard size={16} />, label: 'Dashboard' },
+    { to: '/cofounder/startups',    icon: <Search size={16} />,          label: 'Browse Startups' },
+    { to: '/cofounder/invitations', icon: <Mail size={16} />,            label: 'My Invitations' },
   ];
   const investorLinks: SidebarLink[] = [
     { to: '/investor/dashboard',   icon: <LayoutDashboard size={16} />, label: 'Dashboard' },
@@ -47,8 +51,13 @@ const Sidebar: React.FC = () => {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-      {/* Role label */}
-      <div style={{ padding: '16px', borderBottom: '1px solid var(--border)' }}>
+
+      {/* Role label row + mobile close button */}
+      <div style={{
+        padding: '12px 16px',
+        borderBottom: '1px solid var(--border)',
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+      }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <div style={{ width: 6, height: 6, borderRadius: '50%', background: roleConfig.dot, flexShrink: 0 }} />
           <span
@@ -62,6 +71,25 @@ const Sidebar: React.FC = () => {
             {roleConfig.label}
           </span>
         </div>
+
+        {/* Close button — visible on mobile via CSS */}
+        <button
+          onClick={() => dispatch(setSidebar(false))}
+          aria-label="Close sidebar"
+          className="md:hidden"
+          style={{
+            width: 28, height: 28,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            borderRadius: 6,
+            background: 'var(--surface-2)',
+            color: 'var(--text-muted)',
+            border: 'none',
+            cursor: 'pointer',
+            flexShrink: 0,
+          }}
+        >
+          <X size={14} />
+        </button>
       </div>
 
       {/* Nav links */}
@@ -70,6 +98,10 @@ const Sidebar: React.FC = () => {
           <NavLink
             key={link.to}
             to={link.to}
+            onClick={() => {
+              // Close sidebar on mobile when a link is clicked
+              if (window.innerWidth < 768) dispatch(setSidebar(false));
+            }}
             className={({ isActive }) => isActive ? 'sidebar-link-active' : 'sidebar-link'}
           >
             {link.icon}

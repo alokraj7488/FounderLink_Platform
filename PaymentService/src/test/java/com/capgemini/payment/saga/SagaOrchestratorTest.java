@@ -21,8 +21,16 @@ import org.springframework.test.util.ReflectionTestUtils;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.atLeast;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
@@ -236,5 +244,40 @@ class SagaOrchestratorTest {
 
         org.junit.jupiter.api.Assertions.assertThrows(RuntimeException.class,
                 () -> sagaOrchestrator.getSagaByPaymentId(999L));
+    }
+
+    @Test
+    void compensate_noSagaFound_skipsRepoUpdatesButContinuesRefund() throws Exception {
+        when(sagaRepository.findByPaymentId(anyLong())).thenReturn(Optional.empty());
+        when(paymentsMock.refund(anyString(), any(JSONObject.class))).thenReturn(null);
+
+        boolean result = sagaOrchestrator.compensate(payment);
+
+        assertThat(result).isTrue();
+        verify(sagaRepository, never()).save(any());
+        verify(paymentsMock).refund(anyString(), any());
+    }
+
+    @Test
+    void publishEvent_whenRabbitFails_logsWarningButDoesNotThrow() {
+        // This is indirectly tested through onAwaitingApproval_rabbitMQFails
+        // but here we verify it specifically for a rejection path
+        doThrow(new RuntimeException("Rabbit down")).when(rabbitTemplate)
+                .convertAndSend(anyString(), anyString(), any(Object.class));
+
+        // compensation involves publishEvent
+        boolean result = sagaOrchestrator.compensate(payment);
+        
+        assertThat(result).isTrue();
+    }
+
+    @Test
+    void sendEmailSafely_whenEmailFails_logsWarningButDoesNotThrow() {
+        doThrow(new RuntimeException("Email error")).when(emailService)
+                .sendPaymentRejectedEmailToInvestor(any());
+
+        boolean result = sagaOrchestrator.compensate(payment);
+
+        assertThat(result).isTrue();
     }
 }

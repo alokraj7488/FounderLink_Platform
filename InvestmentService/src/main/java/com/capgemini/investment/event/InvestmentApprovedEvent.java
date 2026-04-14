@@ -1,20 +1,18 @@
 package com.capgemini.investment.event;
 
-
-import lombok.*;
-
-import java.io.Serializable;
 import java.math.BigDecimal;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Getter
-@Setter
+@Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class InvestmentApprovedEvent implements Serializable {
-
+public class InvestmentApprovedEvent {
     private Long investmentId;
-    private Long startupId;
     private Long investorId;
+    private Long startupId;
     private BigDecimal amount;
 }

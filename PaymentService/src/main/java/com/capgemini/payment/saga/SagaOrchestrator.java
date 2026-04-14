@@ -1,11 +1,10 @@
 package com.capgemini.payment.saga;
 
 import com.capgemini.payment.config.RabbitMQConfig;
-import com.capgemini.payment.dto.PaymentEventDTO;
+import com.capgemini.payment.event.PaymentSuccessEvent;
 import com.capgemini.payment.entity.Payment;
 import com.capgemini.payment.service.EmailService;
 import com.razorpay.RazorpayClient;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -25,7 +24,6 @@ import org.springframework.transaction.annotation.Transactional;
  * intervention (the failure reason is persisted for auditing).
  */
 @Service
-@RequiredArgsConstructor
 @Slf4j
 public class SagaOrchestrator {
 
@@ -33,6 +31,16 @@ public class SagaOrchestrator {
     private final RabbitTemplate rabbitTemplate;
     private final EmailService emailService;
     private final RazorpayClient razorpayClient;
+
+    public SagaOrchestrator(PaymentSagaRepository sagaRepository,
+                            RabbitTemplate rabbitTemplate,
+                            EmailService emailService,
+                            RazorpayClient razorpayClient) {
+        this.sagaRepository = sagaRepository;
+        this.rabbitTemplate = rabbitTemplate;
+        this.emailService = emailService;
+        this.razorpayClient = razorpayClient;
+    }
 
     // ── Step 1: Order created ─────────────────────────────────────────────────
 
@@ -174,7 +182,7 @@ public class SagaOrchestrator {
 
     private void publishEvent(Payment payment, String routingKey, String status) {
         try {
-            PaymentEventDTO event = new PaymentEventDTO(
+            PaymentSuccessEvent event = new PaymentSuccessEvent(
                     payment.getId(), payment.getInvestorId(), payment.getFounderId(),
                     payment.getStartupId(), payment.getStartupName(), payment.getInvestorName(),
                     payment.getAmount(), payment.getRazorpayPaymentId(), status

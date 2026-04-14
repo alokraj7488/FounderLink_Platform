@@ -13,4 +13,6 @@ public interface InvestmentRepository extends JpaRepository<Investment, Long> {
     List<Investment> findByStartupId(Long startupId);
 
     List<Investment> findByInvestorId(Long investorId);
+
+    void deleteByStartupId(Long startupId);
 }

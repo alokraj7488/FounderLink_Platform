@@ -1,12 +1,7 @@
 package com.capgemini.authservice.service;
 
-import com.capgemini.authservice.dto.AuthResponse;
-import com.capgemini.authservice.dto.LoginRequest;
-import com.capgemini.authservice.dto.RegisterRequest;
-import com.capgemini.authservice.dto.RegisterResponse;
-import com.capgemini.authservice.dto.UserRegisteredEvent;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import java.util.Set;
+
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -14,17 +9,21 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.capgemini.authservice.dto.AuthResponse;
+import com.capgemini.authservice.dto.LoginRequest;
+import com.capgemini.authservice.dto.RegisterRequest;
+import com.capgemini.authservice.dto.RegisterResponse;
 import com.capgemini.authservice.entity.RoleEntity;
 import com.capgemini.authservice.entity.UserEntity;
+import com.capgemini.authservice.event.UserRegisteredEvent;
 import com.capgemini.authservice.exception.CustomException;
 import com.capgemini.authservice.repository.RoleRepository;
 import com.capgemini.authservice.repository.UserRepository;
 import com.capgemini.authservice.security.JwtUtil;
 
-import java.util.Set;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
-@RequiredArgsConstructor
 @Slf4j
 public class AuthService implements IAuthService {
 
@@ -34,9 +33,24 @@ public class AuthService implements IAuthService {
     private final JwtUtil jwtUtil;
     private final RabbitTemplate rabbitTemplate;
     private final WelcomeEmailService welcomeEmailService;
+    private final String exchange;
 
-    @Value("${rabbitmq.exchange}")
-    private String exchange;
+    public AuthService(
+            UserRepository userRepository,
+            RoleRepository roleRepository,
+            PasswordEncoder passwordEncoder,
+            JwtUtil jwtUtil,
+            RabbitTemplate rabbitTemplate,
+            WelcomeEmailService welcomeEmailService,
+            @Value("${rabbitmq.exchange}") String exchange) {
+        this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.jwtUtil = jwtUtil;
+        this.rabbitTemplate = rabbitTemplate;
+        this.welcomeEmailService = welcomeEmailService;
+        this.exchange = exchange;
+    }
 
     @Transactional
     public RegisterResponse register(RegisterRequest request) {

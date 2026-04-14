@@ -12,21 +12,31 @@ import com.capgemini.authservice.repository.UserRepository;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
-@RequiredArgsConstructor
 public class AuthController {
 
     private final IAuthService authService;
     private final UserRepository userRepository;
     private final AuthMapper authMapper;
+
+    public AuthController(IAuthService authService, UserRepository userRepository, AuthMapper authMapper) {
+        this.authService = authService;
+        this.userRepository = userRepository;
+        this.authMapper = authMapper;
+    }
 
     @PostMapping("/register")
     public ResponseEntity<ApiResponse<RegisterResponse>> register(@Valid @RequestBody RegisterRequest request) {
@@ -49,7 +59,7 @@ public class AuthController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // Returns all users with the specified role — used by founders to find co-founders to invite
+    // Returns all users with the specified role used by founders to find co-founders to invite
     @GetMapping("/users/by-role")
     public ResponseEntity<List<UserSummaryDto>> getUsersByRole(@RequestParam String role) {
         List<UserSummaryDto> users = userRepository.findByRolesName(role).stream()

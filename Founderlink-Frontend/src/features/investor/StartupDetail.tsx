@@ -41,14 +41,25 @@ const StartupDetail: React.FC = () => {
 
   const loadRazorpayScript = (): Promise<boolean> => {
     return new Promise((resolve) => {
-      if (window.Razorpay) { resolve(true); return; }
-      const script = document.createElement('script');
-      script.src = 'https://checkout.razorpay.com/v1/checkout.js';
-      script.onload = () => resolve(true);
-      script.onerror = () => resolve(false);
-      document.body.appendChild(script);
+        if (window.Razorpay) { resolve(true); return; }
+        const script = document.createElement('script');
+        script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+        script.onload = () => {
+            // Wait until window.Razorpay is actually initialized
+            const check = setInterval(() => {
+                if (window.Razorpay) {
+                    clearInterval(check);
+                    resolve(true);
+                }
+            }, 50);
+            // Timeout after 5 seconds
+            setTimeout(() => { clearInterval(check); resolve(false); }, 5000);
+        };
+        script.onerror = () => resolve(false);
+        document.body.appendChild(script);
     });
-  };
+};
+
 
   const onInvest = async (data: InvestmentFormData): Promise<void> => {
     setPaymentLoading(true);
@@ -98,8 +109,16 @@ const StartupDetail: React.FC = () => {
         theme: { color: '#059669' },
         modal: { ondismiss: () => toast('Payment cancelled', { icon: '⚠️' }) },
       };
+
+      // ✅ Guard goes HERE — inside onInvest, after options is defined
+      if (!window.Razorpay) {
+        toast.error('Payment gateway not ready. Please try again.');
+        return;
+      }
+
       const rzp = new window.Razorpay(options);
       rzp.open();
+
     } catch (err: any) {
       toast.error(err.response?.data?.error || 'Failed to initiate payment');
     } finally { setPaymentLoading(false); }

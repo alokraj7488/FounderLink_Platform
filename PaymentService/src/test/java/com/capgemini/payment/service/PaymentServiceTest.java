@@ -29,8 +29,17 @@ import java.util.Map;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
@@ -87,9 +96,10 @@ class PaymentServiceTest {
 
         Map<String, Object> result = paymentService.createOrder(request);
 
-        assertThat(result.get("orderId")).isEqualTo("order_123");
-        assertThat(result.get("currency")).isEqualTo("INR");
-        assertThat(result.get("keyId")).isEqualTo("test_key_id");
+        assertThat(result)
+                .containsEntry("orderId", "order_123")
+                .containsEntry("currency", "INR")
+                .containsEntry("keyId", "test_key_id");
         verify(paymentRepository).save(any(Payment.class));
         verify(sagaOrchestrator).startSaga(savedPayment);
     }
@@ -119,8 +129,9 @@ class PaymentServiceTest {
 
             Map<String, Object> result = paymentService.verifyPayment(request);
 
-            assertThat(result.get("success")).isEqualTo(true);
-            assertThat(result.get("status")).isEqualTo("AWAITING_APPROVAL");
+            assertThat(result)
+                    .containsEntry("success", true)
+                    .containsEntry("status", "AWAITING_APPROVAL");
             verify(sagaOrchestrator).onPaymentCaptured(any(Payment.class));
             verify(sagaOrchestrator).onAwaitingApproval(any(Payment.class));
         }
@@ -138,7 +149,7 @@ class PaymentServiceTest {
 
             Map<String, Object> result = paymentService.verifyPayment(request);
 
-            assertThat(result.get("success")).isEqualTo(false);
+            assertThat(result).containsEntry("success", false);
             verify(sagaOrchestrator).onStepFailed(eq(payment.getId()), anyString());
         }
     }
@@ -153,11 +164,10 @@ class PaymentServiceTest {
 
             Map<String, Object> result = paymentService.verifyPayment(request);
 
-            assertThat(result.get("success")).isEqualTo(false);
+            assertThat(result).containsEntry("success", false);
             assertThat(result.get("message").toString()).contains("Signature verification error");
         }
     }
-
     @Test
     void verifyPayment_paymentNotFound_returnsFalse() {
         VerifyPaymentRequest request = buildVerifyRequest();
@@ -168,9 +178,23 @@ class PaymentServiceTest {
 
             Map<String, Object> result = paymentService.verifyPayment(request);
 
-            assertThat(result.get("success")).isEqualTo(false);
+            assertThat(result).containsEntry("success", false);
             assertThat(result.get("message").toString()).contains("Payment record not found");
         }
+    }
+
+    @Test
+    void verifyPayment_alreadyProcessed_returnsEarly() {
+        VerifyPaymentRequest request = buildVerifyRequest();
+        Payment payment = buildPayment();
+        payment.setStatus(Payment.PaymentStatus.SUCCESS); // already done
+        when(paymentRepository.findByRazorpayOrderId("order_abc")).thenReturn(Optional.of(payment));
+
+        Map<String, Object> result = paymentService.verifyPayment(request);
+
+        assertThat(result).containsEntry("success", true);
+        assertThat(result.get("message").toString()).contains("already processed");
+        verify(sagaOrchestrator, never()).onPaymentCaptured(any());
     }
 
     // ─── acceptPayment ────────────────────────────────────────────────────────
@@ -183,7 +207,7 @@ class PaymentServiceTest {
 
         Map<String, Object> result = paymentService.acceptPayment(1L);
 
-        assertThat(result.get("success")).isEqualTo(true);
+        assertThat(result).containsEntry("success", true);
         verify(paymentRepository).save(argThat(p -> p.getStatus() == Payment.PaymentStatus.SUCCESS));
         verify(sagaOrchestrator).onPaymentAccepted(any(Payment.class));
     }
@@ -208,7 +232,7 @@ class PaymentServiceTest {
 
         Map<String, Object> result = paymentService.rejectPayment(1L);
 
-        assertThat(result.get("success")).isEqualTo(true);
+        assertThat(result).containsEntry("success", true);
         assertThat(result.get("message").toString()).contains("refund initiated");
         verify(paymentRepository).save(argThat(p -> p.getStatus() == Payment.PaymentStatus.REJECTED));
         verify(sagaOrchestrator).compensate(any(Payment.class));
@@ -223,7 +247,7 @@ class PaymentServiceTest {
 
         Map<String, Object> result = paymentService.rejectPayment(1L);
 
-        assertThat(result.get("success")).isEqualTo(false);
+        assertThat(result).containsEntry("success", false);
         assertThat(result.get("message").toString()).contains("contact support");
     }
 
@@ -234,6 +258,18 @@ class PaymentServiceTest {
         org.junit.jupiter.api.Assertions.assertThrows(RuntimeException.class,
                 () -> paymentService.rejectPayment(99L));
         verify(sagaOrchestrator, never()).compensate(any());
+    }
+
+    @Test
+    void rejectPayment_orchestratorThrows_returnsFalseWithErrorMessage() {
+        Payment payment = buildPayment();
+        when(paymentRepository.findById(1L)).thenReturn(Optional.of(payment));
+        when(sagaOrchestrator.compensate(any())).thenThrow(new RuntimeException("Saga crash"));
+
+        Map<String, Object> result = paymentService.rejectPayment(1L);
+
+        assertThat(result).containsEntry("success", false);
+        assertThat(result.get("message").toString()).contains("contact support");
     }
 
     // ─── query methods ────────────────────────────────────────────────────────

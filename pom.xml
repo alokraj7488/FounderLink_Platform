@@ -27,13 +27,20 @@
 
     <!-- ── SonarQube Properties (inherited by all modules) ────────── -->
     <properties>
+        <java.version>21</java.version>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
         <sonar.host.url>http://localhost:9000</sonar.host.url>
         <sonar.organization>founderlink</sonar.organization>
         <sonar.projectKey>com.capgemini:founderlink-parent</sonar.projectKey>
         <sonar.projectName>FounderLink</sonar.projectName>
-        <sonar.java.source>17</sonar.java.source>
+        <sonar.java.source>21</sonar.java.source>
         <sonar.sourceEncoding>UTF-8</sonar.sourceEncoding>
-        <!-- Exclude generated, config, and boilerplate classes -->
+
+        <sonar.coverage.jacoco.xmlReportPaths>
+            ${project.basedir}/target/site/jacoco/jacoco.xml
+        </sonar.coverage.jacoco.xmlReportPaths>
+
         <sonar.exclusions>
             **/generated-sources/**,
             **/*Application.java,
@@ -58,7 +65,7 @@
                 <plugin>
                     <groupId>org.sonarsource.scanner.maven</groupId>
                     <artifactId>sonar-maven-plugin</artifactId>
-                    <version>4.0.0.4121</version>
+                    <version>5.0.0.4389</version>
                 </plugin>
             </plugins>
         </pluginManagement>

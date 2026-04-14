@@ -14,6 +14,7 @@ public class UserProfileMapper {
                 .name(profile.getName())
                 .email(profile.getEmail())
                 .bio(profile.getBio())
+                .role(profile.getRole())
                 .skills(profile.getSkills())
                 .experience(profile.getExperience())
                 .portfolioLinks(profile.getPortfolioLinks())

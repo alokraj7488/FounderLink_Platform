@@ -1,6 +1,7 @@
 package com.capgemini.team.feign;
 
 import org.springframework.cloud.openfeign.FeignClient;
+import java.util.List;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -10,4 +11,7 @@ public interface UserClient {
 
     @GetMapping("/users/{id}")
     UserDTO getUserById(@PathVariable("id") Long id);
+
+    @GetMapping("/users/profiles/batch")
+    List<UserDTO> getProfilesBatch(@org.springframework.web.bind.annotation.RequestParam("userIds") String userIds);
 }

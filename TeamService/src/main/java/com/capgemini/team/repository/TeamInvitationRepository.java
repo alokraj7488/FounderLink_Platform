@@ -17,4 +17,6 @@ public interface TeamInvitationRepository extends JpaRepository<TeamInvitation, 
     List<TeamInvitation> findByInvitedUserIdOrderByCreatedAtDesc(Long invitedUserId);
 
     Optional<TeamInvitation> findByStartupIdAndInvitedUserIdAndStatus(Long startupId, Long invitedUserId, InvitationStatus status);
+
+    void deleteByStartupId(Long startupId);
 }
