@@ -1,8 +1,7 @@
 node_modules/
+/coverage
 dist/
 dist-ssr/
-/coverage
-
 # Logs
 *-debug.log*
 *-error.log*
